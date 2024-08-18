@@ -1,2 +1,5 @@
 tap "homebrew/bundle"
+tap "nikitabobko/tap"
+cask "aerospace"
 cask "google-chrome"
+cask "visual-studio-code"
