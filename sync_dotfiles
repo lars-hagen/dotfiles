@@ -1,0 +1,63 @@
+#!/bin/bash
+
+DOTFILES_DIR=~/dotfiles
+BACKLOG_FILE="$DOTFILES_DIR/.sync_backlog"
+
+# Function to sync a file or directory
+sync_file() {
+  local FILE=$1
+  [ -e "$FILE" ] || { echo "Error: $FILE does not exist."; return; }
+  mkdir -p "$DOTFILES_DIR/$(dirname "$FILE")"
+  mv "$FILE" "$DOTFILES_DIR/$FILE" && ln -s "$DOTFILES_DIR/$FILE" "$FILE"
+  echo "Synced $FILE to $DOTFILES_DIR."
+
+  # Add sync command to backlog
+  echo "ln -s \$DOTFILES_DIR/$FILE $FILE" >> "$BACKLOG_FILE"
+}
+
+# Function to unsync a file or directory
+unsync_file() {
+  local FILE=$1
+  [ -L "$FILE" ] || { echo "Error: $FILE is not a symbolic link."; return; }
+  rm "$FILE" && mv "$DOTFILES_DIR/$FILE" "$FILE"
+  echo "Unsynced $FILE from $DOTFILES_DIR."
+
+  # Remove the corresponding line from the backlog
+  sed -i '' "/ln -s \$DOTFILES_DIR\/$FILE $FILE/d" "$BACKLOG_FILE"
+}
+
+# Function to install the script in ~/.local/bin
+install_script() {
+  mkdir -p ~/.local/bin
+  cp "$0" ~/.local/bin/sync_dotfiles
+  chmod +x ~/.local/bin/sync_dotfiles
+  echo "Installed script to ~/.local/bin/sync_dotfiles."
+}
+
+# Function to restore dotfiles from the backlog
+restore_from_backlog() {
+  if [ ! -f "$BACKLOG_FILE" ]; then
+    echo "No backlog file found in $DOTFILES_DIR."
+    return
+  fi
+
+  while IFS= read -r line; do
+    eval $line
+  done < "$BACKLOG_FILE"
+  echo "Restored all dotfiles from backlog."
+}
+
+[ $# -eq 0 ] && { echo "Usage: $0 sync|unsync|install|restore <files...>"; exit 1; }
+
+ACTION=$1; shift
+
+if [ "$ACTION" == "install" ]; then
+  install_script
+elif [ "$ACTION" == "restore" ]; then
+  restore_from_backlog
+else
+  for FILE in "$@"; do
+    [ "$ACTION" == "sync" ] && sync_file "$FILE"
+    [ "$ACTION" == "unsync" ] && unsync_file "$FILE"
+  done
+fi
