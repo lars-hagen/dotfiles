@@ -7,7 +7,15 @@ create_symlink() {
     local src=$1
     local dest=$2
     
-    if [ -e "$dest" ]; then
+    if [ -L "$dest" ]; then
+        if [ "$(readlink -f "$dest")" = "$(readlink -f "$src")" ]; then
+            echo "Symlink already exists and is correct: $dest -> $src"
+            return
+        else
+            echo "Incorrect symlink exists. Removing and recreating: $dest"
+            rm "$dest"
+        fi
+    elif [ -e "$dest" ]; then
         echo "Backing up existing $dest to ${dest}.bak"
         mv "$dest" "${dest}.bak"
     fi
@@ -21,6 +29,7 @@ create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 
 # Create symlinks for config files
 create_symlink "$DOTFILES_DIR/.config/shell_gpt/functions/execute_shell.py" "$HOME/.config/shell_gpt/functions/execute_shell.py"
+create_symlink "$DOTFILES_DIR/.config/shell_gpt/bin" "$HOME/.config/shell_gpt/bin"
 create_symlink "$DOTFILES_DIR/.config/alacritty" "$HOME/.config/alacritty"
 
 # Check if the system is macOS before creating the Aerospace symlink
