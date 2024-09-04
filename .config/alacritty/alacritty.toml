@@ -1,0 +1,54 @@
+live_config_reload = true
+
+[colors]
+primary = { background = "#0d0f18", foreground = "#fffaf3" }
+#cursor = { text = "#0d0f18", cursor = "#ff0017" }
+selection = { text = "#0d0f18", background = "#002a3a" }
+
+[colors.normal]
+black = "#222222"
+red = "#ff000f"
+green = "#8ce00a"
+yellow = "#ffb900"
+blue = "#008df8"
+magenta = "#6c43a5"
+cyan = "#00d7eb"
+white = "#ffffff"
+
+[colors.bright]
+black = "#444444"
+red = "#ff273f"
+green = "#abe05a"
+yellow = "#ffd141"
+blue = "#0092ff"
+magenta = "#9a5feb"
+cyan = "#67ffef"
+white = "#ffffff"
+
+[cursor]
+blink_interval = 750
+
+[cursor.style]
+blinking = "On"
+shape = "Beam"
+
+[font]
+size = 12.0
+
+[font.normal]
+family = "FiraCode Nerd Font Mono"
+style = "Regular"
+
+[font.bold]
+family = "FiraCode Nerd Font Mono"
+style = "SemiBold"
+
+[font.italic]
+family = "FiraCode Nerd Font Mono"
+style = "Italic"
+
+[window]
+decorations = "buttonless"
+opacity = 0.8
+blur = true
+padding = { x = 5, y = 5 }
