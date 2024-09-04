@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Set your GitHub username
+GITHUB_USERNAME="lars-hagen"
+
+# Get the current date and time 24 hours ago in ISO 8601 format
+DATE_24H_AGO=$(date -u -d '24 hours ago' +"%Y-%m-%dT%H:%M:%SZ")
+
+# Set GIT_DISCOVERY_ACROSS_FILESYSTEM to prevent git repository lookup
+export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+
+# Use GitHub CLI to fetch PRs created by you in the last 24 hours with failed checks
+gh pr list --author $GITHUB_USERNAME --search "created:>$DATE_24H_AGO" --json number,title,url,headRepository,statusCheckRollup --jq '.[] | select(.statusCheckRollup[] | select(.status == "FAILURE")) | {number, title, url, repo: .headRepository.name, failed_checks: [.statusCheckRollup[] | select(.status == "FAILURE") | .context]}' --limit 100
+
+echo "Note: This script lists PRs with failed checks in the last 24 hours."

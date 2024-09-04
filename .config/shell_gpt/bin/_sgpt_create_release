@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Get the latest tag
+latest_tag=$(git describe --tags --abbrev=0)
+
+# Get the previous tag
+previous_tag=$(git describe --tags --abbrev=0 HEAD^)
+
+# Generate release notes
+release_notes=$(gh api \
+  --header 'Accept: application/vnd.github+json' \
+  --method POST \
+  -f tag_name="$latest_tag" \
+  -f previous_tag_name="$previous_tag" \
+  -f target_commitish='main' \
+  -f generate_release_notes=true \
+  /repos/:owner/:repo/releases/generate-notes)
+
+
+# Extract and format the body content from the JSON response
+formatted_notes=$(echo "$release_notes" | jq -r '.body')
+
+# Create the release with formatted notes
+gh release create "$latest_tag" \
+  --title "Release $latest_tag" \
+  --notes "$formatted_notes" \
+  --target main
+
+echo "Release $latest_tag created successfully with formatted notes!"

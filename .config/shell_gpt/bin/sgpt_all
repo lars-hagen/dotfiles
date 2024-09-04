@@ -1,0 +1,31 @@
+#!/bin/bash
+
+USER_INSTRUCTIONS="${1:-No specific instructions. Use base workflow.}"
+
+echo $SHELL
+git diff HEAD | /home/lars/.local/bin/sgpt --shell "
+USER INSTRUCTIONS: $USER_INSTRUCTIONS
+
+Interpret user instructions as workflow modifications. Common instructions:
+- 'skip pr': Skip pull request creation and merging steps
+- 'use commit type X': Use specified commit type instead of default
+- 'use branch': Skip branch creation, use current branch and 'git push origin HEAD'
+
+For steps not modified by user instructions, follow this base workflow:
+
+<example>
+* Generate a concise, descriptive branch name (max 5 words). Use kebab-case. Do not use any prefix.
+* Create and switch to this new branch using git checkout -b.
+* Commit all changes with a brief, clear commit message. Start with a capitalized verb in imperative mood.
+* Push the new branch to origin using git push -u origin.
+* Create a pull request to merge this branch into main. The PR title should match the commit message. Add a brief description summarizing the changes.
+* Squash and merge the pull request into main using github cli, also remove the branch we are merging into main.
+* Sleep 30s then run git pull, this is to ensure we have the new tag from the pipeline.
+* Now create a release by running /home/lars/.config/shell_gpt/bin/_sgpt_create_release
+</example>
+
+Output commands with explanatory comments. Generate names/messages from actual diff content.
+Prioritize user instructions over base workflow where applicable.
+For each step, prefix the command with a comment explaining what it does.
+Output each command to be executed, one per line, including comments.
+"

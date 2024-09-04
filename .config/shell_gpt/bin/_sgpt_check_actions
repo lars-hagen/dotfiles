@@ -1,0 +1,27 @@
+#!/bin/bash
+check_create_tag_job() {
+    latest_run_id=$(gh run list --workflow=push.yml --limit=1 --json databaseId --jq '.[0].databaseId')
+    job_status=$(gh run view $latest_run_id --json jobs --jq '.jobs[] | select(.name == "create-tag") | .conclusion')
+    
+    created_at=$(gh run view $latest_run_id --json createdAt --jq '.createdAt')
+    created_timestamp=$(date -d "$created_at" +%s)
+    current_timestamp=$(date +%s)
+    age=$((current_timestamp - created_timestamp))
+    
+    if [ "$job_status" = "success" ] && [ $age -le 120 ]; then
+        return 0
+    fi
+    
+    return 1
+}
+
+while true; do
+    if check_create_tag_job; then
+        echo "The create-tag job has run successfully within the last 2 minutes. Proceeding with release creation."
+        break
+    else
+        echo "Waiting for the create-tag job to complete... (checking every 10 seconds)"
+        sleep 10
+    fi
+done
+sleep 4

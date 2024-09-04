@@ -1,0 +1,14 @@
+#!/bin/bash
+echo $SHELL
+git diff HEAD | /home/lars/.local/bin/sgpt --shell "
+Based on the git diff provided, perform these steps:
+* Generate a concise, descriptive branch name. Use kebab-case.
+* Create and switch to this new branch using git checkout -b.
+* Commit the changes with commit message, start with commit type.
+* Push the new branch to origin using git push -u origin.
+* Create a pull request to merge this branch into main. The PR title should match the commit message. Add a brief description summarizing the changes.
+* Squash and merge the pull request into main using github cli, also remove the branch we are merging into main.
+* Sleep 30s then run git pull, this is to ensure we have the new tag from the pipeline.
+* For each step, prefix the command with a comment explaining what it does.
+Output each command to be executed, one per line, including comments.
+"
