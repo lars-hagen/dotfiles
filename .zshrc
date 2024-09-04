@@ -70,3 +70,5 @@ zstyle ':completion:*' menu select
 #zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
 zstyle ':completion:*:descriptions' format '%U%F{cyan}%d%f%u'
 zstyle ':completion:*' group-name ''
+
+alias assume=". assume"
