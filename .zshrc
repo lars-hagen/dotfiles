@@ -17,12 +17,12 @@ fi
 source <(fzf --zsh)
 
 # ZSH syntax highlighting configuration
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
-ZSH_HIGHLIGHT_STYLES[default]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[path]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan'
+# ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+# ZSH_HIGHLIGHT_STYLES[default]='fg=blue'
+# ZSH_HIGHLIGHT_STYLES[path]='fg=blue'
+# ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=blue'
+# ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=blue'
+# ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan'
 
 alias cd='z'
 
@@ -35,7 +35,6 @@ alias lt='eza -aT --color=always --group-directories-first --icons' # tree listi
 alias l.='eza -ald --color=always --group-directories-first --icons .*' # show only dotfiles
 
 # -- Use fd instead of fzf --
-
 # Set the default command for fzf to use fd, including hidden files but excluding .git
 export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
 
