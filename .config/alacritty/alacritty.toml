@@ -4,6 +4,7 @@ live_config_reload = true
 primary = { background = "#0d0f18", foreground = "#fffaf3" }
 #cursor = { text = "#0d0f18", cursor = "#ff0017" }
 selection = { text = "#0d0f18", background = "#002a3a" }
+#draw_bold_text_with_bright_colors = true
 
 [colors.normal]
 black = "#222222"
@@ -11,7 +12,7 @@ red = "#ff000f"
 green = "#8ce00a"
 yellow = "#ffb900"
 blue = "#008df8"
-magenta = "#6c43a5"
+magenta = "#E45FE4"
 cyan = "#00d7eb"
 white = "#ffffff"
 
@@ -21,7 +22,7 @@ red = "#ff273f"
 green = "#abe05a"
 yellow = "#ffd141"
 blue = "#0092ff"
-magenta = "#9a5feb"
+magenta = "#D670D6"
 cyan = "#67ffef"
 white = "#ffffff"
 

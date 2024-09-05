@@ -2,6 +2,18 @@
 export PATH="$HOME/.local/bin:$PATH"
 # Initialize Starship prompt
 eval "$(starship init zsh)"
+# ZSH completion
+if type brew &>/dev/null; then
+  # macOS with Homebrew
+  FPATH=$(brew --prefix)/share/zsh-completions:$(brew --prefix)/share/zsh/site-functions:$FPATH
+else
+  # Linux (or macOS without Homebrew)
+  FPATH=/usr/share/zsh/site-functions:$FPATH
+fi
+
+autoload -Uz compinit
+compinit
+
 # Load zsh-autosuggestions
 if type brew &>/dev/null; then
     # macOS with Homebrew
@@ -9,6 +21,8 @@ if type brew &>/dev/null; then
     source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 else
     # Linux (or macOS without Homebrew)
+    source /usr/share/zsh/plugins/fzf-tab-git/fzf-tab.plugin.zsh
+    source $HOME/.local/share/fzf-tab-source/fzf-tab-source.plugin.zsh
     source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
     source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
@@ -17,12 +31,12 @@ fi
 source <(fzf --zsh)
 
 # ZSH syntax highlighting configuration
-# ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
-# ZSH_HIGHLIGHT_STYLES[default]='fg=blue'
-# ZSH_HIGHLIGHT_STYLES[path]='fg=blue'
-# ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=blue'
-# ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=blue'
-# ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan'
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+ZSH_HIGHLIGHT_STYLES[default]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[path]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan'
 
 alias cd='z'
 
@@ -80,40 +94,35 @@ z() {
   fi
 }
 
-# ZSH completion
-if type brew &>/dev/null; then
-  # macOS with Homebrew
-  FPATH=$(brew --prefix)/share/zsh-completions:$(brew --prefix)/share/zsh/site-functions:$FPATH
-else
-  # Linux (or macOS without Homebrew)
-  FPATH=/usr/share/zsh/site-functions:$FPATH
-fi
+# disable sort when completing `git checkout`
+zstyle ':completion:*:git-checkout:*' sort false
 
-autoload -Uz compinit
-compinit
+# set descriptions format to enable group support
+# NOTE: don't use escape sequences here, fzf-tab will ignore them
+zstyle ':completion:*:descriptions' format '[%d]'
 
-# Case insensitive tab completion
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+# Use color for single groups in fzf-tab
+zstyle ':fzf-tab:*' single-group color
 
-# Automatically find new executables in path 
-zstyle ':completion:*' rehash true
+# set list-colors to enable filename colorizing
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
-# Colored completion (different colors for dirs/files/etc)
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+# force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+zstyle ':completion:*' menu no
 
-# Use various completion methods (expand, complete, ignored, approximate)
-zstyle ':completion:*' completer _expand _complete _ignored _approximate
+# preview directory's content with eza when completing cd
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 
-# Enable menu-style completion selection
-zstyle ':completion:*' menu select
+# preview directory's content with eza when completing z
+zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1 --color=always $realpath'
 
-# Uncomment to show scrolling prompt during menu selection
-#zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+# disable preview for options
+zstyle ':fzf-tab:complete:*:options' fzf-preview ''
 
-# Format for displaying completion descriptions
-zstyle ':completion:*:descriptions' format '%U%F{cyan}%d%f%u'
+# switch group using `<` and `>`
+zstyle ':fzf-tab:*' switch-group '<' '>'
 
-# Group completions by category (e.g., files, commands)
-zstyle ':completion:*' group-name ''
+# set default options for fzf, binding Ctrl+/ to toggle preview
+export FZF_DEFAULT_OPTS="--bind 'ctrl-/:toggle-preview'"
 
 alias assume=". assume"
