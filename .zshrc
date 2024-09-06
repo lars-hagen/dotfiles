@@ -17,11 +17,13 @@ compinit
 # Load zsh-autosuggestions
 if type brew &>/dev/null; then
     # macOS with Homebrew
+    source $HOME/.dotfiles/fzf-tab/fzf-tab.plugin.zsh
+    source $HOME/.dotfiles/fzf-tab-source/fzf-tab-source.plugin.zsh
     source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
     source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 else
     # Linux (or macOS without Homebrew)
-    source /usr/share/zsh/plugins/fzf-tab-git/fzf-tab.plugin.zsh
+    source $HOME/.dotfiles/fzf-tab/fzf-tab.plugin.zsh
     source $HOME/.dotfiles/fzf-tab-source/fzf-tab-source.plugin.zsh
     source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
     source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

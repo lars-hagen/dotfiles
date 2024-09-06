@@ -26,8 +26,23 @@ create_symlink() {
     ln -s "$src" "$dest"
 }
 
+# Function to clone or update a git repository
+clone_or_update_repo() {
+    local repo_url=$1
+    local target_dir=$2
+    
+    if [ -d "$target_dir" ]; then
+        echo "Updating $target_dir..."
+        git -C "$target_dir" pull
+    else
+        echo "Cloning $repo_url to $target_dir..."
+        git clone "$repo_url" "$target_dir"
+    fi
+}
+
 # Check for required tools
 command -v git >/dev/null 2>&1 || { echo >&2 "Git is required but not installed. Aborting."; exit 1; }
+command -v pipx >/dev/null 2>&1 || { echo >&2 "pipx is required but not installed. Aborting."; exit 1; }
 
 # Confirmation prompt
 read -p "This will install dotfiles and may overwrite existing files. Do you want to continue? (y/n) " -n 1 -r
@@ -37,23 +52,28 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 1
 fi
 
-# Create symlinks for dotfiles
-create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
+# Install shell-gpt via pipx
+echo "Installing shell-gpt via pipx..."
+pipx install shell-gpt
 
-# Create symlinks for config files
-create_symlink "$DOTFILES_DIR/.config/shell_gpt/functions/execute_shell.py" "$HOME/.config/shell_gpt/functions/execute_shell.py"
-create_symlink "$DOTFILES_DIR/.config/shell_gpt/bin" "$HOME/.config/shell_gpt/bin"
-create_symlink "$DOTFILES_DIR/.config/alacritty" "$HOME/.config/alacritty"
+# Inject readchar into shell-gpt
+echo "Injecting readchar into shell-gpt..."
+pipx inject shell-gpt readchar
 
 # fzf-tab-source
 FZF_TAB_SOURCE_DIR="$DOTFILES_DIR/fzf-tab-source"
-if [ -d "$FZF_TAB_SOURCE_DIR" ]; then
-    echo "fzf-tab-source already exists. Updating..."
-    git -C "$FZF_TAB_SOURCE_DIR" pull
-else
-    echo "Cloning fzf-tab-source..."
-    git clone https://github.com/Freed-Wu/fzf-tab-source "$FZF_TAB_SOURCE_DIR"
-fi
+clone_or_update_repo "https://github.com/Freed-Wu/fzf-tab-source" "$FZF_TAB_SOURCE_DIR"
+
+# fzf-tab
+FZF_TAB_DIR="$DOTFILES_DIR/fzf-tab"
+clone_or_update_repo "https://github.com/Aloxaf/fzf-tab.git" "$FZF_TAB_DIR"
+
+# Create all symlinks
+echo "Creating symlinks..."
+create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
+create_symlink "$DOTFILES_DIR/.config/shell_gpt/functions/execute_shell.py" "$HOME/.config/shell_gpt/functions/execute_shell.py"
+create_symlink "$DOTFILES_DIR/.config/shell_gpt/bin" "$HOME/.config/shell_gpt/bin"
+create_symlink "$DOTFILES_DIR/.config/alacritty" "$HOME/.config/alacritty"
 
 # Check if the system is macOS before creating the Karabiner and Amethyst symlinks
 if [[ "$OSTYPE" == "darwin"* ]]; then
