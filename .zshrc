@@ -22,7 +22,7 @@ if type brew &>/dev/null; then
 else
     # Linux (or macOS without Homebrew)
     source /usr/share/zsh/plugins/fzf-tab-git/fzf-tab.plugin.zsh
-    source $HOME/.local/share/fzf-tab-source/fzf-tab-source.plugin.zsh
+    source $HOME/.dotfiles/fzf-tab-source/fzf-tab-source.plugin.zsh
     source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
     source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi

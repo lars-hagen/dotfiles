@@ -32,6 +32,9 @@ create_symlink "$DOTFILES_DIR/.config/shell_gpt/functions/execute_shell.py" "$HO
 create_symlink "$DOTFILES_DIR/.config/shell_gpt/bin" "$HOME/.config/shell_gpt/bin"
 create_symlink "$DOTFILES_DIR/.config/alacritty" "$HOME/.config/alacritty"
 
+# fzf-tab-source
+git clone https://github.com/Freed-Wu/fzf-tab-source
+
 # Check if the system is macOS before creating the Aerospace symlink
 if [[ "$OSTYPE" == "darwin"* ]]; then
     create_symlink "$DOTFILES_DIR/.config/aerospace" "$HOME/.config/aerospace"
