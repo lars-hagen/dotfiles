@@ -1,0 +1,148 @@
+# ~/.amethyst.yml
+
+# Layouts
+layouts:
+  - tall
+  - fullscreen
+
+# Mod keys
+mod1:
+  - option
+
+mod2:
+  - option
+  - shift
+
+mod3:
+  - option
+  - control
+
+mod4:
+  - option
+  - control
+  - shift
+
+# Commands
+cycle-layout:
+  mod: mod1
+  key: space
+
+cycle-layout-backward:
+  mod: mod2
+  key: space
+
+shrink-main:
+  mod: mod1
+  key: +
+
+expand-main:
+  mod: mod1
+  key: '-'
+
+increase-main:
+  mod: mod1
+  key: ','
+
+decrease-main:
+  mod: mod1
+  key: '.'
+
+# Focus and Swap commands
+focus-ccw:
+  mod: mod1
+  key: h
+
+focus-cw:
+  mod: mod1
+  key: l
+
+focus-main:
+  mod: mod1
+  key: m
+
+swap-ccw:
+  mod: mod2
+  key: h
+
+swap-cw:
+  mod: mod2
+  key: l
+
+swap-main:
+  mod: mod1
+  key: enter
+
+focus-screen-ccw:
+  mod: mod1
+  key: k
+
+focus-screen-cw:
+  mod: mod1
+  key: j
+
+swap-screen-ccw:
+  mod: mod2
+  key: k
+
+swap-screen-cw:
+  mod: mod2
+  key: j
+
+# Space operations
+throw-space-left:
+  mod: mod2
+  key: p
+
+throw-space-right:
+  mod: mod2
+  key: n
+
+# Miscellaneous
+toggle-float:
+  mod: mod3
+  key: f
+
+display-current-layout:
+  mod: mod1
+  key: i
+
+reevaluate-windows:
+  mod: mod1
+  key: z
+
+relaunch-amethyst:
+  mod: mod2
+  key: z
+
+# Select specific layouts
+select-tall-layout:
+  mod: mod1
+  key: a
+
+select-fullscreen-layout:
+  mod: mod1
+  key: f
+
+# Window management
+#window-margins: true
+window-margin-size: 6
+smart-window-margins: false
+
+# Mouse behavior
+mouse-follows-focus: true
+focus-follows-mouse: false
+
+# Other settings
+enables-layout-hud: true
+enables-layout-hud-on-space-change: true
+new-windows-to-main: false
+follow-space-thrown-windows: true
+
+# Screen padding
+screen-padding-left: 0
+screen-padding-right: 0
+screen-padding-top: 0
+screen-padding-bottom: 0
+
+# Floating applications
+floating: []
