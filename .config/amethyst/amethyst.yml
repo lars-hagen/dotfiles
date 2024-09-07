@@ -134,7 +134,7 @@ focus-follows-mouse: false
 
 # Other settings
 enables-layout-hud: true
-enables-layout-hud-on-space-change: true
+enables-layout-hud-on-space-change: false
 new-windows-to-main: false
 follow-space-thrown-windows: true
 
