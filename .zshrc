@@ -14,6 +14,9 @@ fi
 autoload -Uz compinit
 compinit
 
+# Share history across multiple zsh sessions
+setopt SHARE_HISTORY
+
 # Load zsh-autosuggestions
 if type brew &>/dev/null; then
     # macOS with Homebrew
@@ -142,3 +145,10 @@ fi
 zle -N _sgpt_zsh
 bindkey ^l _sgpt_zsh
 # Shell-GPT integration ZSH v0.2
+
+# For macOS Terminal and iTerm2
+# Keybindings for Command + Arrow keys
+bindkey ";9C" end-of-line                 # Command + Right Arrow: Move to end of line
+bindkey ";9D" beginning-of-line           # Command + Left Arrow: Move to beginning of line
+bindkey ";3C" forward-word                # Option + Right Arrow: Move forward one word
+bindkey ";3D" backward-word               # Option + Left Arrow: Move backward one word
