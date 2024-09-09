@@ -1,5 +1,30 @@
 # Add ~/.local/bin to PATH
 export PATH="$HOME/.local/bin:$PATH"
+
+# History settings (added to match Mac Zsh configuration on Linux)
+HISTFILE=~/.zsh_history
+HISTSIZE=2000
+SAVEHIST=1000
+
+setopt SHARE_HISTORY   # Share command history between multiple zsh sessions
+
+# Set options (added to match Mac Zsh configuration on Linux)
+# Note: These may not have a noticeable effect but are included for consistency
+setopt combiningchars  # Enable granular handling of Unicode combining characters
+setopt login           # Treat this shell as a login shell (caution: may affect startup behavior)
+
+# The following key bindings are typically missing on Linux
+# They are added here to be consistent with Mac OS X behavior
+# Bind the Delete key
+bindkey "^[[3~" delete-char
+# Bind the Home key
+bindkey "^[OH" beginning-of-line
+# Bind the End key
+bindkey "^[OF" end-of-line
+# Modify Up and Down arrow keys for better history search
+bindkey "^[[A" up-line-or-search
+bindkey "^[[B" down-line-or-search
+
 # Initialize Starship prompt
 eval "$(starship init zsh)"
 # ZSH completion
@@ -128,3 +153,17 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 export FZF_DEFAULT_OPTS="--bind 'ctrl-/:toggle-preview'"
 
 alias assume=". assume"
+
+# Shell-GPT integration ZSH v0.2
+_sgpt_zsh() {
+if [[ -n "$BUFFER" ]]; then
+    _sgpt_prev_cmd=$BUFFER
+    BUFFER+="⌛"
+    zle -I && zle redisplay
+    BUFFER=$(sgpt --shell <<< "$_sgpt_prev_cmd" --no-interaction)
+    zle end-of-line
+fi
+}
+zle -N _sgpt_zsh
+bindkey ^l _sgpt_zsh
+# Shell-GPT integration ZSH v0.2
