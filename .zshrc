@@ -127,6 +127,8 @@ zstyle ':fzf-tab:complete:*:options' fzf-preview ''
 # switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
 
+zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=* r:|=*'
+
 # set default options for fzf, binding Ctrl+/ to toggle preview
 export FZF_DEFAULT_OPTS="--bind 'ctrl-/:toggle-preview'"
 
