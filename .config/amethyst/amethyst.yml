@@ -7,20 +7,17 @@ layouts:
 
 # Mod keys
 mod1:
-  - option
-
+  - option  # Single modifier key (Option)
 mod2:
   - option
-  - shift
-
+  - shift   # Combination of Option + Shift
 mod3:
   - option
-  - control
-
+  - control # Combination of Option + Control
 mod4:
   - option
   - control
-  - shift
+  - shift   # Combination of Option + Control + Shift
 
 # Commands
 cycle-layout:
@@ -32,19 +29,19 @@ cycle-layout-backward:
   key: space
 
 shrink-main:
-  mod: mod1
+  mod: mod3
   key: +
 
 expand-main:
-  mod: mod1
+  mod: mod3
   key: '-'
 
 increase-main:
-  mod: mod1
+  mod: mod3
   key: ','
 
 decrease-main:
-  mod: mod1
+  mod: mod3
   key: '.'
 
 # Focus and Swap commands
@@ -92,10 +89,10 @@ throw-space-left:
 # Miscellaneous
 toggle-float:
   mod: mod3
-  key: f
+  key: d
 
 display-current-layout:
-  mod: mod1
+  mod: mod2
   key: i
 
 reevaluate-windows:
@@ -103,7 +100,7 @@ reevaluate-windows:
   key: z
 
 relaunch-amethyst:
-  mod: mod2
+  mod: mod3
   key: z
 
 # Select specific layouts
@@ -112,8 +109,34 @@ select-tall-layout:
   key: a
 
 select-fullscreen-layout:
-  mod: mod1
+  mod: mod3
   key: f
+
+# Select column layout
+# select-column-layout:
+#   mod: mod3
+#   key: c
+
+throw-space-1:
+  key: none
+throw-space-2:
+  key: none
+throw-space-3:
+  key: none
+throw-space-4:
+  key: none
+throw-space-5:
+  key: none
+throw-space-6:
+  key: none
+throw-space-7:
+  key: none
+throw-space-8:
+  key: none
+throw-space-9:
+  key: none
+throw-space-10:
+  key: none
 
 # Window management
 #window-margins: true
