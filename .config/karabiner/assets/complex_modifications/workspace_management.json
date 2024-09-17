@@ -1,0 +1,49 @@
+{
+    "title": "Workspace Management",
+    "rules": [
+      {
+        "description": "Option+C to Create New Workspace, Option+D to Destroy Current Workspace",
+        "manipulators": [
+          {
+            "type": "basic",
+            "from": {
+              "key_code": "c",
+              "modifiers": {
+                "mandatory": ["option"]
+              }
+            },
+            "to": [
+              {
+                "key_code": "up_arrow",
+                "modifiers": ["control"]
+              },
+              {
+                "key_code": "right_arrow",
+                "modifiers": ["control"]
+              }
+            ]
+          },
+          {
+            "type": "basic",
+            "from": {
+              "key_code": "d",
+              "modifiers": {
+                "mandatory": ["option"]
+              }
+            },
+            "to": [
+              {
+                "key_code": "up_arrow",
+                "modifiers": ["control"]
+              },
+              {
+                "key_code": "w",
+                "modifiers": ["control"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
