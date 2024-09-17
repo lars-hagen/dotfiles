@@ -8,7 +8,7 @@ DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 create_symlink() {
     local src=$1
     local dest=$2
-    
+
     if [ -L "$dest" ]; then
         if [ "$(readlink -f "$dest")" = "$(readlink -f "$src")" ]; then
             echo "Symlink already exists and is correct: $dest -> $src"
@@ -21,7 +21,7 @@ create_symlink() {
         echo "Removing existing file: $dest"
         rm -rf "$dest"
     fi
-    
+
     echo "Creating symlink: $dest -> $src"
     ln -s "$src" "$dest"
 }
@@ -30,13 +30,39 @@ create_symlink() {
 clone_or_update_repo() {
     local repo_url=$1
     local target_dir=$2
-    
+
     if [ -d "$target_dir" ]; then
         echo "Updating $target_dir..."
         git -C "$target_dir" pull
     else
         echo "Cloning $repo_url to $target_dir..."
         git clone "$repo_url" "$target_dir"
+    fi
+}
+
+# Function to install YabaiIndicator
+install_yabai_indicator() {
+    echo "Installing YabaiIndicator..."
+    INSTALL_DIR="$HOME/Applications"
+    mkdir -p "$INSTALL_DIR"
+
+    DOWNLOAD_URL="https://github.com/xiamaz/YabaiIndicator/releases/latest/download/YabaiIndicator-0.3.4.zip"
+    TEMP_ZIP="$INSTALL_DIR/YabaiIndicator_temp.zip"
+
+    if curl -L "$DOWNLOAD_URL" -o "$TEMP_ZIP"; then
+        if file "$TEMP_ZIP" | grep -q "Zip archive data"; then
+            rm -rf "$INSTALL_DIR/YabaiIndicator.app"
+            unzip -o "$TEMP_ZIP" -d "$INSTALL_DIR"
+            rm "$TEMP_ZIP"
+            mv "$INSTALL_DIR/YabaiIndicator-0.3.4/YabaiIndicator.app" "$INSTALL_DIR/"
+            rm -rf "$INSTALL_DIR/YabaiIndicator-0.3.4"
+            echo "YabaiIndicator installed successfully in $INSTALL_DIR"
+        else
+            echo "Error: Downloaded file is not a valid zip archive."
+            rm "$TEMP_ZIP"
+        fi
+    else
+        echo "Error: Failed to download YabaiIndicator."
     fi
 }
 
@@ -79,8 +105,11 @@ create_symlink "$DOTFILES_DIR/.config/alacritty" "$HOME/.config/alacritty"
 if [[ "$OSTYPE" == "darwin"* ]]; then
     create_symlink "$DOTFILES_DIR/.config/karabiner" "$HOME/.config/karabiner"
     create_symlink "$DOTFILES_DIR/.config/amethyst" "$HOME/.config/amethyst"
+
+    # Install YabaiIndicator
+    install_yabai_indicator
 else
-    echo "Skipping karabiner and amethyst configurations (not on macOS)"
+    echo "Skipping karabiner, amethyst, and YabaiIndicator installations (not on macOS)"
 fi
 
 echo "Dotfiles installation complete!"
