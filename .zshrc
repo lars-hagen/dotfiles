@@ -179,3 +179,7 @@ bindkey ";9C" end-of-line                 # Command + Right Arrow: Move to end o
 bindkey ";9D" beginning-of-line           # Command + Left Arrow: Move to beginning of line
 bindkey ";3C" forward-word                # Option + Right Arrow: Move forward one word
 bindkey ";3D" backward-word               # Option + Left Arrow: Move backward one word
+
+eval "$(direnv hook zsh)"
+
+export PATH=$PATH:/home/lars/repos/reepay/IIHD-2204__metabase/reepay-cli/bin
