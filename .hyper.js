@@ -10,7 +10,7 @@ module.exports = {
         // default font size in pixels for all tabs
         fontSize: 12,
         // font family with optional fallbacks
-        fontFamily: 'Menlo, "DejaVu Sans Mono", Consolas, "Lucida Console", monospace',
+        fontFamily: 'FiraCode Nerd Font Mono, Menlo, "DejaVu Sans Mono", Consolas, "Lucida Console", monospace',
         // default font weight: 'normal' or 'bold'
         fontWeight: 'normal',
         // font weight for bold characters: 'normal' or 'bold'
@@ -20,24 +20,24 @@ module.exports = {
         // letter spacing as a relative unit
         letterSpacing: 0,
         // terminal cursor background color and opacity (hex, rgb, hsl, hsv, hwb or cmyk)
-        cursorColor: 'rgba(248,28,229,0.8)',
+        cursorColor: '#ffffff',
         // terminal text color under BLOCK cursor
-        cursorAccentColor: '#000',
+        cursorAccentColor: '#0d0f18',
         // `'BEAM'` for |, `'UNDERLINE'` for _, `'BLOCK'` for █
-        cursorShape: 'BLOCK',
+        cursorShape: 'BEAM',
         // set to `true` (without backticks and without quotes) for blinking cursor
-        cursorBlink: false,
+        cursorBlink: true,
         // color of the text
-        foregroundColor: '#fff',
+        foregroundColor: '#fffaf3',
         // terminal background color
         // opacity is only supported on macOS
-        backgroundColor: '#000',
+        backgroundColor: '#0d0f18',
         // terminal selection color
-        selectionColor: 'rgba(248,28,229,0.3)',
+        selectionColor: '#002a3a',
         // border color (window, tabs)
-        borderColor: '#333',
+        borderColor: '#0d0f18',
         // custom CSS to embed in the main window
-        css: '',
+        css: ``,
         // custom CSS to embed in the terminal window
         termCSS: '',
         // set custom startup directory (must be an absolute path)
@@ -50,27 +50,29 @@ module.exports = {
         // default: `true` (without backticks and without quotes) on Windows and Linux, ignored on macOS
         showWindowControls: '',
         // custom padding (CSS format, i.e.: `top right bottom left`)
-        padding: '12px 14px',
+        padding: '5px',
         // the full list. if you're going to provide the full color palette,
         // including the 6 x 6 color cubes and the grayscale map, just provide
         // an array here instead of a color map object
         colors: {
-            black: '#000000',
-            red: '#C51E14',
-            green: '#1DC121',
-            yellow: '#C7C329',
-            blue: '#0A2FC4',
-            magenta: '#C839C5',
-            cyan: '#20C5C6',
-            white: '#C7C7C7',
-            lightBlack: '#686868',
-            lightRed: '#FD6F6B',
-            lightGreen: '#67F86F',
-            lightYellow: '#FFFA72',
-            lightBlue: '#6A76FB',
-            lightMagenta: '#FD7CFC',
-            lightCyan: '#68FDFE',
-            lightWhite: '#FFFFFF',
+            black: '#222222',
+            red: '#ff000f',
+            green: '#8ce00a',
+            yellow: '#ffb900',
+            blue: '#008df8',
+            magenta: '#E45FE4',
+            cyan: '#00d7eb',
+            white: '#ffffff',
+            // Set light colors to be the same as their normal counterparts
+            lightBlack: '#222222',
+            lightRed: '#ff000f',
+            lightGreen: '#8ce00a',
+            lightYellow: '#ffb900',
+            lightBlue: '#008df8',
+            lightMagenta: '#E45FE4',
+            lightCyan: '#00d7eb',
+            lightWhite: '#ffffff',
+            // You can keep or remove these, as they're not standard xterm colors
             limeGreen: '#32CD32',
             lightCoral: '#F08080',
         },
@@ -137,7 +139,9 @@ module.exports = {
     //   `hyperpower`
     //   `@company/project`
     //   `project#1.0.1`
-    plugins: [],
+    plugins: [
+        "hyper-opacity"
+    ],
     // in development, you can create a directory under
     // `~/.hyper_plugins/local/` and include it here
     // to load it and avoid it being `npm install`ed

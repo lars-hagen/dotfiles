@@ -102,7 +102,11 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "open -na Alacritty" }],
+                                "to": [
+                                    {
+                                        "shell_command": "pgrep -x \"Hyper\" > /dev/null && osascript -e 'tell application \"Hyper\" to tell application \"System Events\" to tell process \"Hyper\" to click menu item \"New Window\" of menu \"Shell\" of menu bar 1' || open -a \"Hyper\""
+                                    }
+                                ],
                                 "type": "basic"
                             }
                         ]
