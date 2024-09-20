@@ -106,15 +106,19 @@ create_symlink "$DOTFILES_DIR/.config/shell_gpt/functions/execute_shell.py" "$HO
 create_symlink "$DOTFILES_DIR/.config/shell_gpt/bin" "$HOME/.config/shell_gpt/bin"
 create_symlink "$DOTFILES_DIR/.config/alacritty" "$HOME/.config/alacritty"
 
-# Check if the system is macOS before creating the Karabiner and Amethyst symlinks
+# Check if the system is macOS
 if [[ "$OSTYPE" == "darwin"* ]]; then
     create_symlink "$DOTFILES_DIR/.config/karabiner" "$HOME/.config/karabiner"
     create_symlink "$DOTFILES_DIR/.config/amethyst" "$HOME/.config/amethyst"
 
     # Install YabaiIndicator
     install_yabai_indicator
+
+    # Run .macos file
+    echo "Applying macOS-specific settings..."
+    source "$DOTFILES_DIR/.macos"
 else
-    echo "Skipping karabiner, amethyst, and YabaiIndicator installations (not on macOS)"
+    echo "Skipping karabiner, amethyst, YabaiIndicator installations, and macOS-specific settings (not on macOS)"
 fi
 
 echo "Dotfiles installation complete!"

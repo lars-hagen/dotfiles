@@ -1,2 +1,10 @@
 # Prevent macOS from creating .DS_Store files on network volumes
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE
+
+# Set the bottom-left hot corner to show Desktop
+defaults write com.apple.dock wvous-bl-corner -int 4
+
+# todo: find out how to change the "click wallpaper to reveal desktop" behavior, so that its set to only in stage manager
+
+# Restart the Dock to apply changes
+killall Dock
