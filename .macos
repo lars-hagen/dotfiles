@@ -1,0 +1,2 @@
+# Prevent macOS from creating .DS_Store files on network volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE

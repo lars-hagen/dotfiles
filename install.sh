@@ -42,20 +42,25 @@ clone_or_update_repo() {
 
 # Function to install YabaiIndicator
 install_yabai_indicator() {
+    INSTALL_DIR="/Applications"
+    APP_PATH="$INSTALL_DIR/YabaiIndicator.app"
+
+    if [ -d "$APP_PATH" ]; then
+        echo "YabaiIndicator is already installed in $APP_PATH"
+        return
+    fi
+
     echo "Installing YabaiIndicator..."
-    INSTALL_DIR="$HOME/Applications"
-    mkdir -p "$INSTALL_DIR"
 
     DOWNLOAD_URL="https://github.com/xiamaz/YabaiIndicator/releases/latest/download/YabaiIndicator-0.3.4.zip"
-    TEMP_ZIP="$INSTALL_DIR/YabaiIndicator_temp.zip"
+    TEMP_ZIP="/tmp/YabaiIndicator_temp.zip"
 
     if curl -L "$DOWNLOAD_URL" -o "$TEMP_ZIP"; then
         if file "$TEMP_ZIP" | grep -q "Zip archive data"; then
-            rm -rf "$INSTALL_DIR/YabaiIndicator.app"
-            unzip -o "$TEMP_ZIP" -d "$INSTALL_DIR"
+            sudo unzip -o "$TEMP_ZIP" -d "$INSTALL_DIR"
             rm "$TEMP_ZIP"
-            mv "$INSTALL_DIR/YabaiIndicator-0.3.4/YabaiIndicator.app" "$INSTALL_DIR/"
-            rm -rf "$INSTALL_DIR/YabaiIndicator-0.3.4"
+            sudo mv "$INSTALL_DIR/YabaiIndicator-0.3.4/YabaiIndicator.app" "$INSTALL_DIR/"
+            sudo rm -rf "$INSTALL_DIR/YabaiIndicator-0.3.4"
             echo "YabaiIndicator installed successfully in $INSTALL_DIR"
         else
             echo "Error: Downloaded file is not a valid zip archive."
