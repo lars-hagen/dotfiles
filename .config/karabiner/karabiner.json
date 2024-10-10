@@ -4,6 +4,36 @@
             "complex_modifications": {
                 "rules": [
                     {
+                        "description": "Open a alacritty terminal window with Ctrl-LAlt-T",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "t",
+                                    "modifiers": {
+                                        "mandatory": ["left_control", "left_option"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                                "to": [{ "shell_command": "open -na Alacritty" }],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Toggle MidiKeys focus with `<` key",
+                        "enabled": false,
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "grave_accent_and_tilde",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "to": [{ "shell_command": "osascript ~/toggle_midi_keys.scpt" }],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
                         "description": "Option+C to Create New Workspace, Option+D to Destroy Current Workspace",
                         "enabled": false,
                         "manipulators": [
@@ -92,7 +122,8 @@
                         ]
                     },
                     {
-                        "description": "Open a terminal window with Ctrl-LAlt-T",
+                        "description": "Open a hyper terminal window with Ctrl-LAlt-T",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "from": {
@@ -102,11 +133,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [
-                                    {
-                                        "shell_command": "pgrep -x \"Hyper\" > /dev/null && osascript -e 'tell application \"Hyper\" to tell application \"System Events\" to tell process \"Hyper\" to click menu item \"New Window\" of menu \"Shell\" of menu bar 1' || open -a \"Hyper\""
-                                    }
-                                ],
+                                "to": [{ "shell_command": "pgrep -x \"Hyper\" > /dev/null && osascript -e 'tell application \"Hyper\" to tell application \"System Events\" to tell process \"Hyper\" to click menu item \"New Window\" of menu \"Shell\" of menu bar 1' || open -a \"Hyper\"" }],
                                 "type": "basic"
                             }
                         ]

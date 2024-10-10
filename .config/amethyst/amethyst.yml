@@ -160,4 +160,4 @@ screen-padding-top: 0
 screen-padding-bottom: 0
 
 # Floating applications
-floating: []
+floating: ["com.atomixproductions.virtualdj"]

@@ -3,10 +3,51 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # History settings (added to match Mac Zsh configuration on Linux)
 HISTFILE=~/.zsh_history
-HISTSIZE=2000
-SAVEHIST=1000
+HISTSIZE=200000
+SAVEHIST=100000
 
+setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY   # Share command history between multiple zsh sessions
+
+# Define history files
+HISTFILE_WORK="$HOME/.zsh_history"
+HISTFILE_PERSONAL="$HOME/.zsh_history_p"
+
+# Function to switch between work and personal modes
+switch_mode() {
+    if [[ "$HISTFILE" == "$HISTFILE_WORK" ]]; then
+        export HISTFILE="$HISTFILE_PERSONAL"
+        export PERSONAL_MODE=1
+    else
+        export HISTFILE="$HISTFILE_WORK"
+        unset PERSONAL_MODE
+    fi
+    fc -R  # Reload history
+    zle && zle reset-prompt  # Force prompt update if zle is active
+}
+
+# Set initial mode (default to work mode)
+export HISTFILE="$HISTFILE_WORK"
+
+# Function to update prompt
+update_prompt() {
+    # Store the original PS1 if not already stored
+    if [[ -z "$ORIGINAL_PS1" ]]; then
+        ORIGINAL_PS1=$PS1
+    fi
+
+    if [[ -n "$PERSONAL_MODE" ]]; then
+        PS1="%F{green}[P]%f $ORIGINAL_PS1"
+    else
+        PS1=$ORIGINAL_PS1
+    fi
+}
+
+# Add the update_prompt function to precmd_functions
+precmd_functions+=(update_prompt)
+
+# Alias for switching modes
+alias toggle_mode='switch_mode'
 
 # Set options (added to match Mac Zsh configuration on Linux)
 # Note: These may not have a noticeable effect but are included for consistency
@@ -70,8 +111,27 @@ ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan'
 
 alias cd='z'
 
-# Replace ls with eza
-alias ls='eza -1 --color=always --group-directories-first --icons' # preferred listing
+# Alias ls to eza with desired options
+alias ls='eza -1 --color=always --group-directories-first --icons'
+
+# Preserve default ls completion for the eza alias
+compdef _ls eza
+
+# Function to handle ls with completion
+# function ls_with_completion {
+#     if [ $# -eq 0 ]; then
+#         eza -1 --color=always --group-directories-first --icons
+#     else
+#         eza -1 --color=always --group-directories-first --icons "$@"
+#     fi
+# }
+
+# Alias ls to the function
+#alias ls=ls_with_completion
+
+# Enable completion for the ls function
+#compdef _files ls_with_completion
+#alias ls='eza -1 --color=always --group-directories-first --icons' # preferred listing
 alias lsz='eza -al --color=always --total-size --group-directories-first --icons' # include file size
 alias la='eza -a --color=always --group-directories-first --icons'  # all files and dirs
 alias ll='eza -l --color=always --group-directories-first --icons'  # long format
@@ -180,6 +240,10 @@ bindkey ";9D" beginning-of-line           # Command + Left Arrow: Move to beginn
 bindkey ";3C" forward-word                # Option + Right Arrow: Move forward one word
 bindkey ";3D" backward-word               # Option + Left Arrow: Move backward one word
 
+#bindkey "^[[1;9C" end-of-line             # Command + Right Arrow: Move to end of line
+#bindkey "^[[1;9D" beginning-of-line       # Command + Left Arrow: Move to beginning of line
+#bindkey "^[[C" forward-word               # Option + Right Arrow: Move forward one word
+#bindkey "^[[D" backward-word              # Option + Left Arrow: Move backward one word
 eval "$(direnv hook zsh)"
 
-export PATH=$PATH:/home/lars/repos/reepay/IIHD-2204__metabase/reepay-cli/bin
+export PATH=$PATH:/Users/lars/repos/reepay/reepay-cli/bin

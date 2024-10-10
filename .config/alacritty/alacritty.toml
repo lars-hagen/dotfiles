@@ -2,8 +2,8 @@ live_config_reload = true
 
 [colors]
 primary = { background = "#0d0f18", foreground = "#fffaf3" }
-#cursor = { text = "#0d0f18", cursor = "#ff0017" }
-selection = { text = "#0d0f18", background = "#002a3a" }
+cursor = { text = "#ff0000", cursor = "#ffffff" }
+selection = { text = "#ffffff", background = "#4e5a65" }
 #draw_bold_text_with_bright_colors = true
 
 [colors.normal]
@@ -17,13 +17,13 @@ cyan = "#00d7eb"
 white = "#ffffff"
 
 [colors.bright]
-black = "#444444"
-red = "#ff273f"
-green = "#abe05a"
-yellow = "#ffd141"
-blue = "#0092ff"
-magenta = "#D670D6"
-cyan = "#67ffef"
+black = "#222222"
+red = "#ff000f"
+green = "#8ce00a"
+yellow = "#ffb900"
+blue = "#008df8"
+magenta = "#E45FE4"
+cyan = "#00d7eb"
 white = "#ffffff"
 
 [cursor]
@@ -53,3 +53,14 @@ decorations = "buttonless"
 opacity = 0.8
 blur = true
 padding = { x = 5, y = 5 }
+
+[keyboard]
+[[keyboard.bindings]]
+key = "V"
+mods = "Control"
+action = "ToggleViMode"
+
+[[keyboard.bindings]]
+key = "Escape"
+mode = "Vi"
+action = "ToggleViMode"
