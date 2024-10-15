@@ -209,7 +209,9 @@ alt-shift-right = [
     'move-node-to-monitor right',
     'focus-monitor right',
     'move-mouse monitor-lazy-center'
-]  
+]
+
+ctrl-shift-f = 'fullscreen'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
 alt-shift-space = 'mode service'
@@ -248,7 +250,7 @@ o5o = 2
 o6o = 2
 o7o = 2
 o8o = 2
-o9o = 3
+o9o = 2
 oo1 = 3
 oo2 = 3
 oo3 = 3
