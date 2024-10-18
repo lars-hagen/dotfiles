@@ -247,3 +247,4 @@ bindkey ";3D" backward-word               # Option + Left Arrow: Move backward o
 eval "$(direnv hook zsh)"
 
 export PATH=$PATH:/Users/lars/repos/reepay/reepay-cli/bin
+export PATH=$PATH:$HOME/.config/shell_gpt/bin
