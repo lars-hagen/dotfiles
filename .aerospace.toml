@@ -211,7 +211,7 @@ alt-shift-right = [
     'move-mouse monitor-lazy-center'
 ]
 
-ctrl-shift-f = 'fullscreen'
+ctrl-cmd-f = 'fullscreen'
 # Execute a bash command to write "test" to /tmp/test.txt
 # alt-b = '''exec-and-forget bash -c '
 #     echo test > /tmp/test.txt'
