@@ -44,7 +44,7 @@ key-mapping.preset = 'qwerty'
 # See https://nikitabobko.github.io/AeroSpace/guide#on-focus-changed-callbacks
 # See https://nikitabobko.github.io/AeroSpace/commands#move-mouse
 # Fallback value (if you omit the key): on-focused-monitor-changed = []
-on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+#on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
 # Possible values:
@@ -96,10 +96,10 @@ alt-slash = 'layout tiles horizontal vertical'
 alt-comma = 'layout accordion horizontal vertical'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#focus
-alt-h = 'focus left'
-alt-j = 'focus down'
-alt-k = 'focus up'
-alt-l = 'focus right'
+#alt-h = 'focus left'
+#alt-j = 'focus down'
+#alt-k = 'focus up'
+#alt-l = 'focus right'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move
 alt-shift-h = 'move left'
@@ -192,6 +192,9 @@ ctrl-alt-up = 'workspace prev'
 alt-left = 'focus left --boundaries all-monitors-outer-frame'
 alt-right = 'focus right --boundaries all-monitors-outer-frame'
 
+alt-up = 'focus up --boundaries all-monitors-outer-frame'
+alt-down = 'focus down --boundaries all-monitors-outer-frame'
+
 alt-shift-down = ['move-node-to-workspace next', 'workspace next']
 alt-shift-up = ['move-node-to-workspace prev', 'workspace prev']
 
@@ -211,37 +214,65 @@ alt-shift-right = [
     'move-mouse monitor-lazy-center'
 ]
 
+#ctrl-cmd-f = 'fullscreen'
 ctrl-cmd-f = 'fullscreen'
 # Execute a bash command to write "test" to /tmp/test.txt
 # alt-b = '''exec-and-forget bash -c '
 #     echo test > /tmp/test.txt'
 # '''
 
+#alt = ['workspace 1', 'mode main']
 
 alt-n = 'exec-and-forget /Users/lars/.dotfiles/bin/create_workspace.sh'
 
 
 #alt-d = ['move-all-nodes-to-workspace 1', 'workspace 1']
 
-
+#alt-shift-1 = ['move-all-nodes-to-workspace 1', 'workspace 1']
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
-alt-shift-space = 'mode service'
+ctrl-alt-space = 'mode service'
+
+# Change workspace mode trigger to ctrl-alt-w
+ctrl-alt-w = 'mode workspace'
+
+ctrl-alt-1 = ['workspace 1']
+ctrl-alt-2 = ['workspace 2']
+ctrl-alt-3 = ['workspace 3']
+ctrl-alt-4 = ['workspace 4']
+ctrl-alt-5 = ['workspace 5']
+ctrl-alt-6 = ['workspace 6']
+ctrl-alt-7 = ['workspace 7']
+ctrl-alt-8 = ['workspace 8']
+ctrl-alt-9 = ['workspace 9']
+ctrl-alt-b = ['workspace b']
+
+ctrl-alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
+ctrl-alt-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
+ctrl-alt-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
+ctrl-alt-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
+ctrl-alt-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
+ctrl-alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
+ctrl-alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
+ctrl-alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
+ctrl-alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
+ctrl-alt-shift-b = ['move-node-to-workspace b', 'workspace b']
+
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 [mode.service.binding]
-esc = ['reload-config', 'mode main']
-r = ['flatten-workspace-tree', 'mode main'] # reset layout
+esc = ['reload-config','exec-and-forget borders', 'mode main']
+r = ['flatten-workspace-tree', 'mode main'] # reset layoutZ
 f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
 backspace = ['close-all-windows-but-current', 'mode main']
 
 # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
 #s = ['layout sticky tiling', 'mode main']
 
-alt-shift-h = ['join-with left', 'mode main']
-alt-shift-j = ['join-with down', 'mode main']
-alt-shift-k = ['join-with up', 'mode main']
-alt-shift-l = ['join-with right', 'mode main']
+left = ['join-with left', 'mode main']
+down = ['join-with down', 'mode main']
+up = ['join-with up', 'mode main']
+right = ['join-with right', 'mode main']
 
 # [workspace-to-monitor-force-assignment]
 # 1oo = 1
@@ -271,3 +302,33 @@ alt-shift-l = ['join-with right', 'mode main']
 # oo7 = 3
 # oo8 = 3
 # oo9 = 3
+
+[[on-window-detected]]
+if.app-id = 'org.tabby'
+run = 'layout floating'
+
+[mode.workspace.binding]
+# Rest of the workspace mode configuration remains the same
+1 = ['workspace 1', 'mode main']
+2 = ['workspace 2', 'mode main']
+3 = ['workspace 3', 'mode main']
+4 = ['workspace 4', 'mode main']
+5 = ['workspace 5', 'mode main']
+6 = ['workspace 6', 'mode main']
+7 = ['workspace 7', 'mode main']
+8 = ['workspace 8', 'mode main']
+9 = ['workspace 9', 'mode main']
+b = ['workspace b', 'mode main']
+
+shift-1 = ['move-node-to-workspace 1', 'workspace 1', 'mode main']
+shift-2 = ['move-node-to-workspace 2', 'workspace 2', 'mode main']
+shift-3 = ['move-node-to-workspace 3', 'workspace 3', 'mode main']
+shift-4 = ['move-node-to-workspace 4', 'workspace 4', 'mode main']
+shift-5 = ['move-node-to-workspace 5', 'workspace 5', 'mode main']
+shift-6 = ['move-node-to-workspace 6', 'workspace 6', 'mode main']
+shift-7 = ['move-node-to-workspace 7', 'workspace 7', 'mode main']
+shift-8 = ['move-node-to-workspace 8', 'workspace 8', 'mode main']
+shift-9 = ['move-node-to-workspace 9', 'workspace 9', 'mode main']
+shift-b = ['move-node-to-workspace b', 'workspace b', 'mode main']
+
+esc = 'mode main'
