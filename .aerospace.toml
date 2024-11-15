@@ -1,24 +1,15 @@
 # Place a copy of this config to ~/.aerospace.toml
 # After that, you can edit ~/.aerospace.toml to your liking
 
-# You can use it to add commands that run after login to macOS user session.
-# 'start-at-login' needs to be 'true' for 'after-login-command' to work
-# Available commands: https://nikitabobko.github.io/AeroSpace/commands
+automatically-unhide-macos-hidden-apps = true
+
+# Startup Commands
+# ---------------
 after-login-command = []
 
-# You can use it to add commands that run after AeroSpace startup.
-# 'after-startup-command' is run after 'after-login-command'
-# Available commands : https://nikitabobko.github.io/AeroSpace/commands
-after-startup-command = [
-    # JankyBorders has a built-in detection of already running process,
-    # so it won't be run twice on AeroSpace restart
-    'exec-and-forget borders'
-]
+# Layout Settings
+# --------------
 
-# Start AeroSpace at login
-start-at-login = true
-
-# Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
 
@@ -39,12 +30,9 @@ default-root-container-orientation = 'auto'
 # See https://nikitabobko.github.io/AeroSpace/guide#key-mapping
 key-mapping.preset = 'qwerty'
 
-# Mouse follows focus when focused monitor changes
-# Drop it from your config, if you don't like this behavior
-# See https://nikitabobko.github.io/AeroSpace/guide#on-focus-changed-callbacks
-# See https://nikitabobko.github.io/AeroSpace/commands#move-mouse
-# Fallback value (if you omit the key): on-focused-monitor-changed = []
-#on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+# Modify your focus callbacks to be more mouse-aware
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+#on-focus-changed = ['move-mouse window-lazy-center']
 
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
 # Possible values:
@@ -66,141 +54,20 @@ outer.right = 10
 # 'main' binding mode must be always presented
 # Fallback value (if you omit the key): mode.main.binding = {}
 [mode.main.binding]
+# Window / Monitor Focus (ctrl-alt + arrows)
+ctrl-alt-left = 'focus left --boundaries all-monitors-outer-frame'
+ctrl-alt-right = 'focus right --boundaries all-monitors-outer-frame'
+ctrl-alt-up = 'focus up --boundaries all-monitors-outer-frame'
+ctrl-alt-down = 'focus down --boundaries all-monitors-outer-frame'
+ctrl-alt-tab = 'focus-monitor --wrap-around next'
+ctrl-alt-shift-tab = 'focus-monitor --wrap-around prev'
 
-# All possible keys:
-# - Letters.        a, b, c, ..., z
-# - Numbers.        0, 1, 2, ..., 9
-# - Keypad numbers. keypad0, keypad1, keypad2, ..., keypad9
-# - F-keys.         f1, f2, ..., f20
-# - Special keys.   minus, equal, period, comma, slash, backslash, quote, semicolon, backtick,
-#                   leftSquareBracket, rightSquareBracket, space, enter, esc, backspace, tab
-# - Keypad special. keypadClear, keypadDecimalMark, keypadDivide, keypadEnter, keypadEqual,
-#                   keypadMinus, keypadMultiply, keypadPlus
-# - Arrows.         left, down, up, right
-
-# All possible modifiers: cmd, alt, ctrl, shift
-
-# All possible commands: https://nikitabobko.github.io/AeroSpace/commands
-
-# See: https://nikitabobko.github.io/AeroSpace/commands#exec-and-forget
-# You can uncomment the following lines to open up terminal with alt + enter shortcut (like in i3)
-# alt-enter = '''exec-and-forget osascript -e '
-# tell application "Terminal"
-#     do script
-#     activate
-# end tell'
-# '''
-
-# See: https://nikitabobko.github.io/AeroSpace/commands#layout
-alt-slash = 'layout tiles horizontal vertical'
-alt-comma = 'layout accordion horizontal vertical'
-
-# See: https://nikitabobko.github.io/AeroSpace/commands#focus
-#alt-h = 'focus left'
-#alt-j = 'focus down'
-#alt-k = 'focus up'
-#alt-l = 'focus right'
-
-# See: https://nikitabobko.github.io/AeroSpace/commands#move
-alt-shift-h = 'move left'
-alt-shift-j = 'move down'
-alt-shift-k = 'move up'
-alt-shift-l = 'move right'
-
-# See: https://nikitabobko.github.io/AeroSpace/commands#resize
-alt-shift-minus = 'resize smart -50' #this is plus
-alt-shift-slash = 'resize smart +50' #this is minus
-
-#[mode.main.binding]
-#alt-d = 'debug'
-# See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-# alt-1 = 'workspace 1'
-# alt-2 = 'workspace 2'
-# alt-3 = 'workspace 3'
-# alt-4 = 'workspace 4'
-# alt-5 = 'workspace 5'
-# alt-6 = 'workspace 6'
-# alt-7 = 'workspace 7'
-# alt-8 = 'workspace 8'
-# alt-9 = 'workspace 9'
-# alt-a = 'workspace A' # In your config, you can drop workspace bindings that you don't need
-# alt-b = 'workspace B'
-# alt-c = 'workspace C'
-# alt-d = 'workspace D'
-# alt-e = 'workspace E'
-# alt-f = 'workspace F'
-# alt-g = 'workspace G'
-# alt-i = 'workspace I'
-# alt-m = 'workspace M'
-# alt-n = 'workspace N'
-# alt-o = 'workspace O'
-# alt-p = 'workspace P'
-# alt-q = 'workspace Q'
-# alt-r = 'workspace R'
-# alt-s = 'workspace S'
-# alt-t = 'workspace T'
-# alt-u = 'workspace U'
-# alt-v = 'workspace V'
-# alt-w = 'workspace W'
-# alt-x = 'workspace X'
-# alt-y = 'workspace Y'
-# alt-z = 'workspace Z'
-
-# See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-# alt-shift-1 = 'move-node-to-workspace 1'
-# alt-shift-2 = 'move-node-to-workspace 2'
-# alt-shift-3 = 'move-node-to-workspace 3'
-# alt-shift-4 = 'move-node-to-workspace 4'
-# alt-shift-5 = 'move-node-to-workspace 5'
-# alt-shift-6 = 'move-node-to-workspace 6'
-# alt-shift-7 = 'move-node-to-workspace 7'
-# alt-shift-8 = 'move-node-to-workspace 8'
-# alt-shift-9 = 'move-node-to-workspace 9'
-# alt-shift-a = 'move-node-to-workspace A'
-# alt-shift-b = 'move-node-to-workspace B'
-# alt-shift-c = 'move-node-to-workspace C'
-# alt-shift-d = 'move-node-to-workspace D'
-# alt-shift-e = 'move-node-to-workspace E'
-# alt-shift-f = 'move-node-to-workspace F'
-# alt-shift-g = 'move-node-to-workspace G'
-# alt-shift-i = 'move-node-to-workspace I'
-# alt-shift-m = 'move-node-to-workspace M'
-# alt-shift-n = 'move-node-to-workspace N'
-# alt-shift-o = 'move-node-to-workspace O'
-# alt-shift-p = 'move-node-to-workspace P'
-# alt-shift-q = 'move-node-to-workspace Q'
-# alt-shift-r = 'move-node-to-workspace R'
-# alt-shift-s = 'move-node-to-workspace S'
-# alt-shift-t = 'move-node-to-workspace T'
-# alt-shift-u = 'move-node-to-workspace U'
-# alt-shift-v = 'move-node-to-workspace V'
-# alt-shift-w = 'move-node-to-workspace W'
-# alt-shift-x = 'move-node-to-workspace X'
-# alt-shift-y = 'move-node-to-workspace Y'
-# alt-shift-z = 'move-node-to-workspace Z'
-
-# See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
-alt-tab = 'workspace-back-and-forth'
-# See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
-alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
-
-# Move to next/previous workspace
-ctrl-alt-down = 'workspace next'
-ctrl-alt-up = 'workspace prev'
-
-# Focus left/right application or monitor
-alt-left = 'focus left --boundaries all-monitors-outer-frame'
-alt-right = 'focus right --boundaries all-monitors-outer-frame'
-
-alt-up = 'focus up --boundaries all-monitors-outer-frame'
-alt-down = 'focus down --boundaries all-monitors-outer-frame'
-
-alt-shift-down = ['move-node-to-workspace next', 'workspace next']
-alt-shift-up = ['move-node-to-workspace prev', 'workspace prev']
-
-# Move window left within monitor or to left monitor if at boundary
-alt-shift-left = [
-    'move left',
+# Window Movement (ctrl-alt-shift + arrows)
+ctrl-alt-shift-left = ['move left']
+ctrl-alt-shift-right = ['move right']
+ctrl-alt-shift-up = ['move up']
+ctrl-alt-shift-down = ['move down']
+ctrl-alt-shift-cmd-left = [
     'move-node-to-monitor left',
     'focus-monitor left',
     'move-mouse monitor-lazy-center'
@@ -214,11 +81,102 @@ alt-shift-right = [
     'move-mouse monitor-lazy-center'
 ]
 
-#ctrl-cmd-f = 'fullscreen'
-ctrl-cmd-f = 'fullscreen'
-# Execute a bash command to write "test" to /tmp/test.txt
-# alt-b = '''exec-and-forget bash -c '
-#     echo test > /tmp/test.txt'
+# Resize Windows (ctrl-alt-shift + hjkl)
+shift-alt-h = 'resize width -50'    # Shrink width
+shift-alt-l = 'resize width +50'    # Grow width
+shift-alt-k = 'resize height -50'   # Shrink height
+shift-alt-j = 'resize height +50'   # Grow height
+
+# Layout Controls
+ctrl-alt-slash = 'layout tiles horizontal vertical'    # Tile layout
+ctrl-alt-comma = 'layout accordion horizontal vertical' # Accordion layout
+ctrl-cmd-f = 'fullscreen'                         # Toggle fullscreen   
+
+# Workspace Navigation
+alt-tab = 'workspace-back-and-forth'         # Toggle last workspace
+alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'                     # Enter workspace mode
+ctrl-alt-cmd-up = 'workspace prev'                # Previous workspace
+ctrl-alt-cmd-down = 'workspace next'              # Next workspace
+ 
+# Join Windows (ctrl-shift-cmd + arrows)
+ctrl-shift-cmd-left = ['join-with left']
+ctrl-shift-cmd-right = ['join-with right']
+ctrl-shift-cmd-up = ['join-with up']
+ctrl-shift-cmd-down = ['join-with down']
+
+# Quick Workspace Switching
+alt-s = ['workspace S1']
+alt-1 = ['workspace 1']
+alt-2 = ['workspace 2']
+alt-3 = ['workspace 3'] 
+alt-4 = ['workspace 4']
+alt-5 = ['workspace 5']
+alt-6 = ['workspace 6']
+#ctrl-alt-4 = ['workspace 4']
+#ctrl-alt-5 = ['workspace 5']
+#ctrl-alt-6 = ['workspace 6']
+#ctrl-alt-7 = ['workspace 7']
+#ctrl-alt-8 = ['workspace 8']
+#ctrl-alt-9 = ['workspace 9']
+
+#ctrl-alt-i = ['workspace I']
+#ctrl-alt-b = ['workspace B']
+#ctrl-alt-c = ['workspace C']
+
+
+# Move Windows to Workspaces
+alt-shift-s = ['move-node-to-workspace S1', 'workspace S1']
+alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
+alt-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
+alt-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
+alt-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
+alt-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
+alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
+# Mode Switching
+ctrl-alt-space = 'mode service'  # Enter service mode
+ctrl-alt-w = 'mode workspace'
+
+[mode.workspace.binding]
+s = ['mode secondary']
+t = ['mode temp']
+1 = ['workspace 1','mode main']
+2 = ['workspace 2','mode main']
+3 = ['workspace 3','mode main']
+4 = ['workspace 4','mode main']
+5 = ['workspace 5','mode main']
+6 = ['workspace 6','mode main']
+shift-1 = ['move-node-to-workspace 1','workspace 1','mode main']
+shift-2 = ['move-node-to-workspace 2','workspace 2','mode main']
+shift-3 = ['move-node-to-workspace 3','workspace 3','mode main']
+shift-4 = ['move-node-to-workspace 4','workspace 4','mode main']
+shift-5 = ['move-node-to-workspace 5','workspace 5','mode main']
+shift-6 = ['move-node-to-workspace 6','workspace 6','mode main']
+esc = ['mode main']
+
+[mode.secondary.binding]
+1 = ['workspace S1','mode main']
+2 = ['workspace S2','mode main']
+3 = ['workspace S3','mode main']
+shift-1 = ['move-node-to-workspace S1','workspace S1','mode main']
+shift-2 = ['move-node-to-workspace S2','workspace S2','mode main']
+shift-3 = ['move-node-to-workspace S3','workspace S3','mode main']
+esc = ['mode main']
+
+[mode.temp.binding]
+1 = ['workspace TEMP1','mode main']
+2 = ['workspace TEMP2','mode main']
+3 = ['workspace TEMP3','mode main']
+shift-1 = ['move-node-to-workspace TEMP1','workspace TEMP1','mode main']
+shift-2 = ['move-node-to-workspace TEMP2','workspace TEMP2','mode main']
+shift-3 = ['move-node-to-workspace TEMP3','workspace TEMP3','mode main']
+esc = ['mode main']
+
+# Launch Applications
+# ctrl-alt-return = '''exec-and-forget osascript -e '
+#     tell application "Terminal"
+#         do script
+#         activate
+#     end tell'
 # '''
 
 #alt = ['workspace 1', 'mode main']
@@ -307,28 +265,16 @@ right = ['join-with right', 'mode main']
 if.app-id = 'org.tabby'
 run = 'layout floating'
 
-[mode.workspace.binding]
-# Rest of the workspace mode configuration remains the same
-1 = ['workspace 1', 'mode main']
-2 = ['workspace 2', 'mode main']
-3 = ['workspace 3', 'mode main']
-4 = ['workspace 4', 'mode main']
-5 = ['workspace 5', 'mode main']
-6 = ['workspace 6', 'mode main']
-7 = ['workspace 7', 'mode main']
-8 = ['workspace 8', 'mode main']
-9 = ['workspace 9', 'mode main']
-b = ['workspace b', 'mode main']
-
-shift-1 = ['move-node-to-workspace 1', 'workspace 1', 'mode main']
-shift-2 = ['move-node-to-workspace 2', 'workspace 2', 'mode main']
-shift-3 = ['move-node-to-workspace 3', 'workspace 3', 'mode main']
-shift-4 = ['move-node-to-workspace 4', 'workspace 4', 'mode main']
-shift-5 = ['move-node-to-workspace 5', 'workspace 5', 'mode main']
-shift-6 = ['move-node-to-workspace 6', 'workspace 6', 'mode main']
-shift-7 = ['move-node-to-workspace 7', 'workspace 7', 'mode main']
-shift-8 = ['move-node-to-workspace 8', 'workspace 8', 'mode main']
-shift-9 = ['move-node-to-workspace 9', 'workspace 9', 'mode main']
-shift-b = ['move-node-to-workspace b', 'workspace b', 'mode main']
-
-esc = 'mode main'
+[workspace-to-monitor-force-assignment]
+1 = 'main'      # Assigns workspace 1 to your main monitor (with menu bar)
+2 = 'main'      # Assigns workspace 1 to your main monitor (with menu bar)
+3 = 'main'
+4 = 'main'
+5 = 'main'
+6 = 'main'
+TEMP1 = 'main'
+TEMP2 = 'main'
+TEMP3 = 'main'
+S1 = 'secondary' # Assigns workspace 5 to your secondary monitor
+S2 = 'secondary'
+S3 = 'secondary'

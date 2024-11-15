@@ -1,0 +1,34 @@
+#!/bin/bash
+
+USER_INSTRUCTIONS="${1:-No specific instructions. Use base workflow.}"
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+echo $SHELL
+git diff origin/main..HEAD | /Users/lars/.local/bin/sgpt --shell "
+USER INSTRUCTIONS: $USER_INSTRUCTIONS
+CURRENT BRANCH: $CURRENT_BRANCH
+
+Interpret user instructions as workflow modifications. Common instructions:
+- 'skip pr': Skip pull request creation
+- 'use branch': Use current branch name as is for PR title
+
+For steps not modified by user instructions, follow this base workflow:
+
+<example>
+* Analyze the git diff between origin/main and HEAD
+* Create an appropriate PR title based on the changes
+* Suggest a command to create a draft PR using the GitHub CLI (gh) with a title and an empty body
+</example>
+
+Output commands with explanatory comments. Generate PR title from actual diff content.
+Prioritize user instructions over base workflow where applicable.
+
+For PR title creation:
+- If the branch name starts with 'IIHD-', extract the IIHD number and use it in the PR title
+- Format the PR title as: 'IIHD-XXXX: Remaining branch name with hyphens replaced by spaces'
+- Example: For branch 'IIHD-3258-implement-unattended-upgrades-for-optimize-servers', 
+  the PR title should be 'IIHD-3258: Implement unattended upgrades for optimize servers'
+
+Do not execute any git commands. Only suggest the gh command to create the PR with a title and an empty body.
+Use the --body '' parameter in the gh command to ensure an empty PR body.
+"

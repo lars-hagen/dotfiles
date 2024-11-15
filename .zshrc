@@ -1,6 +1,3 @@
-# Add ~/.local/bin to PATH
-export PATH="$HOME/.local/bin:$PATH"
-
 # History settings (added to match Mac Zsh configuration on Linux)
 HISTFILE=~/.zsh_history
 HISTSIZE=200000
@@ -46,8 +43,84 @@ update_prompt() {
 # Add the update_prompt function to precmd_functions
 precmd_functions+=(update_prompt)
 
+# Terraform wrapper function to handle square brackets in -target arguments
+# This function automatically wraps -target values in single quotes for 'terraform apply' commands
+# Examples:
+#   Original: terraform apply -target=module.repositories["reepay-actions-test"].github_branch_protection.main
+#   Wrapped:  terraform apply -target='module.repositories["reepay-actions-test"].github_branch_protection.main'
+#
+# It allows you to use Terraform commands with square brackets without manual escaping or quoting
+# For all other Terraform commands, it passes arguments through unchanged
+# terraform() {
+#   echo "Debug: Entering terraform function"
+#   if [[ "$1" == "apply" && "$*" == *"-target"* ]]; then
+#     echo "Debug: Processing apply with target"
+#     local args=()
+#     for arg in "$@"; do
+#       echo "Debug: Processing arg: $arg"
+#       if [[ "$arg" == "-target="* ]]; then
+#         local target="${arg#-target=}"
+#         echo "Debug: Wrapping target: $target"
+#         args+=("-target='\"$target\"'")  # Note the added double quotes here
+#       else
+#         args+=("$arg")
+#       fi
+#     done
+#     echo "Debug: Final command: terraform ${args[@]}"
+#     eval command terraform "${args[@]}"
+#   else
+#     echo "Debug: Passing through to original terraform"
+#     command terraform "$@"
+#   fi
+# }
+# Define a custom terraform function to handle special cases with -target arguments
+terraform() {
+  # Check if the command is 'apply' or 'plan' and contains a -target argument
+  if [[ "$1" == "apply" || "$1" == "plan" ]] && [[ "$*" == *"-target"* ]]; then
+    local args=()
+    local process_next=false
+    for arg in "$@"; do
+      if [[ "$arg" == "-target" ]]; then
+        # Mark the next argument for processing
+        process_next=true
+        args+=("$arg")
+      elif [[ "$arg" == "-target="* ]]; then
+        # Extract the target value
+        local target="${arg#-target=}"
+        # Use perl to add double quotes inside square brackets
+        target=$(echo "$target" | perl -pe 's/\[([^]]+)\]/["$1"]/g')
+        # Add the processed target argument to the args array, wrapped in single quotes
+        args+=("-target='$target'")
+      elif [[ "$process_next" == true ]]; then
+        # Process the argument following -target
+        local target="$arg"
+        target=$(echo "$target" | perl -pe 's/\[([^]]+)\]/["$1"]/g')
+        args+=("'$target'")
+        process_next=false
+      else
+        # For non-target arguments, add them to the args array as-is
+        args+=("$arg")
+      fi
+    done
+    # Print the final command for debugging purposes
+    echo "Executing: terraform ${args[@]}"
+    # Use eval to properly handle the quoted arguments
+    eval command terraform "${args[@]}"
+  else
+    # For all other terraform commands, pass through as-is
+    command terraform "$@"
+  fi
+}
+# Disable glob expansion for specific commands
+#alias terraform='noglob terraform'
+
 # Alias for switching modes
 alias toggle_mode='switch_mode'
+
+
+# Prevent "no matches found" error when using square brackets
+# This is useful for commands like Terraform that use square brackets in resource addresses
+setopt NO_NOMATCH
 
 # Set options (added to match Mac Zsh configuration on Linux)
 # Note: These may not have a noticeable effect but are included for consistency
@@ -248,3 +321,45 @@ eval "$(direnv hook zsh)"
 
 export PATH=$PATH:/Users/lars/repos/reepay/reepay-cli/bin
 export PATH=$PATH:$HOME/.config/shell_gpt/bin
+
+# AWS account aliases
+alias staging="assume reepay-staging"
+alias dev="assume reepay-dev"
+alias prod="assume reepay-prod"
+alias pci="assume reepay-pci"
+alias sandbox="assume reepay-sandbox"
+
+#vpn
+# Add this line to your ~/.zshrc or ~/.bashrc
+alias vpn-connect='sudo openvpn --config ~/.config/openvpn/lars.hagen.ovpn'
+
+alias treegithub="echo 'pwd' && echo $(pwd) && echo 'tree -a -I '.git' -L 8' && tree -a -I '.git' -L 8"
+
+#precmd() {
+#  echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"
+#}
+
+# Display only the relative path after each command
+precmd() {
+  echo -ne "\033]0;${PWD/#$HOME/~}\007"
+}
+
+preexec() {
+  echo -ne "\033]0;[${1}] ${PWD/#$HOME/~}\007"
+}
+
+temp_script() {
+    local tmp_script="/tmp/script.sh"      # Path to the temporary script file
+
+    vim "$tmp_script"                      # Open Vim to edit the script
+
+    if [[ -s "$tmp_script" ]]; then        # Check if script is non-empty
+        chmod +x "$tmp_script"             # Make the script executable
+        "$tmp_script"                      # Run the script
+    else
+        echo "Script was empty. Nothing to run."    # Message if script was empty
+    fi
+}
+
+
+
