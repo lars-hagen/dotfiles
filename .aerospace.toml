@@ -3,12 +3,20 @@
 
 automatically-unhide-macos-hidden-apps = true
 
-# Startup Commands
-# ---------------
-after-login-command = []
+# You can use it to add commands that run after AeroSpace startup.
+# 'after-startup-command' is run after 'after-login-command'
+# Available commands : https://nikitabobko.github.io/AeroSpace/commands
+after-startup-command = [
+    # JankyBorders has a built-in detection of already running process,
+    # so it won't be run twice on AeroSpace restart
+    'exec-and-forget borders'
+]
 
-# Layout Settings
-# --------------
+# Start AeroSpace at login
+start-at-login = true
+
+# Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
+
 
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
@@ -69,17 +77,27 @@ ctrl-alt-shift-up = ['move up']
 ctrl-alt-shift-down = ['move down']
 ctrl-alt-shift-cmd-left = [
     'move-node-to-monitor left',
-    'focus-monitor left',
-    'move-mouse monitor-lazy-center'
+    'focus-monitor left'
 ]
-
-# Move window right within monitor or to right monitor if at boundary
-alt-shift-right = [
-    'move right',
+ctrl-alt-shift-cmd-right = [
     'move-node-to-monitor right',
-    'focus-monitor right',
-    'move-mouse monitor-lazy-center'
+    'focus-monitor right'
 ]
+ctrl-alt-shift-cmd-up = [
+    'move-node-to-monitor up',
+    'focus-monitor up'
+]
+ctrl-alt-shift-cmd-down = [
+    'move-node-to-monitor down',
+    'focus-monitor down'
+]
+# Move window right within monitor or to right monitor if at boundary
+# alt-shift-right = [
+#     'move right',
+#     'move-node-to-monitor right',
+#     'focus-monitor right',
+#     'move-mouse monitor-lazy-center'
+# ]
 
 # Resize Windows (ctrl-alt-shift + hjkl)
 shift-alt-h = 'resize width -50'    # Shrink width
@@ -112,16 +130,6 @@ alt-3 = ['workspace 3']
 alt-4 = ['workspace 4']
 alt-5 = ['workspace 5']
 alt-6 = ['workspace 6']
-#ctrl-alt-4 = ['workspace 4']
-#ctrl-alt-5 = ['workspace 5']
-#ctrl-alt-6 = ['workspace 6']
-#ctrl-alt-7 = ['workspace 7']
-#ctrl-alt-8 = ['workspace 8']
-#ctrl-alt-9 = ['workspace 9']
-
-#ctrl-alt-i = ['workspace I']
-#ctrl-alt-b = ['workspace B']
-#ctrl-alt-c = ['workspace C']
 
 
 # Move Windows to Workspaces
@@ -135,6 +143,20 @@ alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
 # Mode Switching
 ctrl-alt-space = 'mode service'  # Enter service mode
 ctrl-alt-w = 'mode workspace'
+ctrl-alt-s = 'mode secondary'
+ctrl-alt-a = 'mode move-all'
+ctrl-alt-t = 'mode temp'
+
+[mode.move-all.binding]
+# Each number will move all windows to that workspace
+1 = '''exec-and-forget /bin/bash -c 'for id in $(aerospace list-windows --workspace "$(aerospace list-workspaces --focused)" --format "%{window-id}"); do aerospace move-node-to-workspace --window-id "$id" 1; done' && aerospace workspace 1 && aerospace mode main'''
+2 = '''exec-and-forget /bin/bash -c 'for id in $(aerospace list-windows --workspace "$(aerospace list-workspaces --focused)" --format "%{window-id}"); do aerospace move-node-to-workspace --window-id "$id" 2; done' && aerospace workspace 2 && aerospace mode main'''
+3 = '''exec-and-forget /bin/bash -c 'for id in $(aerospace list-windows --workspace "$(aerospace list-workspaces --focused)" --format "%{window-id}"); do aerospace move-node-to-workspace --window-id "$id" 3; done' && aerospace workspace 3 && aerospace mode main'''
+4 = '''exec-and-forget /bin/bash -c 'for id in $(aerospace list-windows --workspace "$(aerospace list-workspaces --focused)" --format "%{window-id}"); do aerospace move-node-to-workspace --window-id "$id" 4; done' && aerospace workspace 4 && aerospace mode main'''
+5 = '''exec-and-forget /bin/bash -c 'for id in $(aerospace list-windows --workspace "$(aerospace list-workspaces --focused)" --format "%{window-id}"); do aerospace move-node-to-workspace --window-id "$id" 5; done' && aerospace workspace 5 && aerospace mode main'''
+6 = '''exec-and-forget /bin/bash -c 'for id in $(aerospace list-windows --workspace "$(aerospace list-workspaces --focused)" --format "%{window-id}"); do aerospace move-node-to-workspace --window-id "$id" 6; done' && aerospace workspace 6 && aerospace mode main'''
+s = '''exec-and-forget /bin/bash -c 'for id in $(aerospace list-windows --workspace "$(aerospace list-workspaces --focused)" --format "%{window-id}"); do aerospace move-node-to-workspace --window-id "$id" S1; done' && aerospace workspace S1 && aerospace mode main'''
+esc = ['mode main']
 
 [mode.workspace.binding]
 s = ['mode secondary']
@@ -181,17 +203,7 @@ esc = ['mode main']
 
 #alt = ['workspace 1', 'mode main']
 
-alt-n = 'exec-and-forget /Users/lars/.dotfiles/bin/create_workspace.sh'
-
-
-#alt-d = ['move-all-nodes-to-workspace 1', 'workspace 1']
-
-#alt-shift-1 = ['move-all-nodes-to-workspace 1', 'workspace 1']
-# See: https://nikitabobko.github.io/AeroSpace/commands#mode
-ctrl-alt-space = 'mode service'
-
-# Change workspace mode trigger to ctrl-alt-w
-ctrl-alt-w = 'mode workspace'
+#alt-n = 'exec-and-forget /Users/lars/.dotfiles/bin/create_workspace.sh'
 
 ctrl-alt-1 = ['workspace 1']
 ctrl-alt-2 = ['workspace 2']
@@ -199,10 +211,6 @@ ctrl-alt-3 = ['workspace 3']
 ctrl-alt-4 = ['workspace 4']
 ctrl-alt-5 = ['workspace 5']
 ctrl-alt-6 = ['workspace 6']
-ctrl-alt-7 = ['workspace 7']
-ctrl-alt-8 = ['workspace 8']
-ctrl-alt-9 = ['workspace 9']
-ctrl-alt-b = ['workspace b']
 
 ctrl-alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
 ctrl-alt-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
@@ -210,17 +218,12 @@ ctrl-alt-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
 ctrl-alt-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
 ctrl-alt-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
 ctrl-alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
-ctrl-alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
-ctrl-alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
-ctrl-alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
-ctrl-alt-shift-b = ['move-node-to-workspace b', 'workspace b']
-
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 [mode.service.binding]
 esc = ['reload-config','exec-and-forget borders', 'mode main']
-r = ['flatten-workspace-tree', 'mode main'] # reset layoutZ
+r = ['flatten-workspace-tree', 'mode main'] # reset layout
 f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
 backspace = ['close-all-windows-but-current', 'mode main']
 
@@ -231,35 +234,6 @@ left = ['join-with left', 'mode main']
 down = ['join-with down', 'mode main']
 up = ['join-with up', 'mode main']
 right = ['join-with right', 'mode main']
-
-# [workspace-to-monitor-force-assignment]
-# 1oo = 1
-# 2oo = 1
-# 3oo = 1
-# 4oo = 1
-# 5oo = 1
-# 6oo = 1
-# 7oo = 1
-# 8oo = 1
-# 9oo = 1
-# o1o = 2
-# o2o = 2
-# o3o = 2
-# o4o = 2
-# o5o = 2
-# o6o = 2
-# o7o = 2
-# o8o = 2
-# o9o = 2
-# oo1 = 3
-# oo2 = 3
-# oo3 = 3
-# oo4 = 3
-# oo5 = 3
-# oo6 = 3
-# oo7 = 3
-# oo8 = 3
-# oo9 = 3
 
 [[on-window-detected]]
 if.app-id = 'org.tabby'

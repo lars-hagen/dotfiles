@@ -1,4 +1,4 @@
-live_config_reload = true
+general.live_config_reload = true
 
 [colors]
 primary = { background = "#0d0f18", foreground = "#fffaf3" }
