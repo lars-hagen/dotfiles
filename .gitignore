@@ -1,4 +1,31 @@
-fzf-tab
-fzf-tab-source
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Sensitive configuration files
+.continue/config.json
+
+# Local environment files
+.env
+.env.local
+
+# Karabiner backups
+.config/karabiner/automatic_backups/
+
+# ZSH plugins (cloned during installation)
+fzf-tab/
+fzf-tab-source/
+
+# Local configuration backups
 .macos.mathiasbynens
-.config/karabiner/automatic_backups
