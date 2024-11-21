@@ -170,13 +170,9 @@ alias pci="assume reepay-pci"
 alias sandbox="assume reepay-sandbox"
 ```
 
-### Chrome Profile Integration
-```bash
-export CHROME_PROFILE="Default"
-```
-
 ### Direnv Integration
 ```bash
+export CHROME_PROFILE="Default"
 eval "$(direnv hook zsh)"
 
 # AWS profile auto-switching
