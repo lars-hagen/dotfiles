@@ -97,7 +97,7 @@ ctrl-alt-shift-cmd-down = [
 #     'move-node-to-monitor right',
 #     'focus-monitor right',
 #     'move-mouse monitor-lazy-center'
-# ]
+# ] 
 
 # Resize Windows (ctrl-alt-shift + hjkl)
 shift-alt-h = 'resize width -50'    # Shrink width
@@ -241,7 +241,7 @@ run = 'layout floating'
 
 [workspace-to-monitor-force-assignment]
 1 = 'main'      # Assigns workspace 1 to your main monitor (with menu bar)
-2 = 'main'      # Assigns workspace 1 to your main monitor (with menu bar)
+2 = 'main'      # Assigns workspace 2 to your main monitor (with menu bar)
 3 = 'main'
 4 = 'main'
 5 = 'main'
@@ -249,6 +249,6 @@ run = 'layout floating'
 TEMP1 = 'main'
 TEMP2 = 'main'
 TEMP3 = 'main'
-S1 = 'secondary' # Assigns workspace 5 to your secondary monitor
+S1 = 'secondary' # Assigns workspace S1 to your secondary monitor
 S2 = 'secondary'
 S3 = 'secondary'

@@ -5,6 +5,7 @@ SAVEHIST=100000
 
 setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY   # Share command history between multiple zsh sessions
+setopt APPEND_HISTORY
 
 # Define history files
 HISTFILE_WORK="$HOME/.zsh_history"
@@ -22,6 +23,9 @@ switch_mode() {
     fc -R  # Reload history
     zle && zle reset-prompt  # Force prompt update if zle is active
 }
+
+# Alias for switching modes
+alias toggle_mode='switch_mode'
 
 # Set initial mode (default to work mode)
 export HISTFILE="$HISTFILE_WORK"
@@ -42,81 +46,6 @@ update_prompt() {
 
 # Add the update_prompt function to precmd_functions
 precmd_functions+=(update_prompt)
-
-# Terraform wrapper function to handle square brackets in -target arguments
-# This function automatically wraps -target values in single quotes for 'terraform apply' commands
-# Examples:
-#   Original: terraform apply -target=module.repositories["reepay-actions-test"].github_branch_protection.main
-#   Wrapped:  terraform apply -target='module.repositories["reepay-actions-test"].github_branch_protection.main'
-#
-# It allows you to use Terraform commands with square brackets without manual escaping or quoting
-# For all other Terraform commands, it passes arguments through unchanged
-# terraform() {
-#   echo "Debug: Entering terraform function"
-#   if [[ "$1" == "apply" && "$*" == *"-target"* ]]; then
-#     echo "Debug: Processing apply with target"
-#     local args=()
-#     for arg in "$@"; do
-#       echo "Debug: Processing arg: $arg"
-#       if [[ "$arg" == "-target="* ]]; then
-#         local target="${arg#-target=}"
-#         echo "Debug: Wrapping target: $target"
-#         args+=("-target='\"$target\"'")  # Note the added double quotes here
-#       else
-#         args+=("$arg")
-#       fi
-#     done
-#     echo "Debug: Final command: terraform ${args[@]}"
-#     eval command terraform "${args[@]}"
-#   else
-#     echo "Debug: Passing through to original terraform"
-#     command terraform "$@"
-#   fi
-# }
-# Define a custom terraform function to handle special cases with -target arguments
-terraform() {
-  # Check if the command is 'apply' or 'plan' and contains a -target argument
-  if [[ "$1" == "apply" || "$1" == "plan" ]] && [[ "$*" == *"-target"* ]]; then
-    local args=()
-    local process_next=false
-    for arg in "$@"; do
-      if [[ "$arg" == "-target" ]]; then
-        # Mark the next argument for processing
-        process_next=true
-        args+=("$arg")
-      elif [[ "$arg" == "-target="* ]]; then
-        # Extract the target value
-        local target="${arg#-target=}"
-        # Use perl to add double quotes inside square brackets
-        target=$(echo "$target" | perl -pe 's/\[([^]]+)\]/["$1"]/g')
-        # Add the processed target argument to the args array, wrapped in single quotes
-        args+=("-target='$target'")
-      elif [[ "$process_next" == true ]]; then
-        # Process the argument following -target
-        local target="$arg"
-        target=$(echo "$target" | perl -pe 's/\[([^]]+)\]/["$1"]/g')
-        args+=("'$target'")
-        process_next=false
-      else
-        # For non-target arguments, add them to the args array as-is
-        args+=("$arg")
-      fi
-    done
-    # Print the final command for debugging purposes
-    echo "Executing: terraform ${args[@]}"
-    # Use eval to properly handle the quoted arguments
-    eval command terraform "${args[@]}"
-  else
-    # For all other terraform commands, pass through as-is
-    command terraform "$@"
-  fi
-}
-# Disable glob expansion for specific commands
-#alias terraform='noglob terraform'
-
-# Alias for switching modes
-alias toggle_mode='switch_mode'
-
 
 # Prevent "no matches found" error when using square brackets
 # This is useful for commands like Terraform that use square brackets in resource addresses
@@ -174,7 +103,7 @@ fi
 # zsh
 source <(fzf --zsh)
 
-# ZSH syntax highlighting configuration
+# Configure zsh-syntax-highlighting colors
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 ZSH_HIGHLIGHT_STYLES[default]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[path]='fg=blue'
@@ -182,6 +111,7 @@ ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan'
 
+# Replace cd command with zoxide (z) for smart directory navigation
 alias cd='z'
 
 # Alias ls to eza with desired options
@@ -190,21 +120,6 @@ alias ls='eza -1 --color=always --group-directories-first --icons'
 # Preserve default ls completion for the eza alias
 compdef _ls eza
 
-# Function to handle ls with completion
-# function ls_with_completion {
-#     if [ $# -eq 0 ]; then
-#         eza -1 --color=always --group-directories-first --icons
-#     else
-#         eza -1 --color=always --group-directories-first --icons "$@"
-#     fi
-# }
-
-# Alias ls to the function
-#alias ls=ls_with_completion
-
-# Enable completion for the ls function
-#compdef _files ls_with_completion
-#alias ls='eza -1 --color=always --group-directories-first --icons' # preferred listing
 alias lsz='eza -al --color=always --total-size --group-directories-first --icons' # include file size
 alias la='eza -a --color=always --group-directories-first --icons'  # all files and dirs
 alias ll='eza -l --color=always --group-directories-first --icons'  # long format
@@ -285,12 +200,11 @@ zstyle ':fzf-tab:complete:*:options' fzf-preview ''
 # switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
 
-zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=* r:|=*'
+# Configure zstyle for better completion behavior
+zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=* r:|=*'  # Enable fuzzy matching for completions
 
 # set default options for fzf, binding Ctrl+/ to toggle preview
 export FZF_DEFAULT_OPTS="--bind 'ctrl-/:toggle-preview'"
-
-alias assume=". assume"
 
 # Shell-GPT integration ZSH v0.2
 _sgpt_zsh() {
@@ -313,12 +227,6 @@ bindkey ";9D" beginning-of-line           # Command + Left Arrow: Move to beginn
 bindkey ";3C" forward-word                # Option + Right Arrow: Move forward one word
 bindkey ";3D" backward-word               # Option + Left Arrow: Move backward one word
 
-#bindkey "^[[1;9C" end-of-line             # Command + Right Arrow: Move to end of line
-#bindkey "^[[1;9D" beginning-of-line       # Command + Left Arrow: Move to beginning of line
-#bindkey "^[[C" forward-word               # Option + Right Arrow: Move forward one word
-#bindkey "^[[D" backward-word              # Option + Left Arrow: Move backward one word
-eval "$(direnv hook zsh)"
-
 export PATH=$PATH:/Users/lars/repos/reepay/reepay-cli/bin
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/.config/shell_gpt/bin
@@ -330,25 +238,9 @@ alias prod="assume reepay-prod"
 alias pci="assume reepay-pci"
 alias sandbox="assume reepay-sandbox"
 
-#vpn
-# Add this line to your ~/.zshrc or ~/.bashrc
-alias vpn-connect='sudo openvpn --config ~/.config/openvpn/lars.hagen.ovpn'
-
 alias treegithub="echo 'pwd' && echo $(pwd) && echo 'tree -a -I '.git' -L 8' && tree -a -I '.git' -L 8"
 
-#precmd() {
-#  echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"
-#}
-
-# Display only the relative path after each command
-precmd() {
-  echo -ne "\033]0;${PWD/#$HOME/~}\007"
-}
-
-preexec() {
-  echo -ne "\033]0;[${1}] ${PWD/#$HOME/~}\007"
-}
-
+# Function to create and execute temporary scripts
 temp_script() {
     local tmp_script="/tmp/script.sh"      # Path to the temporary script file
 
@@ -362,5 +254,46 @@ temp_script() {
     fi
 }
 
+eval "$(direnv hook zsh)"
+alias assume=". assume"
 
+# Chrome profile configuration for AWS SSO login:
+# - Leave empty ("") if not using Chrome
+# - Use "Default" if using Chrome's default profile
+# - Specify profile name if using a different Chrome profile for work (e.g., "Work")
+export CHROME_PROFILE="Default"
 
+# Hook for direnv to check AWS_PROFILE and run assume
+direnv_hook_for_envrc() {
+    run_assume() {
+        if [[ -n "$CHROME_PROFILE" && "$CHROME_PROFILE" != "Default" ]]; then
+            FORCE_NO_ALIAS=true assume "$AWS_PROFILE" --es --browser-launch-template-arg "profile-directory=Profile $CHROME_PROFILE"
+        else
+            FORCE_NO_ALIAS=true assume "$AWS_PROFILE" --es
+        fi
+        export LAST_ASSUME_TIME=$(date +%s)
+    }
+
+    if [[ -n "$DIRENV_DIR" && -n "$AWS_PROFILE" ]]; then
+        local current_time=$(date +%s)
+        if [[ -z "$LAST_ASSUME_TIME" ]] || (( current_time - LAST_ASSUME_TIME >= 1800 )); then
+            run_assume
+        fi
+    fi
+}
+
+# Add to the Direnv reload hook
+precmd_functions+=(direnv_hook_for_envrc)
+# Disable Direnv messages when loading a folder that contains .envrc
+export DIRENV_LOG_FORMAT=""
+
+# Terminal title configuration
+# Update terminal title to show current directory
+precmd() {
+  echo -ne "\033]0;${PWD/#$HOME/~}\007"
+}
+
+# Update terminal title to show running command and current directory
+preexec() {
+  echo -ne "\033]0;[${1}] ${PWD/#$HOME/~}\007"
+}
