@@ -6,8 +6,8 @@ This repository contains my dotfiles and automated setup for development environ
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
+git clone https://github.com/lars-hagen/dotfiles.git
+cd dotfiles
 ```
 
 2. Install Homebrew if not already installed:
@@ -68,7 +68,7 @@ Detailed documentation is available in the Wiki:
 
 ## Repository Structure
 ```
-.dotfiles/
+./
 ├── README.md          # Overview and quick start
 ├── Brewfile          # Managed packages and applications
 ├── install.sh        # Automated setup script
