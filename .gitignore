@@ -13,10 +13,6 @@
 ehthumbs.db
 Thumbs.db
 
-# Sensitive configuration files
-.continue/config.json
-.continue/config.ts
-
 # Local environment files
 .env
 .env.local

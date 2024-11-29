@@ -41,7 +41,6 @@ All components are documented in detail in the wiki:
 ├── .macos                # macOS-specific settings
 ├── .aerospace.toml       # AeroSpace window manager config
 ├── .config/              # Application configurations
-│   ├── amethyst/        # Window manager (legacy)
 │   ├── borders/         # Window border customization
 │   ├── karabiner/       # Keyboard customization
 │   ├── nvim/            # Neovim configuration
