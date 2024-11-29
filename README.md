@@ -34,15 +34,28 @@ All components are documented in detail in the wiki:
 ## Repository Structure
 ```
 ./
-├── README.md          # Overview and quick start
-├── Brewfile          # Managed packages and applications
-├── install.sh        # Automated setup script
-├── .zshrc            # Shell configuration
-├── .macos            # macOS-specific settings
-└── .config/          # Application configurations
-    ├── alacritty/    # Alacritty terminal config
-    ├── karabiner/    # Keyboard customization
-    └── shell_gpt/    # AI shell assistant
+├── README.md              # Overview and quick start
+├── Brewfile              # Managed packages and applications
+├── install.sh            # Automated setup script
+├── .zshrc                # Shell configuration
+├── .macos                # macOS-specific settings
+├── .aerospace.toml       # AeroSpace window manager config
+├── .config/              # Application configurations
+│   ├── amethyst/        # Window manager (legacy)
+│   ├── borders/         # Window border customization
+│   ├── karabiner/       # Keyboard customization
+│   ├── nvim/            # Neovim configuration
+│   └── shell_gpt/       # AI shell assistant
+├── bin/                  # Utility scripts
+├── wiki/                 # Detailed documentation
+│   ├── cli-tools-and-plugins.md
+│   ├── development-environment.md
+│   ├── dotfiles-scripts.md
+│   ├── homebrew-packages.md
+│   ├── setup-and-installation.md
+│   ├── shell-customization.md
+│   └── window-management.md
+└── Library/              # macOS Library configurations
 ```
 
 ## Contributing
