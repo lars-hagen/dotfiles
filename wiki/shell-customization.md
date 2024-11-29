@@ -104,7 +104,8 @@ setopt SHARE_HISTORY      # Share history between sessions
 
 ## Key Bindings
 
-### Standard Keys
+These key bindings work across different terminal emulators:
+
 ```bash
 # Basic navigation
 bindkey "^[[3~" delete-char          # Delete
@@ -112,11 +113,8 @@ bindkey "^[OH" beginning-of-line     # Home
 bindkey "^[OF" end-of-line          # End
 bindkey "^[[A" up-line-or-search    # Up arrow
 bindkey "^[[B" down-line-or-search  # Down arrow
-```
 
-### macOS Terminal Specific
-```bash
-# For macOS Terminal and iTerm2
+# Additional navigation
 bindkey ";9C" end-of-line           # Command + Right
 bindkey ";9D" beginning-of-line     # Command + Left
 bindkey ";3C" forward-word          # Option + Right
@@ -173,7 +171,6 @@ eval "$(zoxide init zsh --no-cmd)"
 ```bash
 # Initialize direnv
 eval "$(direnv hook zsh)"
-alias assume=". assume"
 export DIRENV_LOG_FORMAT=""  # Disable verbose messages
 ```
 
@@ -198,13 +195,6 @@ zle -N _sgpt_zsh
 bindkey ^l _sgpt_zsh
 ```
 
-### AWS Integration
-```bash
-# Chrome profile for AWS SSO
-export AWS_CHROME_PROFILE="Profile 1"
-alias assume=". assume"
-```
-
 ## PATH Configuration
 ```bash
 # Add custom paths
@@ -223,11 +213,6 @@ toggle_mode  # Switch between work and personal mode
 ```bash
 z           # Smart directory jump
 cd          # Traditional directory change
-```
-
-### AWS Profile Management
-```bash
-assume      # Switch AWS profiles
 ```
 
 ## Tips

@@ -249,6 +249,7 @@ bindkey ^l _sgpt_zsh
 **Configuration:**
 ```bash
 alias assume=". assume"
+# Environment-specific aliases (uses core assume alias)
 alias staging="assume reepay-staging"
 alias dev="assume reepay-dev"
 alias prod="assume reepay-prod"
@@ -256,17 +257,17 @@ alias pci="assume reepay-pci"
 alias sandbox="assume reepay-sandbox"
 ```
 
-### Automatic AWS SSO Role Assumption with direnv and Chrome Profiles
+### Directory-based AWS Role Management
 **What is it?**
 A directory-aware automation system that:
 - Manages environment variables using direnv (loading/unloading based on directory)
 - Handles AWS SSO authentication and role assumption automatically
-- Integrates with Chrome profiles for seamless SSO login
+- Works with any browser for SSO login
+- Supports Chrome profiles when using Chrome
 
 **Key Features:**
 - Automatic environment switching based on project directories
 - Smart credential refresh and AWS role management
-- Chrome profile integration for SSO authentication
 - Silent operation with configurable logging
 
 **Configuration:**

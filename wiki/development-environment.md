@@ -39,11 +39,8 @@ This page documents the development tools, their configurations, and usage in th
 
 ## Infrastructure Tools
 
-### AWS CLI
-- Configured with assume role functionality
-- Profile management
-- SSO integration
-- Chrome profile handling
+### AWS Tools
+AWS authentication and profile management is handled through `granted`. For detailed configuration and usage, see [AWS Integration](cli-tools-and-plugins.md#aws-integration).
 
 ### Docker
 - Container management
@@ -111,21 +108,6 @@ This page documents the development tools, their configurations, and usage in th
 - `ripgrep` for code searching
 
 ## Cloud Development
-
-### AWS Tools
-```bash
-# AWS account aliases
-alias staging="assume reepay-staging"
-alias dev="assume reepay-dev"
-alias prod="assume reepay-prod"
-alias pci="assume reepay-pci"
-alias sandbox="assume reepay-sandbox"
-```
-
-### granted
-- AWS role assumption
-- Profile management
-- SSO integration
 
 ## Workflow Integration
 

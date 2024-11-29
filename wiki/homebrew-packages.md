@@ -78,7 +78,7 @@ tap "nikitabobko/tap"        # Additional tools
 - `tabby` - Modern terminal
 - `tunnelblick` - OpenVPN client
 - `visual-studio-code` - Code editor
-- `windsurf` - AI development environment
+- `windsurf` - AI-powered code editor
 
 ### Fonts
 - `font-fira-code-nerd-font` - Primary coding font
