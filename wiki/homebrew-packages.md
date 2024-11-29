@@ -96,7 +96,6 @@ tap "nikitabobko/tap"        # Additional tools
 - Development Tools:
   - `4ops.terraform` - Terraform support
   - `chop-dbhi.multiline-string-editor` - String editing
-  - `continue.continue` - AI coding assistant
   - `dbaeumer.vscode-eslint` - JavaScript linting
   - `fooxly.workspace` - Workspace management
   - `gruntfuggly.todo-tree` - TODO comments
@@ -105,7 +104,6 @@ tap "nikitabobko/tap"        # Additional tools
   - `ms-python.python` - Python support
   - `ms-python.debugpy` - Python debugging
   - `ms-python.vscode-pylance` - Python language server
-  - `sourcegraph.cody-ai` - AI code assistant
   - `tamasfe.even-better-toml` - TOML support
 
 ## Managing Packages

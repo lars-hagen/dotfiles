@@ -10,9 +10,7 @@ This page documents the development tools, their configurations, and usage in th
 - **AI Assistance**:
   - GitHub Copilot
   - GitHub Copilot Chat
-  - Claude Dev
-  - Cody AI
-  - Continue
+  - Cline
 
 - **Git Integration**:
   - GitLens
