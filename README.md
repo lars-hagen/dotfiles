@@ -4,67 +4,32 @@ This repository contains my dotfiles and automated setup for development environ
 
 ## Quick Start
 
-1. Clone this repository:
+1. Clone and install:
 ```bash
 git clone https://github.com/lars-hagen/dotfiles.git
 cd dotfiles
-```
-
-2. Install Homebrew if not already installed:
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-3. Install packages using Homebrew bundle:
-```bash
-brew bundle
-```
-
-4. Run the installation script:
-```bash
 ./install.sh
 ```
 
-## Core Components
+For detailed setup instructions, see the [Setup and Installation Guide](wiki/setup-and-installation.md).
 
-### Shell Environment
-- **Shell**: ZSH with [custom configuration](wiki/ZSH-Core-Configuration.md)
-- **Prompt**: [Starship](wiki/ZSH-Tools-and-Plugins.md#shell-prompt) - Minimal, blazing-fast prompt
-- **Plugins**: 
-  - [zsh-autosuggestions](wiki/ZSH-Tools-and-Plugins.md#zsh-autosuggestions) - Command suggestions
-  - [zsh-syntax-highlighting](wiki/ZSH-Tools-and-Plugins.md#zsh-syntax-highlighting) - Command validation
-  - [fzf-tab](wiki/ZSH-Tools-and-Plugins.md#fzf-tab) - Enhanced completion
-  - [fzf-tab-source](wiki/ZSH-Tools-and-Plugins.md#fzf-tab-source) - Additional sources
+## Overview
 
-### Terminal Setup
-- **Primary Terminal**: Alacritty (GPU-accelerated terminal emulator)
-- **Quick Access**: Tabby (used for quake mode drop-down terminal)
-- **Tools**: 
-  - [zoxide](wiki/ZSH-Tools-and-Plugins.md#zoxide-smart-cd) (aliased to `z`) for smart directory jumping
-  - [eza](wiki/ZSH-Tools-and-Plugins.md#eza-modern-ls) for modern file listing
-  - [fzf](wiki/ZSH-Tools-and-Plugins.md#fuzzy-finding) with `fd` for fuzzy finding
-  - `bat` for file viewing
-  - `ripgrep` for searching
-  - `jq` for JSON processing
-  - `htop` for process management
-  - `ncdu` for disk usage analysis
+My development environment is built around:
+- ZSH with [modern plugins and tools](wiki/cli-tools-and-plugins.md)
+- [GPU-accelerated terminals](wiki/development-environment.md#terminal-setup) (Alacritty + Tabby)
+- [Development tools](wiki/development-environment.md) optimized for efficiency
+- [Smart CLI utilities](wiki/cli-tools-and-plugins.md#modern-cli-tools)
+- [Tiling window management](wiki/window-management.md) with AeroSpace
 
-### Development Tools
-- **Editor**: VSCode with extensions
-- **Version Control**: Git + GitHub CLI (gh)
-- **Containerization**: Docker
-- **Infrastructure**: 
-  - AWS CLI with [profile management](wiki/ZSH-Tools-and-Plugins.md#aws-integration)
-  - Packer
-
-## Documentation
-
-Detailed documentation is available in the Wiki:
-
-- [Installation Guide](wiki/Installation-Guide.md) - Complete setup instructions
-- [ZSH Core Configuration](wiki/ZSH-Core-Configuration.md) - Base ZSH setup and features
-- [ZSH Tools and Plugins](wiki/ZSH-Tools-and-Plugins.md) - Extended functionality
-- [Development Tools](wiki/Development-Tools.md) - Programming languages and tools
+All components are documented in detail in the wiki:
+- [Setup and Installation](wiki/setup-and-installation.md) - Complete setup guide
+- [Shell Customization](wiki/shell-customization.md) - ZSH configuration and features
+- [CLI Tools and Plugins](wiki/cli-tools-and-plugins.md) - Command-line tools and utilities
+- [Development Environment](wiki/development-environment.md) - IDE, tools, and workflows
+- [Window Management](wiki/window-management.md) - AeroSpace tiling window manager setup
+- [Homebrew Packages](wiki/homebrew-packages.md) - Package management
+- [Dotfiles Scripts](wiki/dotfiles-scripts.md) - Utility scripts for dotfiles management
 
 ## Repository Structure
 ```
@@ -79,17 +44,6 @@ Detailed documentation is available in the Wiki:
     ├── karabiner/    # Keyboard customization
     └── shell_gpt/    # AI shell assistant
 ```
-
-## Key Features
-
-- [Work/Personal mode](wiki/ZSH-Core-Configuration.md#workpersonal-mode) for separate histories
-- [Modern CLI tools](wiki/ZSH-Tools-and-Plugins.md#modern-cli-tools)
-- [Fuzzy finding](wiki/ZSH-Tools-and-Plugins.md#fuzzy-finding) with smart completion
-- [Smart directory navigation](wiki/ZSH-Tools-and-Plugins.md#zoxide-smart-cd)
-- [Shell-GPT integration](wiki/ZSH-Tools-and-Plugins.md#ai-integration)
-- [AWS profile management](wiki/ZSH-Tools-and-Plugins.md#aws-integration)
-- [Chrome profile integration](wiki/ZSH-Tools-and-Plugins.md#chrome-profile-integration)
-- [Utility functions](wiki/ZSH-Tools-and-Plugins.md#utility-functions)
 
 ## Contributing
 

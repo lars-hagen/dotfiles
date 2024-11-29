@@ -1,3 +1,6 @@
+# Set dotfiles directory
+export DOTFILES_DIR="/Users/lars/dotfiles"
+
 # History settings (added to match Mac Zsh configuration on Linux)
 HISTFILE=~/.zsh_history
 HISTSIZE=200000
@@ -84,10 +87,8 @@ compinit
 
 # Share history across multiple zsh sessions
 setopt SHARE_HISTORY
-# Detect dotfiles directory
-DOTFILES_DIR=$(dirname "$(readlink -f "${(%):-%x}")")
 
-# Load zsh-autosuggestions
+# Load zsh plugins
 if type brew &>/dev/null; then
     # macOS with Homebrew
     source "$DOTFILES_DIR/fzf-tab/fzf-tab.plugin.zsh"
@@ -261,26 +262,25 @@ alias assume=". assume"
 
 # Chrome profile configuration for AWS SSO login:
 # - Leave empty ("") if not using Chrome
-# - Use "Default" if using Chrome's default profile
 # - Specify profile name if using a different Chrome profile for work (e.g., "Work")
-export CHROME_PROFILE="Default"
+CHROME_PROFILE="Default"
+
+# AWS assume function
+run_assume() {
+    if [[ -n "$CHROME_PROFILE" ]]; then
+        FORCE_NO_ALIAS=true assume "$1" --es --browser-launch-template-arg "--profile-directory=$CHROME_PROFILE"
+    else
+        FORCE_NO_ALIAS=true assume "$1" --es
+    fi
+}
 
 # Hook for direnv to check AWS_PROFILE and run assume
 direnv_hook_for_envrc() {
-    run_assume() {
-        if [[ -n "$CHROME_PROFILE" && "$CHROME_PROFILE" != "Default" ]]; then
-            FORCE_NO_ALIAS=true assume "$AWS_PROFILE" --es --browser-launch-template-arg "profile-directory=Profile $CHROME_PROFILE"
-        else
-            FORCE_NO_ALIAS=true assume "$AWS_PROFILE" --es
-        fi
-        export LAST_ASSUME_TIME=$(date +%s)
-    }
-
     if [[ -n "$DIRENV_DIR" && -n "$AWS_PROFILE" ]]; then
-        local current_time=$(date +%s)
-        if [[ -z "$LAST_ASSUME_TIME" ]] || (( current_time - LAST_ASSUME_TIME >= 1800 )); then
-            run_assume
-        fi
+        #local current_time=$(date +%s)
+        #if [[ -z "$LAST_ASSUME_TIME" ]] || (( current_time - LAST_ASSUME_TIME >= 1800 )); then
+            run_assume "$AWS_PROFILE"
+        #fi
     fi
 }
 
@@ -299,3 +299,8 @@ precmd() {
 preexec() {
   echo -ne "\033]0;[${1}] ${PWD/#$HOME/~}\007"
 }
+
+# Added by Windsurf
+export PATH="/Users/lars/.codeium/windsurf/bin:$PATH"
+# Add dotfiles bin to PATH
+export PATH="$DOTFILES_DIR/bin:$PATH"

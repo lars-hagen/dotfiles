@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e  # Exit on error
+set -u  # Exit on undefined variable
+
+# Check for brew
+command -v brew >/dev/null 2>&1 || { echo >&2 "Homebrew is required but not installed. Aborting."; exit 1; }
+
+# Get the dotfiles directory (one level up from bin)
+DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+
+# Run brew bundle dump and save the output to Brewfile
+brew bundle dump --file="$DOTFILES_DIR/Brewfile" --force
+
+echo "Brewfile has been updated in $DOTFILES_DIR/Brewfile"
+echo "Use 'git diff Brewfile' to review the changes"

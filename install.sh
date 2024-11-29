@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e  # Exit immediately if a command exits with a non-zero status
+set -u  # Exit on undefined variable
 
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -74,6 +75,23 @@ create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 create_symlink "$DOTFILES_DIR/.config/shell_gpt/functions/execute_shell.py" "$HOME/.config/shell_gpt/functions/execute_shell.py"
 create_symlink "$DOTFILES_DIR/.config/shell_gpt/bin" "$HOME/.config/shell_gpt/bin"
 create_symlink "$DOTFILES_DIR/.config/alacritty" "$HOME/.config/alacritty"
+
+# Add DOTFILES_DIR to .zshrc if not already present
+if ! grep -q "^export DOTFILES_DIR=" "$DOTFILES_DIR/.zshrc"; then
+    # Create a temporary file
+    temp_file=$(mktemp)
+    # Add DOTFILES_DIR export at the top
+    echo -e "# Set dotfiles directory\nexport DOTFILES_DIR=\"/Users/lars/dotfiles\"\n" > "$temp_file"
+    # Append the rest of .zshrc
+    cat "$DOTFILES_DIR/.zshrc" >> "$temp_file"
+    # Replace original .zshrc with the new content
+    mv "$temp_file" "$DOTFILES_DIR/.zshrc"
+fi
+
+# Add bin to PATH in .zshrc if not already present
+if ! grep -q "export PATH=\"\$DOTFILES_DIR/bin:\$PATH\"" "$DOTFILES_DIR/.zshrc"; then
+    echo -e "\n# Add dotfiles bin to PATH\nexport PATH=\"\$DOTFILES_DIR/bin:\$PATH\"" >> "$DOTFILES_DIR/.zshrc"
+fi
 
 # Check if the system is macOS
 if [[ "$OSTYPE" == "darwin"* ]]; then

@@ -203,8 +203,6 @@ esc = ['mode main']
 
 #alt = ['workspace 1', 'mode main']
 
-#alt-n = 'exec-and-forget /Users/lars/.dotfiles/bin/create_workspace.sh'
-
 ctrl-alt-1 = ['workspace 1']
 ctrl-alt-2 = ['workspace 2']
 ctrl-alt-3 = ['workspace 3']

@@ -19,7 +19,9 @@ Interpret user instructions as workflow modifications. Common instructions:
 - 'use branch': Skip branch creation, use current branch and 'git push origin HEAD'
 
 For steps not modified by user instructions, follow this base workflow:
-
+do never run:
+git config --local user.name
+git config --local user.email
 <example>
 * Create a commit message based on the staged changes
 * Commit the changes

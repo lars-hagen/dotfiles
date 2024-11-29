@@ -26,8 +26,8 @@ xcode-select --install
 ### 3. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
+git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
+cd ~/dotfiles
 ```
 
 ### 4. Install Required Packages
@@ -147,14 +147,14 @@ sgpt "Hello"
 2. **Symlinks Not Created**
    ```bash
    # Manual symlink creation
-   ln -s ~/.dotfiles/.zshrc ~/.zshrc
+   ln -s ~/dotfiles/.zshrc ~/.zshrc
    ```
 
 3. **ZSH Plugins Not Loading**
    ```bash
    # Verify plugin installations
-   ls ~/.dotfiles/fzf-tab
-   ls ~/.dotfiles/fzf-tab-source
+   ls ~/dotfiles/fzf-tab
+   ls ~/dotfiles/fzf-tab-source
    ```
 
 ### Getting Help
@@ -174,7 +174,7 @@ To update your environment:
 brew bundle
 
 # Update dotfiles
-cd ~/.dotfiles
+cd ~/dotfiles
 git pull
 
 # Rerun installation script

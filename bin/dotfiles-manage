@@ -1,6 +1,13 @@
 #!/bin/bash
 
-DOTFILES_DIR="$HOME/.dotfiles"
+set -e  # Exit on error
+set -u  # Exit on undefined variable
+
+# Check for git
+command -v git >/dev/null 2>&1 || { echo >&2 "Git is required but not installed. Aborting."; exit 1; }
+
+# Get the dotfiles directory (one level up from bin)
+DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 DEBUG=false
 
 # Function to print usage information
@@ -47,6 +54,12 @@ run_command() {
 FILE_OR_FOLDER="$1"
 FULL_PATH=$(cd "$(dirname "$FILE_OR_FOLDER")" && pwd -P)/$(basename "$FILE_OR_FOLDER")
 RELATIVE_PATH=${FULL_PATH#$HOME/}
+
+# Check if file is already in dotfiles
+if [[ "$FULL_PATH" == "$DOTFILES_DIR"* ]]; then
+    echo "Error: File/folder is already in dotfiles directory"
+    exit 1
+fi
 
 # Create the dotfiles directory if it doesn't exist
 run_command mkdir -p "$DOTFILES_DIR"
