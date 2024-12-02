@@ -15,46 +15,13 @@ For detailed setup instructions, see the [Setup and Installation Guide](../../wi
 
 ## Core Components
 
-### Shell Environment
-- Modern ZSH setup with [smart plugins and tools](../../wiki/CLI-Tools-And-Plugins)
-- Efficient [shell customization](../../wiki/Shell-Customization) for productivity
-- Advanced command-line completion and fuzzy finding
-
-### Development Tools
-- [GPU-accelerated terminals](../../wiki/Development-Environment#terminal-setup)
-  - Alacritty as primary terminal
-  - Tabby for quake-style dropdown
-- Comprehensive [development environment](../../wiki/Development-Environment)
-  - VSCode with AI-powered assistance
-  - Docker for containerization
-  - Advanced Git integration
-- [Smart CLI utilities](../../wiki/CLI-Tools-And-Plugins#modern-cli-tools)
-  - Modern alternatives to traditional tools
-  - AI-powered shell assistance
-  - Efficient file navigation
-
-### System Configuration
-- [Tiling window management](../../wiki/Window-Management) with AeroSpace
-- [AWS profile management](../../wiki/AWS-Profile-Management) with Chrome integration
-- Automated [package management](../../wiki/Homebrew-Packages) through Homebrew
-
-## Documentation
-
-All components are documented in detail in the wiki:
-
-### Setup and Configuration
-- [Setup and Installation](../../wiki/Setup-And-Installation) - Complete setup guide
-- [Shell Customization](../../wiki/Shell-Customization) - ZSH configuration and features
-- [CLI Tools and Plugins](../../wiki/CLI-Tools-And-Plugins) - Command-line tools and utilities
-
-### Development Environment
-- [Development Environment](../../wiki/Development-Environment) - IDE, tools, and workflows
-- [AWS Profile Management](../../wiki/AWS-Profile-Management) - AWS role assumption and Chrome integration
-- [Window Management](../../wiki/Window-Management) - AeroSpace tiling window manager setup
-
-### System Management
-- [Homebrew Packages](../../wiki/Homebrew-Packages) - Package management
-- [Dotfiles Scripts](../../wiki/Dotfiles-Scripts) - Utility scripts for dotfiles management
+- Modern ZSH environment with smart plugins and tools
+- GPU-accelerated terminals (Alacritty, Tabby)
+- VSCode with AI-powered assistance
+- Docker for containerization
+- Tiling window management with AeroSpace
+- AWS profile management with Chrome integration
+- Automated package management through Homebrew
 
 ## Repository Structure
 ```
