@@ -16,6 +16,8 @@ Or if you already cloned without submodules:
 git submodule update --init --recursive
 ```
 
+For detailed setup instructions, see the [Setup and Installation Guide](../../wiki/Setup-And-Installation).
+
 ## Core Components
 
 - Modern ZSH environment with smart plugins and tools
