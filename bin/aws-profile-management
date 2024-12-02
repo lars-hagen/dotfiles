@@ -1,8 +1,9 @@
 #!/bin/zsh
 
-# Chrome profile configuration for AWS SSO login:
-# - Leave empty ("") if not using Chrome
-# - Specify profile name if using a different Chrome profile for work (e.g., "Work")
+# Browser profile configuration for AWS SSO login:
+# - Leave empty ("") to use system default browser
+# - For Chrome, specify profile name (e.g., "Work" or "Default")
+# - Works with any browser supported by granted
 CHROME_PROFILE="Default"
 
 # AWS assume function

@@ -4,6 +4,10 @@
 [submodule "fzf-tab"]
 	path = fzf-tab
 	url = https://github.com/Aloxaf/fzf-tab.git
+	branch = master
+	commit = 6aced3f35def61c5edf9d790e945e8bb4fe7b305
 [submodule "fzf-tab-source"]
 	path = fzf-tab-source
 	url = https://github.com/Freed-Wu/fzf-tab-source
+	branch = main
+	commit = aabde06d1e82b839a350a8a1f5f5df3d069748fc

@@ -25,7 +25,7 @@ For detailed setup instructions, see the [Setup and Installation Guide](../../wi
 - VSCode with AI-powered assistance
 - Docker for containerization
 - Tiling window management with AeroSpace
-- AWS profile management with Chrome integration
+- AWS profile management with Browser integration
 - Automated package management through Homebrew
 
 ## Repository Structure
@@ -43,7 +43,7 @@ For detailed setup instructions, see the [Setup and Installation Guide](../../wi
 │   ├── nvim/            # Neovim configuration
 │   └── shell_gpt/       # AI shell assistant
 ├── bin/                  # Utility scripts
-│   ├── aws-profile-management    # AWS profile and Chrome integration
+│   ├── aws-profile-management    # AWS profile and Browser integration
 │   ├── dotfiles-dump-brew       # Update Brewfile from current packages
 │   ├── dotfiles-manage          # Dotfiles management utilities
 │   └── dotfiles-update-brew-wiki # Update Homebrew packages documentation
