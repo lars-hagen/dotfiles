@@ -5,8 +5,14 @@ USER_INSTRUCTIONS="${1:-No specific instructions. Use base workflow.}"
 # Check if we're in the reepay-cli directory
 if [[ $(pwd) == */reepay-cli ]]; then
     echo "Running code formatters..."
-    poetry run black .
+    # Run formatters and capture black's output
+    black_output=$(poetry run black . 2>&1)
     poetry run ruff check --fix .
+    
+    # Add any files that black reformatted
+    while read -r file; do
+        [ ! -z "$file" ] && git add "$file"
+    done < <(echo "$black_output" | grep "^reformatted" | sed 's/^reformatted //')
 fi
 
 echo $SHELL
