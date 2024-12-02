@@ -24,10 +24,10 @@ AeroSpace is configured to provide a powerful, keyboard-driven window management
   - `Ctrl-Alt-Shift-Cmd-Left/Right/Up/Down` - Move window to adjacent monitor
 
 ### Window Resizing
-- `Shift-Alt-H` - Shrink width (-50)
-- `Shift-Alt-L` - Grow width (+50)
-- `Shift-Alt-K` - Shrink height (-50)
-- `Shift-Alt-J` - Grow height (+50)
+- `Cmd-Alt-H` - Shrink width (-50)
+- `Cmd-Alt-L` - Grow width (+50)
+- `Cmd-Alt-K` - Shrink height (-50)
+- `Cmd-Alt-J` - Grow height (+50)
 
 ### Layout Controls
 - `Ctrl-Alt-/` - Toggle between horizontal/vertical tile layout
@@ -38,11 +38,13 @@ AeroSpace is configured to provide a powerful, keyboard-driven window management
 - **Quick Switch**
   - `Alt-1` through `Alt-6` - Switch to workspace 1-6
   - `Alt-S` - Switch to secondary workspace (S1)
+  - `Alt-L` - Switch to laptop workspace (L1)
   - `Alt-Tab` - Toggle between last two workspaces
 
 - **Move Windows to Workspace**
   - `Alt-Shift-1` through `Alt-Shift-6` - Move window to workspace 1-6
   - `Alt-Shift-S` - Move window to secondary workspace
+  - `Alt-Shift-L` - Move window to laptop workspace
 
 ## Modal Operations
 
@@ -70,25 +72,11 @@ AeroSpace uses modes to provide additional functionality without requiring more 
 2. Press `R` to reset layout
 3. Automatically returns to main mode
 
-#### Workspace Mode
-**Enter with**: `Ctrl-Alt-W`
-**Available commands**:
-- `1-6` - Switch to workspace 1-6
-- `Shift-1-6` - Move focused window to workspace 1-6
-- `S` - Enter secondary workspace mode
-- `T` - Enter temporary workspace mode
-- `ESC` - Return to main mode
-
-**Example workflow**:
-1. Press `Ctrl-Alt-W` to enter workspace mode
-2. Press `3` to switch to workspace 3
-3. Automatically returns to main mode
-
 #### Secondary Workspace Mode
-**Enter with**: `Ctrl-Alt-S` or `Ctrl-Alt-W` then `S`
+**Enter with**: `Ctrl-Alt-S`
 **Available commands**:
-- `1-3` - Switch to secondary workspace S1-S3
-- `Shift-1-3` - Move focused window to secondary workspace S1-S3
+- `1-4` - Switch to secondary workspace S1-S4
+- `Shift-1-4` - Move focused window to secondary workspace S1-S4
 - `ESC` - Return to main mode
 
 **Example workflow**:
@@ -96,11 +84,24 @@ AeroSpace uses modes to provide additional functionality without requiring more 
 2. Press `1` to switch to workspace S1
 3. Automatically returns to main mode
 
+#### Laptop Mode
+**Enter with**: `Ctrl-Alt-L`
+**Available commands**:
+- `1-4` - Switch to laptop workspace L1-L4
+- `Shift-1-4` - Move focused window to laptop workspace L1-L4
+- `ESC` - Return to main mode
+
+**Example workflow**:
+1. Press `Ctrl-Alt-L` to enter laptop mode
+2. Press `1` to switch to workspace L1
+3. Automatically returns to main mode
+
 #### Move All Windows Mode
 **Enter with**: `Ctrl-Alt-A`
 **Available commands**:
 - `1-6` - Move all windows to workspace 1-6 and switch to it
 - `S` - Move all windows to workspace S1 and switch to it
+- `L` - Move all windows to workspace L1 and switch to it
 - `ESC` - Return to main mode without moving windows
 
 **Example workflow**:
@@ -109,10 +110,10 @@ AeroSpace uses modes to provide additional functionality without requiring more 
 3. Automatically returns to main mode
 
 #### Temporary Workspace Mode
-**Enter with**: `Ctrl-Alt-T` or `Ctrl-Alt-W` then `T`
+**Enter with**: `Ctrl-Alt-T`
 **Available commands**:
-- `1-3` - Switch to temporary workspace TEMP1-3
-- `Shift-1-3` - Move focused window to temporary workspace TEMP1-3
+- `1-4` - Switch to temporary workspace TEMP1-4
+- `Shift-1-4` - Move focused window to temporary workspace TEMP1-4
 - `ESC` - Return to main mode
 
 **Example workflow**:
@@ -124,7 +125,8 @@ AeroSpace uses modes to provide additional functionality without requiring more 
 
 ### Monitor Assignment
 - Workspaces 1-6: Assigned to main monitor
-- Secondary workspaces (S1-S3): Assigned to secondary monitor
+- Secondary workspaces (S1-S4): Assigned to Dell monitor (primary) and built-in display (secondary)
+- Laptop workspaces (L1-L4): Assigned to built-in display (primary) and Dell monitor (secondary)
 - Temporary workspaces: Available for temporary arrangements
 
 ### Window Gaps
@@ -164,8 +166,9 @@ The "move-all" mode (Ctrl-Alt-A) allows moving all windows from the current work
 
 3. **Window Organization**
    - Use workspaces 1-6 for main tasks
-   - S1-S3 for secondary monitor tasks
-   - TEMP1-3 for temporary arrangements
+   - S1-S4 for secondary monitor tasks
+   - L1-L4 for laptop tasks
+   - TEMP1-4 for temporary arrangements
 
 4. **Modal Tips**
    - Most mode actions automatically return you to main mode
@@ -174,4 +177,4 @@ The "move-all" mode (Ctrl-Alt-A) allows moving all windows from the current work
 
 ## See Also
 - [Official AeroSpace Documentation](https://nikitabobko.github.io/AeroSpace/guide)
-- [Homebrew Packages](homebrew-packages.md) 
+- [Homebrew Packages](homebrew-packages.md)
