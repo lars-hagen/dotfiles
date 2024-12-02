@@ -1,5 +1,7 @@
 #!/bin/bash
 
+USER_INSTRUCTIONS="${1:-No specific instructions. Use base workflow.}"
+
 # Check if we're in the reepay-cli directory
 if [[ $(pwd) == */reepay-cli ]]; then
     echo "Running code formatters..."
@@ -7,12 +9,29 @@ if [[ $(pwd) == */reepay-cli ]]; then
     poetry run ruff check --fix .
 fi
 
-git --no-pager diff --cached | sgpt --shell "
-Based on the git diff provided, perform these steps:
-* Create a commit message based on the staged changes
-* push the changes to origin HEAD
-Important:
-- Analyze the file path as they might contain something useful for the commit message.
-- Output each command to be executed, one per line, do not chain commands, including a comment above.
-- Do not run git add, as we have already added them you focus on the git commit and push.
+echo $SHELL
+git diff --cached | /Users/lars/.local/bin/sgpt --shell "
+USER INSTRUCTIONS: $USER_INSTRUCTIONS
+
+Interpret user instructions as workflow modifications. Common instructions:
+- 'skip pr': Skip pull request creation and merging steps
+- 'use commit type X': Use specified commit type instead of default
+- 'use branch': Skip branch creation, use current branch and 'git push origin HEAD'
+- 'use generic commit message': Use a generic commit message like 'Updated {filepath}', do not mention lines changed.
+
+do never run:
+git config --local user.name
+git config --local user.email
+
+For steps not modified by user instructions, follow this base workflow:
+
+<example>
+* Create a commit message based on the staged changes, or use generic commit message.
+* Commit the changes
+* Push the commit to the current branch
+</example>
+
+Output commands with explanatory comments. Generate commit messages from actual diff content.
+Prioritize user instructions over base workflow where applicable.
+Do not include 'git add' commands unless specifically instructed to do so.
 "
