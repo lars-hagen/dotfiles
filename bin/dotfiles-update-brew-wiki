@@ -1,0 +1,55 @@
+#!/bin/bash
+
+set -e  # Exit on error
+set -u  # Exit on undefined variable
+
+# Get the dotfiles directory (one level up from bin)
+DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+
+# Get the staged changes in Brewfile
+BREW_DIFF=$(git diff --cached "$DOTFILES_DIR/Brewfile")
+
+if [ -z "$BREW_DIFF" ]; then
+    echo "No staged changes in Brewfile"
+    exit 0
+fi
+
+# Create AI prompt for generating the sed command
+PROMPT="Given this Brewfile diff:
+
+$BREW_DIFF
+
+Generate a sed command to insert new packages into wiki/homebrew-packages.md in the correct section.
+The file is organized into sections like 'Core CLI Tools', 'Development Tools', 'Applications (Casks)', etc.
+Each package should be added as a new line in the format: '- \`package_name\` - Brief description'
+and must be inserted in alphabetical order within its section.
+
+Only output the exact sed command(s) needed, nothing else.
+Example of correct sed command format:
+sed -i '' '/^- \`kubectl\`/i\\
+- \`k9s\` - Kubernetes CLI To Manage Your Clusters In Style\\
+' wiki/homebrew-packages.md
+
+Multiple packages should use multiple sed commands, one per line.
+Make sure each line ends with \\\\ and a newline for proper insertion."
+
+# Get the sed command from sgpt
+SED_COMMAND=$(sgpt --shell "$PROMPT" --no-interaction)
+
+# Show the proposed changes and ask for confirmation
+echo "About to execute the following sed command(s):"
+echo "$SED_COMMAND"
+echo
+read -p "Do you want to proceed? (y/N) " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    echo "Operation cancelled"
+    exit 1
+fi
+
+# Execute the sed command
+eval "$SED_COMMAND"
+
+echo "Homebrew packages wiki has been updated based on staged Brewfile changes"
+echo "Review the changes with: git diff wiki/homebrew-packages.md"

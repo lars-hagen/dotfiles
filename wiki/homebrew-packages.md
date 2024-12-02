@@ -70,6 +70,7 @@ tap "nikitabobko/tap"        # Additional tools
 - `google-chrome` - Web browser
 - `iterm2` - Terminal emulator
 - `karabiner-elements` - Keyboard customization
+- `maccy` - Clipboard manager for macOS
 - `keybase` - Security & encryption
 - `signal` - Secure messaging
 - `slack` - Team communication

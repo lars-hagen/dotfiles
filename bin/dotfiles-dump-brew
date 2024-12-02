@@ -13,4 +13,3 @@ DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 brew bundle dump --file="$DOTFILES_DIR/Brewfile" --force
 
 echo "Brewfile has been updated in $DOTFILES_DIR/Brewfile"
-echo "Use 'git diff Brewfile' to review the changes"
