@@ -221,7 +221,6 @@ accessibility: {}
 appearance:
   dock: top
   dockSpace: 0.86
-  opacity: 0.84
   dockFill: 0.72
 hacks: {}
 providerBlacklist: []
