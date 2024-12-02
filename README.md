@@ -16,8 +16,6 @@ Or if you already cloned without submodules:
 git submodule update --init --recursive
 ```
 
-For detailed setup instructions, see the [Setup and Installation Guide](../../wiki/Setup-And-Installation).
-
 ## Core Components
 
 - Modern ZSH environment with smart plugins and tools
@@ -49,6 +47,10 @@ For detailed setup instructions, see the [Setup and Installation Guide](../../wi
 │   └── dotfiles-update-brew-wiki # Update Homebrew packages documentation
 └── Library/              # macOS Library configurations
 ```
+
+## Submodules
+
+This repository uses Git submodules for managing dependencies. Submodule updates are automatically managed by Dependabot, which creates pull requests when updates are available.
 
 ## Contributing
 
