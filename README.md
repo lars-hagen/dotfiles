@@ -4,11 +4,16 @@ This repository contains my dotfiles and automated setup for development environ
 
 ## Quick Start
 
-1. Clone and install:
+1. Clone with submodules:
 ```bash
-git clone https://github.com/lars-hagen/dotfiles.git
+git clone --recurse-submodules https://github.com/lars-hagen/dotfiles.git
 cd dotfiles
 ./install.sh
+```
+
+Or if you already cloned without submodules:
+```bash
+git submodule update --init --recursive
 ```
 
 For detailed setup instructions, see the [Setup and Installation Guide](../../wiki/Setup-And-Installation).
