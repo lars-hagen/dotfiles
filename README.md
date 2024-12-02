@@ -13,21 +13,46 @@ cd dotfiles
 
 For detailed setup instructions, see the [Setup and Installation Guide](wiki/setup-and-installation.md).
 
-## Overview
+## Core Components
 
-My development environment is built around:
-- ZSH with [modern plugins and tools](wiki/cli-tools-and-plugins.md)
-- [GPU-accelerated terminals](wiki/development-environment.md#terminal-setup) (Alacritty + Tabby)
-- [Development tools](wiki/development-environment.md) optimized for efficiency
+### Shell Environment
+- Modern ZSH setup with [smart plugins and tools](wiki/cli-tools-and-plugins.md)
+- Efficient [shell customization](wiki/shell-customization.md) for productivity
+- Advanced command-line completion and fuzzy finding
+
+### Development Tools
+- [GPU-accelerated terminals](wiki/development-environment.md#terminal-setup)
+  - Alacritty as primary terminal
+  - Tabby for quake-style dropdown
+- Comprehensive [development environment](wiki/development-environment.md)
+  - VSCode with AI-powered assistance
+  - Docker for containerization
+  - Advanced Git integration
 - [Smart CLI utilities](wiki/cli-tools-and-plugins.md#modern-cli-tools)
+  - Modern alternatives to traditional tools
+  - AI-powered shell assistance
+  - Efficient file navigation
+
+### System Configuration
 - [Tiling window management](wiki/window-management.md) with AeroSpace
+- [AWS profile management](wiki/aws-profile-management.md) with Chrome integration
+- Automated [package management](wiki/homebrew-packages.md) through Homebrew
+
+## Documentation
 
 All components are documented in detail in the wiki:
+
+### Setup and Configuration
 - [Setup and Installation](wiki/setup-and-installation.md) - Complete setup guide
 - [Shell Customization](wiki/shell-customization.md) - ZSH configuration and features
 - [CLI Tools and Plugins](wiki/cli-tools-and-plugins.md) - Command-line tools and utilities
+
+### Development Environment
 - [Development Environment](wiki/development-environment.md) - IDE, tools, and workflows
+- [AWS Profile Management](wiki/aws-profile-management.md) - AWS role assumption and Chrome integration
 - [Window Management](wiki/window-management.md) - AeroSpace tiling window manager setup
+
+### System Management
 - [Homebrew Packages](wiki/homebrew-packages.md) - Package management
 - [Dotfiles Scripts](wiki/dotfiles-scripts.md) - Utility scripts for dotfiles management
 
@@ -46,7 +71,12 @@ All components are documented in detail in the wiki:
 │   ├── nvim/            # Neovim configuration
 │   └── shell_gpt/       # AI shell assistant
 ├── bin/                  # Utility scripts
+│   ├── aws-profile-management    # AWS profile and Chrome integration
+│   ├── dotfiles-dump-brew       # Update Brewfile from current packages
+│   ├── dotfiles-manage          # Dotfiles management utilities
+│   └── dotfiles-update-brew-wiki # Update Homebrew packages documentation
 ├── wiki/                 # Detailed documentation
+│   ├── aws-profile-management.md
 │   ├── cli-tools-and-plugins.md
 │   ├── development-environment.md
 │   ├── dotfiles-scripts.md

@@ -39,8 +39,8 @@ This page documents the development tools, their configurations, and usage in th
 
 ## Infrastructure Tools
 
-### AWS Tools
-AWS authentication and profile management is handled through `granted`. For detailed configuration and usage, see [AWS Integration](cli-tools-and-plugins.md#aws-integration).
+### Cloud Development
+For AWS authentication, role management, and profile configuration, see [AWS Profile Management](aws-profile-management.md).
 
 ### Docker
 - Container management
@@ -83,8 +83,8 @@ AWS authentication and profile management is handled through `granted`. For deta
 
 ### direnv
 - Environment management
-- AWS profile switching
 - Project-specific settings
+- See [AWS Profile Management](aws-profile-management.md) for AWS integration
 
 ## Database Tools
 
@@ -107,7 +107,9 @@ AWS authentication and profile management is handled through `granted`. For deta
 - `bat` for code viewing
 - `ripgrep` for code searching
 
-## Cloud Development
+## Shell Environment
+- [Shell Customization](shell-customization.md)
+- [CLI Tools and Plugins](cli-tools-and-plugins.md)
 
 ## Workflow Integration
 
@@ -135,11 +137,12 @@ AWS authentication and profile management is handled through `granted`. For deta
 4. Follow security best practices
 
 ### Security
-- AWS role separation
 - Environment isolation
 - Credential management
+- For AWS security, see [AWS Profile Management](aws-profile-management.md)
 
 ## See Also
-- [Installation Guide](Installation-Guide.md)
-- [ZSH Core Configuration](ZSH-Core-Configuration.md)
-- [ZSH Tools and Plugins](ZSH-Tools-and-Plugins.md)
+- [Setup and Installation](setup-and-installation.md)
+- [Shell Customization](shell-customization.md)
+- [CLI Tools and Plugins](cli-tools-and-plugins.md)
+- [AWS Profile Management](aws-profile-management.md)

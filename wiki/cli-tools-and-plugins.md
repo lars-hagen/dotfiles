@@ -1,6 +1,6 @@
 # ZSH Tools and Plugins
 
-This page documents the various tools, plugins, and integrations used to enhance the shell environment.
+This page documents the various tools, plugins, and integrations used to enhance the shell environment. For core ZSH configuration, see [Shell Customization](shell-customization.md).
 
 ## Shell Prompt
 
@@ -16,11 +16,6 @@ This page documents the various tools, plugins, and integrations used to enhance
 - Command duration
 - Python environment info
 
-**Configuration:**
-```bash
-eval "$(starship init zsh)"
-```
-
 **Installation:**
 ```bash
 brew install starship
@@ -29,27 +24,11 @@ brew install starship
 ## Core Plugins
 
 ### ZSH Completions
-**What is it?**
-- Enhanced completion system for ZSH
-- Provides smart suggestions based on context
-- Supports custom completion rules
+See [Shell Customization - Completion System](shell-customization.md#completion-system) for configuration details.
 
-**Features:**
-- Enhanced tab completion
-- Context-aware suggestions
-- Custom completion styles
-
-**Configuration:**
+**Installation:**
 ```bash
-# Setup completion paths
-if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh-completions:$(brew --prefix)/share/zsh/site-functions:$FPATH
-else
-  FPATH=/usr/share/zsh/site-functions:$FPATH
-fi
-
-autoload -Uz compinit
-compinit
+brew install zsh-completions
 ```
 
 ### ZSH Autosuggestions
@@ -58,14 +37,9 @@ compinit
 - Shows suggestions in a light gray
 - Helps recall and type common commands faster
 
-**Features:**
-- Real-time command suggestions
-- History-based recommendations
-- Accept with right arrow key
-
-**Configuration:**
+**Installation:**
 ```bash
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+brew install zsh-autosuggestions
 ```
 
 ### ZSH Syntax Highlighting
@@ -74,24 +48,12 @@ source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 - Validates commands and paths as you type
 - Makes command errors visible before execution
 
-**Features:**
-- Real-time syntax highlighting
-- Path validation
-- Command validation
-- Custom color scheme
-
-**Configuration:**
+**Installation:**
 ```bash
-source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# Custom colors
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
-ZSH_HIGHLIGHT_STYLES[default]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[path]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan'
+brew install zsh-syntax-highlighting
 ```
+
+See [Shell Customization - Plugin Integration](shell-customization.md#plugin-integration) for configuration details.
 
 ## Fuzzy Finding
 
@@ -107,16 +69,17 @@ ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan'
 - History search with preview
 - Integration with other tools
 
-**Configuration:**
+**Installation:**
 ```bash
-# Default configuration using fd
-export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
+# Install core fuzzy finder
+brew install fzf
+$(brew --prefix)/opt/fzf/install
 
-# Preview configuration
-export FZF_DEFAULT_OPTS="--bind 'ctrl-/:toggle-preview'"
+# Install fd for better file finding
+brew install fd
 ```
+
+See [Shell Customization - Tool Configurations](shell-customization.md#fzf-integration) for configuration details.
 
 **Usage:**
 - `Ctrl-T`: Paste selected files/folders into command line
@@ -124,27 +87,24 @@ export FZF_DEFAULT_OPTS="--bind 'ctrl-/:toggle-preview'"
 - `Alt-C`: CD into selected directory
 - `Ctrl-/`: Toggle preview window in any mode
 
-### FZF-Tab
+### FZF Tab
 **What is it?**
+- Enhanced tab completion using fzf
 - Replaces ZSH's default completion selection menu with fzf
-- Adds preview capability to completion
-- Supports grouping and filtering of completion options
+- Provides interactive filtering and preview
 
 **Features:**
-- Enhanced completion menu
+- Interactive fuzzy completion
 - File/directory preview
 - Group support
 - Custom preview commands
 
-**Configuration:**
+**Installation:**
 ```bash
-source $HOME/.dotfiles/fzf-tab/fzf-tab.plugin.zsh
-
-# Preview configuration
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
-zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1 --color=always $realpath'
-zstyle ':fzf-tab:*' switch-group '<' '>'
+git clone https://github.com/Aloxaf/fzf-tab $DOTFILES_DIR/fzf-tab
 ```
+
+See [Shell Customization - Completion System](shell-customization.md#completion-system) for configuration details.
 
 ## Modern CLI Tools
 
@@ -160,18 +120,12 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 - Tree view support
 - Detailed file information
 
-**Configuration:**
+**Installation:**
 ```bash
-# Base alias
-alias ls='eza -1 --color=always --group-directories-first --icons'
-
-# Additional formats
-alias lsz='eza -al --color=always --total-size --group-directories-first --icons'
-alias la='eza -a --color=always --group-directories-first --icons'
-alias ll='eza -l --color=always --group-directories-first --icons'
-alias lt='eza -aT --color=always --group-directories-first --icons'
-alias l.='eza -ald --color=always --group-directories-first --icons .*'
+brew install eza
 ```
+
+See [Shell Customization - Tool Configurations](shell-customization.md#eza-aliases) for alias configuration.
 
 ### Zoxide (Smart cd)
 **What is it?**
@@ -185,23 +139,33 @@ alias l.='eza -ald --color=always --group-directories-first --icons .*'
 - Frequency-based ranking
 - Integration with `ls` after jumps
 
-**Configuration:**
+**Installation:**
 ```bash
-eval "$(zoxide init zsh --no-cmd)"
-z() {
-  if [ $# -eq 0 ]; then
-    __zoxide_z
-  else
-    __zoxide_z "$@" && ls
-  fi
-}
-alias cd='z'
+brew install zoxide
 ```
 
-**Usage:**
-- `z foo` - Jump to highest ranked directory matching foo
-- `z foo bar` - Jump to highest ranked directory matching foo and bar
-- `z -` - Jump to previous directory
+### Bat (Modern cat)
+**What is it?**
+- Modern replacement for `cat`
+- Syntax highlighting
+- Git integration
+- Line numbers and paging
+
+**Installation:**
+```bash
+brew install bat
+```
+
+### Tree (Directory viewer)
+**What is it?**
+- Visual directory structure viewer
+- Shows nested hierarchies
+- Supports various output formats
+
+**Installation:**
+```bash
+brew install tree
+```
 
 ## AI Integration
 
@@ -217,20 +181,13 @@ alias cd='z'
 - Non-blocking operation
 - Custom key binding
 
-**Configuration:**
+**Installation:**
 ```bash
-_sgpt_zsh() {
-if [[ -n "$BUFFER" ]]; then
-    _sgpt_prev_cmd=$BUFFER
-    BUFFER+="⌛"
-    zle -I && zle redisplay
-    BUFFER=$(sgpt --shell <<< "$_sgpt_prev_cmd" --no-interaction)
-    zle end-of-line
-fi
-}
-zle -N _sgpt_zsh
-bindkey ^l _sgpt_zsh
+pip install shell-gpt
+pipx inject shell-gpt readchar
 ```
+
+See [Shell Customization - Tool Configurations](shell-customization.md#shell-gpt-integration) for configuration details.
 
 **Usage:**
 1. Type a command or question
@@ -240,86 +197,21 @@ bindkey ^l _sgpt_zsh
 
 ## AWS Integration
 
-### Account Aliases
+### Granted
 **What is it?**
-- Quick shortcuts for AWS profile switching
-- Integrates with granted for role assumption
+- AWS credentials manager
+- Command-line interface for AWS role assumption
 - Supports multiple environments
+- Browser integration for SSO
 
-**Configuration:**
+**Installation:**
 ```bash
-alias assume=". assume"
-# Environment-specific aliases (uses core assume alias)
-alias staging="assume reepay-staging"
-alias dev="assume reepay-dev"
-alias prod="assume reepay-prod"
-alias pci="assume reepay-pci"
-alias sandbox="assume reepay-sandbox"
+# Add the tap first
+brew tap common-fate/granted
+brew install common-fate/granted/granted
 ```
 
-### Directory-based AWS Role Management
-**What is it?**
-A directory-aware automation system that:
-- Manages environment variables using direnv (loading/unloading based on directory)
-- Handles AWS SSO authentication and role assumption automatically
-- Works with any browser for SSO login
-- Supports Chrome profiles when using Chrome
-
-**Key Features:**
-- Automatic environment switching based on project directories
-- Smart credential refresh and AWS role management
-- Silent operation with configurable logging
-
-**Configuration:**
-```bash
-# Enable direnv and assume alias
-eval "$(direnv hook zsh)"
-alias assume=". assume"
-
-# Chrome profile configuration for AWS SSO login
-# - Leave empty ("") if not using Chrome
-# - Specify profile name if using a different Chrome profile for work (e.g., "Work")
-CHROME_PROFILE="Default"
-
-# AWS assume function
-run_assume() {
-    if [[ -n "$CHROME_PROFILE" ]]; then
-        FORCE_NO_ALIAS=true assume "$1" --es --browser-launch-template-arg "--profile-directory=$CHROME_PROFILE"
-    else
-        FORCE_NO_ALIAS=true assume "$1" --es
-    fi
-}
-
-# Hook for direnv to check AWS_PROFILE and run assume
-direnv_hook_for_envrc() {
-    if [[ -n "$DIRENV_DIR" && -n "$AWS_PROFILE" ]]; then
-        run_assume "$AWS_PROFILE"
-    fi
-}
-
-# Add to the Direnv reload hook
-precmd_functions+=(direnv_hook_for_envrc)
-# Disable Direnv messages when loading a folder that contains .envrc
-export DIRENV_LOG_FORMAT=""
-```
-
-**Setup:**
-1. Add the configuration to your `.zshrc`
-2. Ensure direnv hook is enabled: `eval "$(direnv hook zsh)"`
-3. Create `.envrc` files in your project directories with:
-   ```bash
-   export AWS_PROFILE=your-profile-name
-   # Add any other environment variables needed for the project
-   ```
-4. Allow the direnv file: `direnv allow`
-
-**How it works:**
-1. When entering a directory, direnv looks for `.envrc` file
-2. If found, it loads environment variables (e.g., AWS_PROFILE)
-3. Our hook detects the AWS_PROFILE change and triggers the assume function
-4. Chrome profile is automatically used for SSO authentication
-5. AWS credentials are refreshed as needed
-6. When leaving the directory, environment variables are automatically unloaded
+For AWS profile management, Chrome integration, and automated role switching, see [AWS Profile Management](aws-profile-management.md).
 
 ## Utility Functions
 
@@ -354,25 +246,30 @@ alias treegithub="echo 'pwd' && echo $(pwd) && echo 'tree -a -I '.git' -L 8' && 
 
 ## Installation
 
+### Core Tools
 ```bash
-# Core tools
-brew install starship zoxide eza fzf fd
+# Add required taps
+brew tap common-fate/granted
 
-# ZSH plugins
-brew install zsh-autosuggestions zsh-syntax-highlighting
+# Install core tools
+brew install starship fzf fd eza zoxide direnv tree bat
 
-# AWS tools
+# Install ZSH plugins
+brew install zsh-autosuggestions zsh-syntax-highlighting zsh-completions
+
+# Install AWS tools
 brew install common-fate/granted/granted
 
-# Additional tools
-brew install direnv tree bat
-
-# Shell-GPT
-pipx install shell-gpt
+# Install Shell-GPT
+pip install shell-gpt
 pipx inject shell-gpt readchar
+
+# Clone FZF-tab
+git clone https://github.com/Aloxaf/fzf-tab $DOTFILES_DIR/fzf-tab
 ```
 
 ## See Also
 - [ZSH Core Configuration](shell-customization.md)
 - [Installation Guide](setup-and-installation.md)
 - [Window Management](window-management.md)
+- [AWS Profile Management](aws-profile-management.md)

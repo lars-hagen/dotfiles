@@ -184,6 +184,6 @@ git pull
 ## Next Steps
 
 After installation, explore:
-- [ZSH Core Configuration](ZSH-Core-Configuration.md) for shell features
-- [ZSH Tools and Plugins](ZSH-Tools-and-Plugins.md) for tool documentation
-- [Development Tools](Development-Tools.md) for tool-specific setup
+- [Shell Customization](shell-customization.md) for shell features
+- [CLI Tools and Plugins](cli-tools-and-plugins.md) for tool documentation
+- [Development Environment](development-environment.md) for tool-specific setup

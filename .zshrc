@@ -203,6 +203,9 @@ zstyle ':fzf-tab:complete:*:options' fzf-preview ''
 # switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
 
+# Enable the use of FZF_DEFAULT_OPTS for fzf-tab (by default, fzf-tab ignores these options)
+zstyle ':fzf-tab:*' use-fzf-default-opts true
+
 # Configure zstyle for better completion behavior
 zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=* r:|=*'  # Enable fuzzy matching for completions
 
@@ -223,7 +226,7 @@ zle -N _sgpt_zsh
 bindkey ^l _sgpt_zsh
 # Shell-GPT integration ZSH v0.2
 
-# For macOS Terminal and iTerm2
+# For terminals
 # Keybindings for Command + Arrow keys
 bindkey ";9C" end-of-line                 # Command + Right Arrow: Move to end of line
 bindkey ";9D" beginning-of-line           # Command + Left Arrow: Move to beginning of line
@@ -260,34 +263,8 @@ temp_script() {
 eval "$(direnv hook zsh)"
 alias assume=". assume"
 
-# Chrome profile configuration for AWS SSO login:
-# - Leave empty ("") if not using Chrome
-# - Specify profile name if using a different Chrome profile for work (e.g., "Work")
-CHROME_PROFILE="Default"
-
-# AWS assume function
-run_assume() {
-    if [[ -n "$CHROME_PROFILE" ]]; then
-        FORCE_NO_ALIAS=true assume "$1" --es --browser-launch-template-arg "--profile-directory=$CHROME_PROFILE"
-    else
-        FORCE_NO_ALIAS=true assume "$1" --es
-    fi
-}
-
-# Hook for direnv to check AWS_PROFILE and run assume
-direnv_hook_for_envrc() {
-    if [[ -n "$DIRENV_DIR" && -n "$AWS_PROFILE" ]]; then
-        #local current_time=$(date +%s)
-        #if [[ -z "$LAST_ASSUME_TIME" ]] || (( current_time - LAST_ASSUME_TIME >= 1800 )); then
-            run_assume "$AWS_PROFILE"
-        #fi
-    fi
-}
-
-# Add to the Direnv reload hook
-precmd_functions+=(direnv_hook_for_envrc)
-# Disable Direnv messages when loading a folder that contains .envrc
-export DIRENV_LOG_FORMAT=""
+# Source AWS profile management
+source "$DOTFILES_DIR/bin/aws-profile-management"
 
 # Terminal title configuration
 # Update terminal title to show current directory
