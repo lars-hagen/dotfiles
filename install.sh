@@ -27,20 +27,6 @@ create_symlink() {
     ln -s "$src" "$dest"
 }
 
-# Function to clone or update a git repository
-clone_or_update_repo() {
-    local repo_url=$1
-    local target_dir=$2
-
-    if [ -d "$target_dir" ]; then
-        echo "Updating $target_dir..."
-        git -C "$target_dir" pull
-    else
-        echo "Cloning $repo_url to $target_dir..."
-        git clone "$repo_url" "$target_dir"
-    fi
-}
-
 # Check for required tools
 command -v git >/dev/null 2>&1 || { echo >&2 "Git is required but not installed. Aborting."; exit 1; }
 command -v pipx >/dev/null 2>&1 || { echo >&2 "pipx is required but not installed. Aborting."; exit 1; }
@@ -61,13 +47,9 @@ pipx install shell-gpt
 echo "Injecting readchar into shell-gpt..."
 pipx inject shell-gpt readchar
 
-# fzf-tab-source
-FZF_TAB_SOURCE_DIR="$DOTFILES_DIR/fzf-tab-source"
-clone_or_update_repo "https://github.com/Freed-Wu/fzf-tab-source" "$FZF_TAB_SOURCE_DIR"
-
-# fzf-tab
-FZF_TAB_DIR="$DOTFILES_DIR/fzf-tab"
-clone_or_update_repo "https://github.com/Aloxaf/fzf-tab.git" "$FZF_TAB_DIR"
+# Initialize and update submodules
+echo "Initializing and updating submodules..."
+git submodule update --init --recursive
 
 # Create all symlinks
 echo "Creating symlinks..."
@@ -101,7 +83,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "Applying macOS-specific settings..."
     source "$DOTFILES_DIR/.macos"
 else
-    echo "Skipping karabiner, amethyst, YabaiIndicator installations, and macOS-specific settings (not on macOS)"
+    echo "Skipping karabiner amethyst YabaiIndicator installations and macOS-specific settings (not on macOS)"
 fi
 
 echo "Dotfiles installation complete!"

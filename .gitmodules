@@ -1,3 +1,9 @@
 [submodule "wiki"]
 	path = wiki
 	url = https://github.com/lars-hagen/dotfiles.wiki.git
+[submodule "fzf-tab"]
+	path = fzf-tab
+	url = https://github.com/Aloxaf/fzf-tab.git
+[submodule "fzf-tab-source"]
+	path = fzf-tab-source
+	url = https://github.com/Freed-Wu/fzf-tab-source
