@@ -16,8 +16,8 @@ AeroSpace is configured to provide a powerful, keyboard-driven window management
 ### Window Focus and Movement
 - **Focus Windows** (Ctrl-Alt + Arrows)
   - `Ctrl-Alt-Left/Right/Up/Down` - Focus window in direction
-  - `Ctrl-Alt-Tab` - Focus next monitor
-  - `Ctrl-Alt-Shift-Tab` - Focus previous monitor
+  - `Ctrl-Alt-Tab` - Focus next monitor and move all windows from current workspace
+  - `Ctrl-Alt-Shift-Tab` - Focus previous monitor and move all windows from current workspace
 
 - **Move Windows** (Ctrl-Alt-Shift + Arrows)
   - `Ctrl-Alt-Shift-Left/Right/Up/Down` - Move window in direction
@@ -39,7 +39,7 @@ AeroSpace is configured to provide a powerful, keyboard-driven window management
   - `Alt-1` through `Alt-6` - Switch to workspace 1-6
   - `Alt-S` - Switch to secondary workspace (S1)
   - `Alt-L` - Switch to laptop workspace (L1)
-  - `Alt-Tab` - Toggle between last two workspaces
+  - `Alt-Tab` - Toggle between last two workspaces (back and forth)
 
 - **Move Windows to Workspace**
   - `Alt-Shift-1` through `Alt-Shift-6` - Move window to workspace 1-6
