@@ -57,6 +57,7 @@ create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 create_symlink "$DOTFILES_DIR/.config/shell_gpt/functions/execute_shell.py" "$HOME/.config/shell_gpt/functions/execute_shell.py"
 create_symlink "$DOTFILES_DIR/.config/shell_gpt/bin" "$HOME/.config/shell_gpt/bin"
 create_symlink "$DOTFILES_DIR/.config/alacritty" "$HOME/.config/alacritty"
+create_symlink "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
 
 # Add DOTFILES_DIR to .zshrc if not already present
 if ! grep -q "^export DOTFILES_DIR=" "$DOTFILES_DIR/.zshrc"; then
@@ -78,6 +79,7 @@ fi
 # Check if the system is macOS
 if [[ "$OSTYPE" == "darwin"* ]]; then
     create_symlink "$DOTFILES_DIR/.config/karabiner" "$HOME/.config/karabiner"
+    create_symlink "$DOTFILES_DIR/.config/borders" "$HOME/.config/borders"
 
     # Run .macos file
     echo "Applying macOS-specific settings..."
