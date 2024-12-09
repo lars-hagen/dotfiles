@@ -1,21 +1,4 @@
 version: 7
-profiles:
-  - name: Tiling Mode
-    type: local
-    options:
-      workingDirectory: null
-      shell: /bin/zsh
-    icon: window-maximize
-    disableDynamicTitle: true
-    customTitle: Tabby
-  - name: Quake Mode
-    type: local
-    options:
-      workingDirectory: null
-      shell: /bin/zsh
-    disableDynamicTitle: true
-    customTitle: Quake Mode
-    icon: terminal
 groups: []
 configSync:
   parts: {}

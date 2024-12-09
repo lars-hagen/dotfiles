@@ -272,7 +272,7 @@ run = ['layout floating']  # Make it floating and don't focus
 
 [[on-window-detected]]
 if.app-id = 'org.tabby'
-if.window-title-regex-substring = 'Quake Mode'
+#if.window-title-regex-substring = 'Quake Mode'
 run = ['layout floating']
 
 # Regular Tabby windows will be tiled by default since they don't match this rule
