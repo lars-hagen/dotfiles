@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# Check if running on macOS
+if [[ "$(uname)" != "Darwin" ]]; then
+    echo "Error: aws-window-age only works on macOS" >&2
+    exit 1
+fi
+
+# Function to get current timestamp in seconds
+current_timestamp() {
+    date +%s
+}
+
+# Get window info and active tab details
+window_info=$(osascript -e '
+    tell application "Google Chrome"
+        repeat with w in windows
+            if name of w contains "AWS Authentication" then
+                set windowName to name of w
+                set windowIndex to index of w
+                set activeTab to active tab of w
+                set tabURL to URL of activeTab
+                set tabTitle to title of activeTab
+                return {windowName, windowIndex, tabURL, tabTitle}
+            end if
+        end repeat
+        return ""
+    end tell')
+
+if [ -z "$window_info" ]; then
+    echo "No AWS Authentication window found"
+    exit 1
+fi
+
+# Parse window info
+IFS=$'\n' read -r -d '' window_title tab_url tab_title <<< "$(echo "$window_info" | awk -F', ' '{
+    gsub(/^{"|"$/, "", $1);  # Remove leading { and trailing " from first field
+    if (NF > 3) {
+        url=$3
+        for(i=4; i<NF; i++) url = url ", " $i
+        gsub(/^"|"$/, "", url)  # Remove quotes from URL
+        print $1
+        print url
+        print $NF
+    }
+}')"
+window_index=$(echo "$window_info" | awk -F', ' '{print $2}')
+
+# Get Chrome renderer processes
+renderer_info=$(ps -eo pid,lstart,command | grep "Google Chrome.*Renderer" | grep -v "grep" | grep -v "extension-process" | sort -k2)
+
+# Get the most recent renderer process
+newest_process=$(echo "$renderer_info" | tail -n1)
+start_time=$(echo "$newest_process" | awk '{print $2" "$3" "$4" "$5" "$6}')
+
+if [ -z "$start_time" ]; then
+    echo "Could not determine window start time"
+    exit 1
+fi
+
+# Convert start time to timestamp
+window_timestamp=$(date -j -f "%a %b %e %T %Y" "$start_time" "+%s" 2>/dev/null)
+
+if [ -z "$window_timestamp" ]; then
+    echo "Could not convert start time to timestamp"
+    echo "Debug - Start time: $start_time"
+    exit 1
+fi
+
+current_time=$(current_timestamp)
+time_diff=$((current_time - window_timestamp))
+
+# Convert seconds to a more readable format
+if [ $time_diff -lt 60 ]; then
+    age_str="$time_diff seconds"
+elif [ $time_diff -lt 3600 ]; then
+    minutes=$((time_diff / 60))
+    age_str="$minutes minutes"
+else
+    hours=$((time_diff / 3600))
+    minutes=$(((time_diff % 3600) / 60))
+    age_str="$hours hours, $minutes minutes"
+fi
+
+echo "AWS Authentication window info:"
+echo "Title: $window_title"
+echo "Window Index: $window_index"
+echo "Active Tab URL: $tab_url"
+echo "Active Tab Title: $tab_title"
+echo "Creation time: $(date -r $window_timestamp)"
+echo "Age: $age_str"
+
+# Debug info
+echo -e "\nProcess used:"
+echo "$newest_process"

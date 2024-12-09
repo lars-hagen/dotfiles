@@ -139,6 +139,7 @@ alt-4 = ['workspace 4']
 alt-5 = ['workspace 5']
 alt-6 = ['workspace 6']
 alt-l = ['workspace L1']
+alt-e = ['workspace S2']  # Switch to workspace S2
 
 # Move Windows to Workspaces
 alt-shift-s = ['move-node-to-workspace S1', 'workspace S1']
@@ -149,14 +150,16 @@ alt-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
 alt-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
 alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
 alt-shift-l = ['move-node-to-workspace L1', 'workspace L1']
+alt-shift-e = ['move-node-to-workspace S2', 'workspace S2']  # Move window to workspace S2 and switch
 
 # Mode Switching
 ctrl-alt-space = 'mode service'  # Enter service mode
 #ctrl-alt-w = 'mode workspace'
 ctrl-alt-s = 'mode secondary'
-ctrl-alt-a = 'mode move-all'
+ctrl-alt-q = 'mode apps'  # Changed from ctrl-alt-p to ctrl-alt-a
 ctrl-alt-l = 'mode laptop'
 ctrl-alt-t = 'mode temp'
+ctrl-alt-a = 'mode move-all'
 
 [mode.move-all.binding]
 # Each number will move all windows to that workspace
@@ -168,24 +171,6 @@ ctrl-alt-t = 'mode temp'
 6 = '''exec-and-forget /bin/bash -c 'for id in $(aerospace list-windows --workspace "$(aerospace list-workspaces --focused)" --format "%{window-id}"); do aerospace move-node-to-workspace --window-id "$id" 6; done' && aerospace workspace 6 && aerospace mode main'''
 s = '''exec-and-forget /bin/bash -c 'for id in $(aerospace list-windows --workspace "$(aerospace list-workspaces --focused)" --format "%{window-id}"); do aerospace move-node-to-workspace --window-id "$id" S1; done' && aerospace workspace S1 && aerospace mode main'''
 esc = ['mode main']
-
-# [mode.workspace.binding]
-# s = ['mode secondary']
-# t = ['mode temp']
-# l = ['mode laptop']
-# 1 = ['workspace 1','mode main']
-# 2 = ['workspace 2','mode main']
-# 3 = ['workspace 3','mode main']
-# 4 = ['workspace 4','mode main']
-# 5 = ['workspace 5','mode main']
-# 6 = ['workspace 6','mode main']
-# shift-1 = ['move-node-to-workspace 1','workspace 1','mode main']
-# shift-2 = ['move-node-to-workspace 2','workspace 2','mode main']
-# shift-3 = ['move-node-to-workspace 3','workspace 3','mode main']
-# shift-4 = ['move-node-to-workspace 4','workspace 4','mode main']
-# shift-5 = ['move-node-to-workspace 5','workspace 5','mode main']
-# shift-6 = ['move-node-to-workspace 6','workspace 6','mode main']
-# esc = ['mode main']
 
 [mode.secondary.binding]
 1 = ['workspace S1','mode main']
@@ -218,6 +203,18 @@ shift-1 = ['move-node-to-workspace TEMP1','workspace TEMP1','mode main']
 shift-2 = ['move-node-to-workspace TEMP2','workspace TEMP2','mode main']
 shift-3 = ['move-node-to-workspace TEMP3','workspace TEMP3','mode main']
 shift-4 = ['move-node-to-workspace TEMP4','workspace TEMP4','mode main']
+esc = ['mode main']
+
+[mode.apps.binding]
+s = ['workspace slack', 'mode main']
+m = ['workspace spotify', 'mode main']
+b = ['workspace browser', 'mode main']
+shift-s = ['move-node-to-workspace slack', 'workspace slack', 'mode main']
+shift-m = ['move-node-to-workspace spotify', 'workspace spotify', 'mode main']
+shift-b = ['move-node-to-workspace browser', 'workspace browser', 'mode main']
+1 = ['workspace slack', 'mode main']
+2 = ['workspace spotify', 'mode main']
+3 = ['workspace browser', 'mode main']
 esc = ['mode main']
 
 # Launch Applications
@@ -260,9 +257,25 @@ down = ['join-with down', 'mode main']
 up = ['join-with up', 'mode main']
 right = ['join-with right', 'mode main']
 
+# Add this to your ~/.aerospace.toml
+
+# Prevent auto-focusing the AWS Authentication window
+
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+if.window-title-regex-substring = 'AWS Authentication'
+#check-further-callbacks = false  # Stop processing other callbacks
+run = ['layout floating']  # Make it floating and don't focus
+
+# Add your normal Chrome window management here, like:
+# run = 'move-node-to-workspace W'  # Uncomment and modify if you want Chrome windows on a specific workspace
+
 [[on-window-detected]]
 if.app-id = 'org.tabby'
-run = 'layout floating'
+if.window-title-regex-substring = 'Quake Mode'
+run = ['layout floating']
+
+# Regular Tabby windows will be tiled by default since they don't match this rule
 
 [workspace-to-monitor-force-assignment]
 1 = 'main'      # Assigns workspace 1 to your main monitor (with menu bar)
@@ -283,3 +296,6 @@ L1 = ['built-in', 'dell'] #laptop
 L2 = ['built-in', 'dell']
 L3 = ['built-in', 'dell']
 L4 = ['built-in', 'dell']
+slack = 'main'    # Slack workspace
+spotify = 'main'  # Spotify workspace
+browser = 'built-in'  # Browser workspace

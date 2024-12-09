@@ -76,7 +76,7 @@ eval "$(starship init zsh)"
 # ZSH completion
 if type brew &>/dev/null; then
   # macOS with Homebrew
-  FPATH=$(brew --prefix)/share/zsh-completions:$(brew --prefix)/share/zsh/site-functions:$FPATH
+  FPATH=$HOMEBREW_PREFIX/share/zsh-completions:$HOMEBREW_PREFIX/share/zsh/site-functions:$FPATH
 else
   # Linux (or macOS without Homebrew)
   FPATH=/usr/share/zsh/site-functions:$FPATH
@@ -93,8 +93,8 @@ if type brew &>/dev/null; then
     # macOS with Homebrew
     source "$DOTFILES_DIR/fzf-tab/fzf-tab.plugin.zsh"
     source "$DOTFILES_DIR/fzf-tab-source/fzf-tab-source.plugin.zsh"
-    source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-    source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+    source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 else
     # Linux (or macOS without Homebrew)
     source "$DOTFILES_DIR/fzf-tab/fzf-tab.plugin.zsh"
@@ -233,11 +233,17 @@ bindkey ";9D" beginning-of-line           # Command + Left Arrow: Move to beginn
 bindkey ";3C" forward-word                # Option + Right Arrow: Move forward one word
 bindkey ";3D" backward-word               # Option + Left Arrow: Move backward one word
 
+# Set PATH
+export PATH=$DOTFILES_DIR/bin:$PATH
 export PATH=$PATH:/Users/lars/repos/reepay/reepay-cli/bin
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/.config/shell_gpt/bin
 
-# AWS account aliases
+# Source AWS window handler if enabled (after original assume alias)
+if [[ "$AWS_WINDOW_MONITOR_ENABLED" == "true" ]]; then
+    source $DOTFILES_DIR/bin/aws-window-handler
+fi
+
 alias staging="assume reepay-staging"
 alias dev="assume reepay-dev"
 alias prod="assume reepay-prod"
@@ -269,7 +275,30 @@ source "$DOTFILES_DIR/bin/aws-profile-management"
 # Terminal title configuration
 # Update terminal title to show current directory
 precmd() {
-  echo -ne "\033]0;${PWD/#$HOME/~}\007"
+  local aws_info=""
+  if [[ -n "$AWS_PROFILE" ]]; then
+    aws_info="[${AWS_PROFILE}] "
+  fi
+
+  local dir="${PWD/#$HOME/~}"
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    local repo_root=$(git rev-parse --show-toplevel)
+    local repo_name=$(basename "$repo_root")
+    local path_above_repo=${repo_root%/*}
+    local path_in_repo=${PWD#$repo_root}
+    
+    # Convert path above repo to abbreviated form (~/a/b), including the last directory
+    local abbreviated_path=$(echo ${path_above_repo/#$HOME/\~} | sed 's:\([^/]\)[^/]*/:\1/:g; s:/[^/]*$:/r:')
+    
+    # Handle root of repository differently
+    if [[ -z "$path_in_repo" ]]; then
+      dir="${abbreviated_path}/${repo_name}"
+    else
+      dir="${abbreviated_path}/${repo_name}${path_in_repo}"
+    fi
+  fi
+  
+  echo -ne "\033]0;${aws_info}${dir}\007"
 }
 
 # Update terminal title to show running command and current directory
@@ -281,3 +310,38 @@ preexec() {
 export PATH="/Users/lars/.codeium/windsurf/bin:$PATH"
 # Add dotfiles bin to PATH
 export PATH="$DOTFILES_DIR/bin:$PATH"
+
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+# Terraform aliases
+alias tf='terraform'
+alias tfi='terraform init'
+alias tfp='terraform plan'
+alias tfa='terraform apply'
+alias tfo='terraform output'
+alias tfia='terraform init && terraform apply'
+
+# Git aliases
+alias g='git'
+alias gs='git status'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --pretty=format:"%C(yellow)%h%Creset %C(blue)%ad%Creset %C(cyan)%an%Creset %C(green)%s%Creset" --date=short'
+alias ga='git add'
+alias gaa='git add --all'
+alias gap='git add -p'
+alias gau='git add -u'
+
+# Docker aliases
+alias d='docker'
+alias dps='docker ps'
+alias dup='docker-compose up'
+alias ddown='docker-compose down'
+
+# Python virtual environment
+alias mkvenv='python -m venv venv && source venv/bin/activate'
+alias workon='source ./venv/bin/activate'
+alias workoff='deactivate'
+alias rmvenv='deactivate 2>/dev/null; rm -rf venv/'

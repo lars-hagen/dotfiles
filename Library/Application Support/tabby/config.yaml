@@ -1,5 +1,21 @@
 version: 7
-profiles: []
+profiles:
+  - name: Tiling Mode
+    type: local
+    options:
+      workingDirectory: null
+      shell: /bin/zsh
+    icon: window-maximize
+    disableDynamicTitle: true
+    customTitle: Tabby
+  - name: Quake Mode
+    type: local
+    options:
+      workingDirectory: null
+      shell: /bin/zsh
+    disableDynamicTitle: true
+    customTitle: Quake Mode
+    icon: terminal
 groups: []
 configSync:
   parts: {}
@@ -232,3 +248,10 @@ profileBlacklist: []
 enableAnalytics: false
 enableWelcomeTab: false
 pluginBlacklist: []
+window:
+  frame: false
+  vibrancy: true
+  opacity: 0.95
+  alwaysOnTop: false
+  setDockBounce: false
+  setDockProgress: false

@@ -1,0 +1,105 @@
+#!/bin/bash
+
+# Check if running on macOS
+if [[ "$(uname)" != "Darwin" ]]; then
+    echo "Error: aws-window-monitor only works on macOS" >&2
+    exit 1
+fi
+
+TEMP_FILE="/tmp/aws-sso-login-windows"
+LOG_FILE="/tmp/aws-window-monitor.log"
+TIMEOUT=10  # Increased timeout to handle multiple auth attempts
+WINDOW_CHECK_INTERVAL=2  # How often to check windows
+
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
+}
+
+# Function to close AWS-related windows
+close_aws_windows() {
+    osascript -e '
+        tell application "Google Chrome"
+            set closed to false
+            repeat with w in windows
+                set windowName to name of w
+                if windowName contains "AWS Authentication" or windowName contains "Amazon Web Services" or windowName contains "AWS access portal" or windowName contains "Sign in to your account" then
+                    close w
+                    set closed to true
+                end if
+            end repeat
+            return closed
+        end tell' 2>/dev/null
+}
+
+# Function to count AWS-related windows
+count_aws_windows() {
+    osascript -e '
+        tell application "Google Chrome"
+            set windowCount to 0
+            repeat with w in windows
+                set windowName to name of w
+                if windowName contains "AWS Authentication" or windowName contains "Amazon Web Services" or windowName contains "AWS access portal" or windowName contains "Sign in to your account" then
+                    set windowCount to windowCount + 1
+                end if
+            end repeat
+            return windowCount
+        end tell' 2>/dev/null
+}
+
+# Clear log file
+: > "$LOG_FILE"
+log "Monitor started"
+
+# Wait for the timestamp file to exist
+while [ ! -f "$TEMP_FILE" ]; do
+    sleep 1
+done
+
+log "Found timestamp file"
+
+last_window_count=0
+consecutive_zero_count=0
+
+# Main loop
+while true; do
+    if [ ! -f "$TEMP_FILE" ]; then
+        log "Timestamp file disappeared, exiting"
+        close_aws_windows
+        exit 0
+    fi
+
+    current_time=$(date +%s)
+    last_update=$(cat "$TEMP_FILE" 2>/dev/null || echo "0")
+    window_count=$(count_aws_windows)
+    
+    log "Current window count: $window_count (last update: ${last_update}s ago)"
+
+    # If we see no windows multiple times in a row after auth started, exit
+    if [ $window_count -eq 0 ]; then
+        consecutive_zero_count=$((consecutive_zero_count + 1))
+        if [ $consecutive_zero_count -ge 3 ] && [ "$last_update" != "0" ]; then
+            log "No AWS windows found consistently after auth, exiting"
+            exit 0
+        fi
+    else
+        consecutive_zero_count=0
+    fi
+
+    # Handle window closing
+    if [ $window_count -gt 0 ]; then
+        time_diff=$((current_time - last_update))
+        
+        # Close windows if enough time has passed since last update
+        if [ "$last_update" != "0" ] && [ $time_diff -ge $TIMEOUT ]; then
+            log "Closing windows after $TIMEOUT seconds of inactivity"
+            if close_aws_windows; then
+                log "Windows closed successfully"
+                exit 0
+            else
+                log "Failed to close windows"
+            fi
+        fi
+    fi
+    
+    sleep $WINDOW_CHECK_INTERVAL
+done

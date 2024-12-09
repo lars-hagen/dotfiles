@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Check if running on macOS
+if [[ "$(uname)" != "Darwin" ]]; then
+    echo "Error: This script only works on macOS" >&2
+    exit 1
+fi
+
+# Close all AWS-related tabs using AppleScript
+osascript -e '
+tell application "Google Chrome"
+    set tabsClosed to 0
+    repeat with w in windows
+        set tabList to tabs of w
+        repeat with t in tabList
+            if title of t contains "AWS Authentication" or title of t contains "AWS access portal" or title of t contains "Amazon Web Services Sign-In" then
+                delete t
+                set tabsClosed to tabsClosed + 1
+            end if
+        end repeat
+    end repeat
+    return "Closed " & tabsClosed & " AWS-related tabs"
+end tell' 

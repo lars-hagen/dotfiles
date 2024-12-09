@@ -34,7 +34,7 @@ blinking = "On"
 shape = "Beam"
 
 [font]
-size = 12.0
+size = 14.0
 
 [font.normal]
 family = "FiraCode Nerd Font Mono"
@@ -50,7 +50,7 @@ style = "Italic"
 
 [window]
 decorations = "buttonless"
-opacity = 0.8
+opacity = 0.99
 blur = true
 padding = { x = 5, y = 5 }
 

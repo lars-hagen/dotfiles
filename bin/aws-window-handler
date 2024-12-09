@@ -1,0 +1,151 @@
+#!/bin/zsh
+
+TEMP_FILE="/tmp/aws-sso-login-windows"
+LOG_FILE="/tmp/aws-window-monitor.log"
+ASSUME_PATH="${HOMEBREW_PREFIX:-/opt/homebrew}/bin/assume"
+
+# Function to update timestamp file
+function update_timestamp() {
+    date +%s > "$TEMP_FILE"
+}
+
+# Function to ensure monitor is running
+function ensure_monitor_running() {
+    if ! pgrep -f "aws-window-monitor" > /dev/null; then
+        echo "[i] Starting AWS window monitor"
+        (aws-window-monitor > /dev/null 2>&1 &)
+    fi
+}
+
+# Function to check if AWS window exists
+function check_aws_window() {
+    osascript -e '
+        tell application "Google Chrome"
+            repeat with w in windows
+                set windowName to name of w
+                if windowName contains "AWS Authentication" or windowName contains "Amazon Web Services" or windowName contains "AWS access portal" or windowName contains "Sign in to your account" then
+                    return true
+                end if
+            end repeat
+            return false
+        end tell' 2>/dev/null | grep -q "true"
+}
+
+# Function to monitor browser window and kill assume if needed
+function monitor_aws_auth() {
+    local pid=$1
+    local start_time=$(date +%s)
+    local timeout=60  # Maximum time to wait for authentication
+    local window_seen=false
+    local needs_browser=false
+
+    # Wait a moment for output
+    sleep 0.1
+
+    # Check if browser auth is needed
+    if [[ -f "$TEMP_FILE" ]] && grep -q "user_code=" "$TEMP_FILE"; then
+        needs_browser=true
+        ensure_monitor_running
+        : > "$TEMP_FILE"  # Clear the file
+        echo "0" > "$TEMP_FILE"  # Initialize with pending state
+    fi
+
+    # If no browser auth is needed, return immediately
+    if [[ "$needs_browser" == "false" ]]; then
+        return 0
+    fi
+
+    while true; do
+        # Check if the assume process is still running
+        if ! kill -0 $pid 2>/dev/null; then
+            return
+        fi
+
+        # Check for successful authentication message
+        if grep -q "session credentials will expire" "$TEMP_FILE"; then
+            return 0
+        fi
+
+        # Check if the window exists
+        if check_aws_window; then
+            window_seen=true
+        elif [[ "$window_seen" == "true" ]]; then
+            # Window was seen before but now it's gone
+            local current_time=$(date +%s)
+            local elapsed=$((current_time - start_time))
+            
+            if [[ $elapsed -lt $timeout ]]; then
+                echo "[i] AWS authentication window closed before completion"
+                kill -- -$pid 2>/dev/null  # Kill the entire process group
+                return 1
+            fi
+        fi
+
+        sleep 1
+    done
+}
+
+# Function to handle assume command
+function handle_assume() {
+    local cmd=$1
+    shift
+    
+    # Run assume in a subshell to avoid job control messages
+    (
+        # Clear the temp file first
+        : > "$TEMP_FILE"
+        
+        # Start assume and capture its output
+        builtin $cmd $ASSUME_PATH "$@" 2>&1 | while IFS= read -r line; do
+            echo "$line"
+            echo "$line" >> "$TEMP_FILE"
+            if [[ "$line" == *"session credentials will expire"* ]]; then
+                update_timestamp
+                # Only show window closing message if we needed browser auth
+                if [[ -f "$TEMP_FILE" ]] && grep -q "user_code=" "$TEMP_FILE"; then
+                    echo "[i] Authentication successful, AWS windows will close in 4 seconds"
+                fi
+            fi
+        done &
+        assume_pid=$!
+        
+        # Monitor the browser window
+        monitor_aws_auth $assume_pid
+        monitor_status=$?
+        
+        if [[ $monitor_status -eq 0 ]]; then
+            # Wait for assume to complete only if monitor didn't kill it
+            wait $assume_pid 2>/dev/null
+            exit_code=$?
+            exit $exit_code
+        else
+            exit 1
+        fi
+    )
+    local exit_status=$?
+    return $exit_status
+}
+
+# Function to wrap the source command
+function source() {
+    if [[ "$1" == "assume" ]]; then
+        handle_assume source "${@:2}"
+    else
+        builtin source "$@"
+    fi
+}
+
+# Also wrap the . command
+function .() {
+    if [[ "$1" == "assume" ]]; then
+        handle_assume . "${@:2}"
+    else
+        builtin . "$@"
+    fi
+}
+
+# Set up our wrapper
+if [[ ! "${(%):-%N}" == "${0:a}" ]]; then
+    # Only do this when being sourced
+    :
+fi 

@@ -1,0 +1,108 @@
+#!/bin/bash
+
+# Check if running on macOS
+if [[ "$(uname)" != "Darwin" ]]; then
+    echo "Error: aws-sso-login only works on macOS" >&2
+    exit 1
+fi
+
+# Handle both --profile flag and direct argument
+if [[ "$1" == "--profile" ]]; then
+    profile="$2"
+else
+    profile="$1"
+fi
+
+if [ -z "$profile" ]; then
+   echo "Usage: aws-sso-login [--profile] <profile>"
+   exit 1
+fi
+
+DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
+TEMP_FILE="/tmp/aws-sso-login-windows"
+MONITOR_PID_FILE="/tmp/aws-window-monitor.pid"
+
+# Function to get current timestamp in seconds
+current_timestamp() {
+   date +%s
+}
+
+# Function to update timestamp file
+update_timestamp() {
+    if [ -n "$1" ]; then
+        echo "$1" > "$TEMP_FILE"
+    else
+        current_timestamp > "$TEMP_FILE"
+    fi
+}
+
+# Function to check if window monitor is running
+monitor_is_running() {
+    if [ -f "$MONITOR_PID_FILE" ]; then
+        pid=$(cat "$MONITOR_PID_FILE")
+        if ps -p "$pid" > /dev/null; then
+            return 0  # Monitor is running
+        fi
+    fi
+    return 1  # Monitor is not running
+}
+
+# Function to start window monitor if not already running
+ensure_window_monitor() {
+    if ! monitor_is_running; then
+        aws-window-monitor &
+        echo $! > "$MONITOR_PID_FILE"
+    fi
+}
+
+# Function to check for a recent AWS auth window using AppleScript
+recent_aws_window_exists() {
+   local window_info=$(osascript -e '
+       tell application "Google Chrome"
+           repeat with w in windows
+               set windowName to name of w
+               if windowName contains "AWS Authentication" or windowName contains "AWS access portal" or windowName contains "Sign in to your account" then
+                   return true
+               end if
+           end repeat
+           return false
+       end tell')
+   [ "$window_info" = "true" ]
+}
+
+# Create initial timestamp with 0 to indicate waiting for authentication
+update_timestamp "0"
+
+# Run aws sso login command and process its output in real time
+AWS_PROFILE="$profile" aws sso login --no-browser 2>&1 | {
+   while IFS= read -r line; do
+       echo "$line"
+       if [[ $line == *"https://oidc.eu-central-1.amazonaws.com"* ]]; then
+           URL=$(echo "$line" | grep -o 'https://oidc\.eu-central-1\.amazonaws\.com[^[:space:]]*')
+           
+           # Update timestamp before opening window
+           update_timestamp
+           
+           # Ensure window monitor is running
+           ensure_window_monitor
+           
+           if ! recent_aws_window_exists; then
+               # No AWS auth window - open new window
+               osascript -e "
+                   tell application \"Google Chrome\"
+                       make new window
+                       activate
+                       open location \"$URL\"
+                   end tell"
+           else
+               # AWS auth window exists - open in current window
+               osascript -e "
+                   tell application \"Google Chrome\"
+                       activate
+                       open location \"$URL\"
+                   end tell"
+           fi
+           break
+       fi
+   done
+}

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Check if running on macOS
+if [[ "$(uname)" != "Darwin" ]]; then
+    echo "Error: This script only works on macOS" >&2
+    exit 1
+fi
+
+# List all Chrome windows and their tabs using AppleScript
+osascript -e '
+tell application "Google Chrome"
+    set windowList to {}
+    repeat with w in windows
+        set windowInfo to "Window: " & name of w & linefeed
+        repeat with t in tabs of w
+            set windowInfo to windowInfo & "  Tab: " & title of t & linefeed
+        end repeat
+        set windowList to windowList & windowInfo
+    end repeat
+    return windowList
+end tell' 

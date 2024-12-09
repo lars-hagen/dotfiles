@@ -26,3 +26,6 @@ fzf-tab-source/
 
 # Local configuration backups
 .macos.mathiasbynens
+
+# Local bin symlink
+.local/bin
