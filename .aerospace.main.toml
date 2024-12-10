@@ -257,25 +257,14 @@ down = ['join-with down', 'mode main']
 up = ['join-with up', 'mode main']
 right = ['join-with right', 'mode main']
 
-# Add this to your ~/.aerospace.toml
-
-# Prevent auto-focusing the AWS Authentication window
-
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
 if.window-title-regex-substring = 'AWS Authentication'
-#check-further-callbacks = false  # Stop processing other callbacks
 run = ['layout floating']  # Make it floating and don't focus
-
-# Add your normal Chrome window management here, like:
-# run = 'move-node-to-workspace W'  # Uncomment and modify if you want Chrome windows on a specific workspace
 
 [[on-window-detected]]
 if.app-id = 'org.tabby'
-#if.window-title-regex-substring = 'Quake Mode'
 run = ['layout floating']
-
-# Regular Tabby windows will be tiled by default since they don't match this rule
 
 [workspace-to-monitor-force-assignment]
 1 = 'main'      # Assigns workspace 1 to your main monitor (with menu bar)
@@ -298,4 +287,5 @@ L3 = ['built-in', 'dell']
 L4 = ['built-in', 'dell']
 slack = 'main'    # Slack workspace
 spotify = 'main'  # Spotify workspace
-browser = 'built-in'  # Browser workspace
+browser = 'main'  # Browser workspace
+
