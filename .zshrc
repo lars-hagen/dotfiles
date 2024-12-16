@@ -85,8 +85,13 @@ fi
 # Add dotfiles bin to completion path
 fpath=($DOTFILES_DIR/bin $fpath)
 
+# Optimize completion system
 autoload -Uz compinit
-compinit
+if [ $(date +'%j') != $(stat -f '%Sm' -t '%j' ~/.zcompdump) ]; then
+  compinit
+else
+  compinit -C
+fi
 
 # Load AeroSpace workspace monitor completion
 autoload -U _move-workspace-completion
@@ -318,10 +323,6 @@ export PATH="/Users/lars/.codeium/windsurf/bin:$PATH"
 # Add dotfiles bin to PATH
 export PATH="$DOTFILES_DIR/bin:$PATH"
 
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
 # Terraform aliases
 alias tf='terraform'
 alias tfi='terraform init'
@@ -352,3 +353,35 @@ alias mkvenv='python -m venv venv && source venv/bin/activate'
 alias workon='source ./venv/bin/activate'
 alias workoff='deactivate'
 alias rmvenv='deactivate 2>/dev/null; rm -rf venv/'
+
+# Lazy load NVM - Using Homebrew paths
+# Direct loading commented out to improve startup time
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"  # This loads nvm
+# [ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+# Function to load NVM when explicitly needed
+load_nvm() {
+    echo "Loading NVM..."
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
+    # After loading, remove the function itself to use the real nvm command
+    unset -f nvm node npm
+}
+
+# Wrapper for nvm command - automatically load NVM when used
+nvm() {
+    load_nvm
+    nvm "$@"
+}
+
+# Use Homebrew's node and npm by default
+node() {
+    echo "Using Homebrew node (run 'load_nvm' if you want to use NVM instead)"
+    $HOMEBREW_PREFIX/bin/node "$@"
+}
+
+npm() {
+    echo "Using Homebrew npm (run 'load_nvm' if you want to use NVM instead)"
+    $HOMEBREW_PREFIX/bin/npm "$@"
+}
