@@ -1,134 +1,104 @@
 #!/bin/bash
 
-CONFIG_FILE="$HOME/.aerospace.toml"
-BACKUP_FILE="$HOME/.aerospace.toml.bak"
-TEMP_FILE="/tmp/aerospace_temp.toml"
+# Debug flag and function
+DEBUG=0
+debug() { [ "$DEBUG" -eq 1 ] && echo "[DEBUG] $*" >&2; }
+
+# Get the actual config file path
+CONFIG_FILE=$(readlink -f "$HOME/.aerospace.toml")
+[ ! -f "$CONFIG_FILE" ] && echo "Error: Could not find config file" && exit 1
 
 usage() {
-    echo "Usage: $0 WORKSPACE [MONITOR|toggle]"
+    echo "Usage: $0 WORKSPACE [MONITOR|toggle] [-d|--debug]"
     echo
     echo "Move a workspace to a specific monitor or toggle its current configuration"
     echo
     echo "Arguments:"
     echo "  WORKSPACE   The workspace name (e.g., slack, 1, S1, L1)"
     echo "  MONITOR    The monitor configuration (e.g., dell, built-in, dell,built-in)"
-    echo "  toggle     Toggle the current monitor configuration"
+    echo "  toggle     Toggle between built-in and main"
     echo
-    echo "Examples:"
-    echo "  $0 slack dell           # Move slack to dell monitor"
-    echo "  $0 slack main           # Move slack to main monitor"
-    echo "  $0 slack dell,built-in  # Move slack to dell with built-in fallback"
-    echo "  $0 slack toggle         # Toggle current configuration"
+    echo "Options:"
+    echo "  -d, --debug    Enable debug output"
     exit 1
 }
 
-# Function to backup the current config
-backup_config() {
-    cp -L "$CONFIG_FILE" "$BACKUP_FILE"
-}
-
-# Function to restore from backup if something goes wrong
-restore_backup() {
-    if [ -f "$BACKUP_FILE" ]; then
-        cp "$BACKUP_FILE" "$CONFIG_FILE"
-        rm "$BACKUP_FILE"
-        echo "Restored from backup"
-    fi
-}
-
-# Validate monitor name
-validate_monitor() {
-    local monitor=$1
-    case "$monitor" in
-        main|dell|built-in) return 0 ;;
-        *) echo "Error: Invalid monitor '$monitor'. Must be 'main', 'dell', or 'built-in'"; exit 1 ;;
+# Parse all arguments
+WORKSPACE=""
+MONITOR_CONFIG=""
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -d|--debug)
+            DEBUG=1
+            shift
+            ;;
+        -*)
+            echo "Error: Unknown option $1"
+            usage
+            ;;
+        *)
+            if [ -z "$WORKSPACE" ]; then
+                WORKSPACE=$1
+            elif [ -z "$MONITOR_CONFIG" ]; then
+                MONITOR_CONFIG=$1
+            else
+                echo "Error: Too many arguments"
+                usage
+            fi
+            shift
+            ;;
     esac
-}
+done
 
-# Get current monitor config for a workspace
-get_current_config() {
-    local workspace=$1
-    local config
-    config=$(grep "^$workspace = " "$CONFIG_FILE" | sed "s/^$workspace = //")
-    echo "$config"
-}
+# Check required arguments
+[ -z "$WORKSPACE" ] || [ -z "$MONITOR_CONFIG" ] && usage
 
-# Toggle the current configuration
-toggle_config() {
-    local current_config=$1
-    local current_monitor
-    local current_fallback
-    
-    # Extract current configuration
-    if [[ $current_config =~ ^\[\'([^\']+)\',\ *\'([^\']+)\'\]$ ]]; then
-        current_monitor="${BASH_REMATCH[1]}"
-        current_fallback="${BASH_REMATCH[2]}"
-        # Swap monitors
-        MONITOR=$current_fallback
-        FALLBACK_MONITOR=$current_monitor
-    elif [[ $current_config =~ ^\'([^\']+)\'$ ]]; then
-        current_monitor="${BASH_REMATCH[1]}"
-        if [[ $current_monitor == "main" ]]; then
-            echo "Cannot toggle 'main' monitor configuration"
-            exit 1
-        fi
-        if [[ $current_monitor == "dell" ]]; then
-            MONITOR=$current_monitor
-            FALLBACK_MONITOR="built-in"
-        else
-            MONITOR=$current_monitor
-            FALLBACK_MONITOR="dell"
-        fi
-    else
-        echo "Error: Could not parse current configuration"
-        exit 1
-    fi
-}
+debug "Workspace: $WORKSPACE"
+debug "Monitor config: $MONITOR_CONFIG"
 
-# Main script
-[ $# -lt 2 ] && usage
+# Create backup
+cp "$CONFIG_FILE" "$CONFIG_FILE.bak"
 
-WORKSPACE=$1
-MONITOR_CONFIG=$2
+# Get current config line
+CURRENT_LINE=$(grep "^$WORKSPACE = " "$CONFIG_FILE")
+debug "Current line: '$CURRENT_LINE'"
 
-# Handle toggle argument
+# Handle toggle or monitor assignment
 if [[ "$MONITOR_CONFIG" == "toggle" ]]; then
-    CURRENT_CONFIG=$(get_current_config "$WORKSPACE")
-    if [[ -z "$CURRENT_CONFIG" ]]; then
-        echo "Error: No existing configuration found for workspace $WORKSPACE"
-        exit 1
-    fi
-    toggle_config "$CURRENT_CONFIG"
-else
-    # Split the monitor config if it contains a comma
-    if [[ $MONITOR_CONFIG == *","* ]]; then
-        IFS=',' read -r MONITOR FALLBACK_MONITOR <<< "$MONITOR_CONFIG"
+    [ -z "$CURRENT_LINE" ] && echo "Error: No configuration found for workspace $WORKSPACE" && exit 1
+    
+    if [[ $CURRENT_LINE =~ \'built-in\' ]]; then
+        NEW_LINE="${CURRENT_LINE/built-in/main}"
+    elif [[ $CURRENT_LINE =~ \'main\' ]]; then
+        NEW_LINE="${CURRENT_LINE/main/built-in}"
     else
-        MONITOR=$MONITOR_CONFIG
-        FALLBACK_MONITOR=""
+        echo "Error: Can only toggle between 'built-in' and 'main'" && exit 1
     fi
-
-    validate_monitor "$MONITOR"
-    [ -n "$FALLBACK_MONITOR" ] && validate_monitor "$FALLBACK_MONITOR"
-fi
-
-backup_config
-
-# Create a temporary file with the changes
-cp -L "$CONFIG_FILE" "$TEMP_FILE"
-
-if [ -n "$FALLBACK_MONITOR" ]; then
-    # Update with array format [monitor1, monitor2]
-    sed -i '' "/^\[workspace-to-monitor-force-assignment\]/,/^[.*]/s/^$WORKSPACE = .*/$WORKSPACE = ['$MONITOR', '$FALLBACK_MONITOR']/" "$TEMP_FILE"
 else
-    # Update with single monitor format
-    sed -i '' "/^\[workspace-to-monitor-force-assignment\]/,/^[.*]/s/^$WORKSPACE = .*/$WORKSPACE = '$MONITOR'/" "$TEMP_FILE"
+    # Validate monitor names
+    for mon in ${MONITOR_CONFIG//,/ }; do
+        [[ ! $mon =~ ^(main|dell|built-in)$ ]] && echo "Error: Invalid monitor '$mon'" && exit 1
+    done
+    
+    # Preserve comment from current config
+    COMMENT=""
+    [[ $CURRENT_LINE =~ \#.* ]] && COMMENT=" ${BASH_REMATCH[0]}"
+    
+    # Create new config line
+    if [[ $MONITOR_CONFIG == *","* ]]; then
+        IFS=',' read -r mon1 mon2 <<< "$MONITOR_CONFIG"
+        NEW_LINE="$WORKSPACE = ['$mon1', '$mon2']$COMMENT"
+    else
+        NEW_LINE="$WORKSPACE = '$MONITOR_CONFIG'$COMMENT"
+    fi
 fi
 
-# Move the temporary file to the final location
-mv "$TEMP_FILE" "$CONFIG_FILE"
+debug "New line: '$NEW_LINE'"
 
-# Reload AeroSpace config
+# Update config file
+sed -i '' "s|^$WORKSPACE = .*|$NEW_LINE|" "$CONFIG_FILE"
+
+# Reload AeroSpace
 aerospace reload-config
 
-echo "Moved workspace $WORKSPACE to monitor $MONITOR${FALLBACK_MONITOR:+ with fallback to $FALLBACK_MONITOR}"
+echo "Updated workspace $WORKSPACE configuration"

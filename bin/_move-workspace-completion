@@ -44,6 +44,7 @@ _move-workspace() {
     typeset -A opt_args
 
     _arguments \
+        '(-d --debug)'{-d,--debug}'[Enable debug output]' \
         '1: :->workspace' \
         '2: :->monitor'
 
