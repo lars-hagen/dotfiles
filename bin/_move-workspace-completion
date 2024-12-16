@@ -1,0 +1,60 @@
+#compdef move-workspace
+
+# Define monitor options
+_monitors=(
+    'main'
+    'dell'
+    'built-in'
+    'dell,built-in'
+    'built-in,dell'
+    'main,built-in'
+    'built-in,main'
+    'main,dell'
+    'dell,main'
+    'toggle:Toggle current monitor configuration'
+)
+
+# Define workspace types
+_workspace_types=(
+    '1:Primary workspace 1'
+    '2:Primary workspace 2'
+    '3:Primary workspace 3'
+    '4:Primary workspace 4'
+    '5:Primary workspace 5'
+    '6:Primary workspace 6'
+    'S1:Secondary workspace 1'
+    'S2:Secondary workspace 2'
+    'S3:Secondary workspace 3'
+    'S4:Secondary workspace 4'
+    'L1:Laptop workspace 1'
+    'L2:Laptop workspace 2'
+    'L3:Laptop workspace 3'
+    'L4:Laptop workspace 4'
+    'TEMP1:Temporary workspace 1'
+    'TEMP2:Temporary workspace 2'
+    'TEMP3:Temporary workspace 3'
+    'TEMP4:Temporary workspace 4'
+    'slack:Slack workspace'
+    'spotify:Spotify workspace'
+    'browser:Browser workspace'
+)
+
+_move-workspace() {
+    local curcontext="$curcontext" state line
+    typeset -A opt_args
+
+    _arguments \
+        '1: :->workspace' \
+        '2: :->monitor'
+
+    case $state in
+        workspace)
+            _describe -t workspaces 'workspace' _workspace_types
+            ;;
+        monitor)
+            _describe -t monitors 'monitor' _monitors
+            ;;
+    esac
+}
+
+_move-workspace "$@" 

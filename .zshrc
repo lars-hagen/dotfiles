@@ -82,8 +82,15 @@ else
   FPATH=/usr/share/zsh/site-functions:$FPATH
 fi
 
+# Add dotfiles bin to completion path
+fpath=($DOTFILES_DIR/bin $fpath)
+
 autoload -Uz compinit
 compinit
+
+# Load AeroSpace workspace monitor completion
+autoload -U _move-workspace-completion
+compdef _move-workspace-completion move-workspace
 
 # Share history across multiple zsh sessions
 setopt SHARE_HISTORY

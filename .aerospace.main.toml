@@ -39,7 +39,7 @@ default-root-container-orientation = 'auto'
 key-mapping.preset = 'qwerty'
 
 # Modify your focus callbacks to be more mouse-aware
-on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+#on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 #on-focus-changed = ['move-mouse window-lazy-center']
 
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
@@ -285,7 +285,6 @@ L1 = ['built-in', 'dell'] #laptop
 L2 = ['built-in', 'dell']
 L3 = ['built-in', 'dell']
 L4 = ['built-in', 'dell']
-slack = 'main'    # Slack workspace
-spotify = 'main'  # Spotify workspace
-browser = 'main'  # Browser workspace
-
+slack = ['dell', 'built-in'] # Slack workspace
+spotify = ['dell', 'built-in'] # Spotify workspace
+browser = ['dell', 'built-in'] # Browser workspace>
