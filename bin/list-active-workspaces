@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Get active workspaces and their monitors
+echo "=== Active Workspaces ==="
+aerospace list-workspaces --monitor all --visible --format "%{monitor-name}:%{workspace}"
+
+echo -e "\n=== Windows on Active Workspaces ==="
+# Get windows for each visible workspace with detailed information
+aerospace list-windows --workspace visible --format "Monitor %{monitor-id} (%{monitor-name}) - Workspace %{workspace}: %{app-name} - %{window-title}"

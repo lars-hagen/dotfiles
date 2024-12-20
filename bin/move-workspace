@@ -1,72 +1,50 @@
 #!/bin/bash
 
-# Debug flag and function
+# Debug flag
 DEBUG=0
 debug() { [ "$DEBUG" -eq 1 ] && echo "[DEBUG] $*" >&2; }
 
-# Get the actual config file path
+# Get config file path
 CONFIG_FILE=$(readlink -f "$HOME/.aerospace.toml")
 [ ! -f "$CONFIG_FILE" ] && echo "Error: Could not find config file" && exit 1
 
 usage() {
     echo "Usage: $0 WORKSPACE [MONITOR|toggle] [-d|--debug]"
     echo
-    echo "Move a workspace to a specific monitor or toggle its current configuration"
+    echo "Move a workspace to a specific monitor or toggle between built-in and main"
     echo
     echo "Arguments:"
-    echo "  WORKSPACE   The workspace name (e.g., slack, 1, S1, L1)"
-    echo "  MONITOR    The monitor configuration (e.g., dell, built-in, dell,built-in)"
+    echo "  WORKSPACE   Workspace name (e.g., slack, 1, S1, L1)"
+    echo "  MONITOR    Monitor config (e.g., dell, built-in, dell,built-in)"
     echo "  toggle     Toggle between built-in and main"
-    echo
-    echo "Options:"
-    echo "  -d, --debug    Enable debug output"
     exit 1
 }
 
-# Parse all arguments
-WORKSPACE=""
-MONITOR_CONFIG=""
+# Parse arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
-        -d|--debug)
-            DEBUG=1
-            shift
-            ;;
-        -*)
-            echo "Error: Unknown option $1"
-            usage
-            ;;
-        *)
-            if [ -z "$WORKSPACE" ]; then
-                WORKSPACE=$1
-            elif [ -z "$MONITOR_CONFIG" ]; then
-                MONITOR_CONFIG=$1
-            else
-                echo "Error: Too many arguments"
-                usage
+        -d|--debug) DEBUG=1; shift ;;
+        -*) echo "Error: Unknown option $1"; usage ;;
+        *) 
+            if [ -z "$WORKSPACE" ]; then WORKSPACE=$1
+            elif [ -z "$MONITOR_CONFIG" ]; then MONITOR_CONFIG=$1
+            else echo "Error: Too many arguments"; usage
             fi
-            shift
-            ;;
+            shift ;;
     esac
 done
 
-# Check required arguments
 [ -z "$WORKSPACE" ] || [ -z "$MONITOR_CONFIG" ] && usage
 
 debug "Workspace: $WORKSPACE"
 debug "Monitor config: $MONITOR_CONFIG"
 
-# Create backup
-cp "$CONFIG_FILE" "$CONFIG_FILE.bak"
-
-# Get current config line
+# Get current config and create new config
 CURRENT_LINE=$(grep "^$WORKSPACE = " "$CONFIG_FILE")
-debug "Current line: '$CURRENT_LINE'"
+debug "Current: '$CURRENT_LINE'"
 
-# Handle toggle or monitor assignment
 if [[ "$MONITOR_CONFIG" == "toggle" ]]; then
-    [ -z "$CURRENT_LINE" ] && echo "Error: No configuration found for workspace $WORKSPACE" && exit 1
-    
+    [ -z "$CURRENT_LINE" ] && echo "Error: No config found for workspace $WORKSPACE" && exit 1
     if [[ $CURRENT_LINE =~ \'built-in\' ]]; then
         NEW_LINE="${CURRENT_LINE/built-in/main}"
     elif [[ $CURRENT_LINE =~ \'main\' ]]; then
@@ -80,11 +58,9 @@ else
         [[ ! $mon =~ ^(main|dell|built-in)$ ]] && echo "Error: Invalid monitor '$mon'" && exit 1
     done
     
-    # Preserve comment from current config
+    # Create new config preserving any comment
     COMMENT=""
     [[ $CURRENT_LINE =~ \#.* ]] && COMMENT=" ${BASH_REMATCH[0]}"
-    
-    # Create new config line
     if [[ $MONITOR_CONFIG == *","* ]]; then
         IFS=',' read -r mon1 mon2 <<< "$MONITOR_CONFIG"
         NEW_LINE="$WORKSPACE = ['$mon1', '$mon2']$COMMENT"
@@ -93,12 +69,16 @@ else
     fi
 fi
 
-debug "New line: '$NEW_LINE'"
+debug "New: '$NEW_LINE'"
 
-# Update config file
+# Update config and handle workspace transition
+cp "$CONFIG_FILE" "$CONFIG_FILE.bak"
 sed -i '' "s|^$WORKSPACE = .*|$NEW_LINE|" "$CONFIG_FILE"
 
-# Reload AeroSpace
+# Focus workspace, reload config, and refresh layout
+aerospace workspace "$WORKSPACE"
 aerospace reload-config
+aerospace workspace-back-and-forth
+aerospace workspace "$WORKSPACE"
 
 echo "Updated workspace $WORKSPACE configuration"

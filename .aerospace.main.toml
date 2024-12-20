@@ -39,7 +39,7 @@ default-root-container-orientation = 'auto'
 key-mapping.preset = 'qwerty'
 
 # Modify your focus callbacks to be more mouse-aware
-#on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 #on-focus-changed = ['move-mouse window-lazy-center']
 
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
@@ -99,6 +99,18 @@ ctrl-alt-shift-cmd-down = [
     'move-node-to-monitor down',
     'focus-monitor down'
 ]
+
+ctrl-alt-shift-s = ['''exec-and-forget /bin/bash -c '
+    SLACK_ID=$(aerospace list-apps | grep "Slack" | awk "{print \$1}")
+    if [ -n "$SLACK_ID" ]; then
+        aerospace layout --window-id "$SLACK_ID" floating
+    fi' ''',
+    '''exec-and-forget osascript -e '
+    tell application "Slack" to activate
+    tell application "System Events" to click button 1 of window 1 of process "Slack"
+    tell application "Finder" to activate' ''']
+
+
 # Move window right within monitor or to right monitor if at boundary
 # alt-shift-right = [
 #     'move right',
@@ -209,7 +221,7 @@ esc = ['mode main']
 s = ['workspace slack', 'mode main']
 m = ['workspace spotify', 'mode main']
 b = ['workspace browser', 'mode main']
-shift-s = ['move-node-to-workspace slack', 'workspace slack', 'mode main']
+shift-s = ['move-node-to-workspace slack', 'workspace slack', 'layout tiling', 'mode main']
 shift-m = ['move-node-to-workspace spotify', 'workspace spotify', 'mode main']
 shift-b = ['move-node-to-workspace browser', 'workspace browser', 'mode main']
 1 = ['workspace slack', 'mode main']
@@ -247,6 +259,7 @@ ctrl-alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
 esc = ['reload-config','exec-and-forget borders', 'mode main']
 r = ['flatten-workspace-tree', 'mode main'] # reset layout
 f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
+t = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
 backspace = ['close-all-windows-but-current', 'mode main']
 
 # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
@@ -267,8 +280,8 @@ if.app-id = 'org.tabby'
 run = ['layout floating']
 
 [[on-window-detected]]
-if.app-id = 'com.tinyspeck.slackmacgap'  # Slack's application identifier
-run = ['move-node-to-workspace slack']  # Move to slack workspace when detected
+if.app-id = 'com.tinyspeck.slackmacgap'
+run = ['layout floating']  # Default to floating when window is first detected
 
 [workspace-to-monitor-force-assignment]
 1 = 'main'      # Assigns workspace 1 to your main monitor (with menu bar)
@@ -291,4 +304,4 @@ L3 = ['built-in', 'dell']
 L4 = ['built-in', 'dell']
 slack = ['dell', 'built-in'] # Slack workspace
 spotify = ['dell', 'built-in'] # Spotify workspace
-browser = ['dell', 'built-in'] # Browser workspace>
+browser = ['dell', 'built-in'] # Browser workspace

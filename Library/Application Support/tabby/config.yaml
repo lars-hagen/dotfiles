@@ -221,6 +221,7 @@ appearance:
   dock: top
   dockSpace: 0.86
   dockFill: 0.72
+  dockHideOnBlur: true
 hacks: {}
 providerBlacklist: []
 commandBlacklist: []
