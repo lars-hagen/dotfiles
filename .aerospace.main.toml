@@ -257,14 +257,18 @@ down = ['join-with down', 'mode main']
 up = ['join-with up', 'mode main']
 right = ['join-with right', 'mode main']
 
-[[on-window-detected]]
-if.app-id = 'com.google.Chrome'
-if.window-title-regex-substring = 'AWS Authentication'
-run = ['layout floating']  # Make it floating and don't focus
+# [[on-window-detected]]
+# if.app-id = 'com.google.Chrome'
+# if.window-title-regex-substring = 'AWS Authentication'
+# run = ['layout floating']  # Make it floating and don't focus
 
 [[on-window-detected]]
 if.app-id = 'org.tabby'
 run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'com.tinyspeck.slackmacgap'  # Slack's application identifier
+run = ['move-node-to-workspace slack']  # Move to slack workspace when detected
 
 [workspace-to-monitor-force-assignment]
 1 = 'main'      # Assigns workspace 1 to your main monitor (with menu bar)
