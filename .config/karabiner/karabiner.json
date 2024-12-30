@@ -20,15 +20,12 @@
                         ]
                     },
                     {
-                        "description": "Open an Alacritty terminal window with Ctrl+Alt+Enter or Ctrl+Alt+T",
+                        "description": "Open an Alacritty terminal window with Ctrl+Alt+Enter",
                         "manipulators": [
                             {
                                 "from": {
                                     "key_code": "return_or_enter",
-                                    "modifiers": {
-                                        "mandatory": ["left_control", "left_option"],
-                                        "optional": ["caps_lock"]
-                                    }
+                                    "modifiers": { "mandatory": ["left_control", "left_option"] }
                                 },
                                 "to": [{ "shell_command": "open -na Alacritty" }],
                                 "type": "basic"
@@ -208,6 +205,25 @@
                             "to": [{ "key_code": "left_command" }]
                         }
                     ]
+                },
+                {
+                    "identifiers": {
+                        "is_game_pad": true,
+                        "is_keyboard": true,
+                        "is_pointing_device": true,
+                        "product_id": 2833,
+                        "vendor_id": 13364
+                    },
+                    "ignore": false,
+                    "treat_as_built_in_keyboard": true
+                },
+                {
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "product_id": 2833,
+                        "vendor_id": 13364
+                    },
+                    "ignore": true
                 }
             ],
             "name": "Default profile",

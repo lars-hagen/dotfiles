@@ -1,7 +1,7 @@
 # Place a copy of this config to ~/.aerospace.toml
 # After that, you can edit ~/.aerospace.toml to your liking
 
-automatically-unhide-macos-hidden-apps = true
+#automatically-unhide-macos-hidden-apps = true
 
 # You can use it to add commands that run after AeroSpace startup.
 # 'after-startup-command' is run after 'after-login-command'
@@ -62,6 +62,16 @@ outer.right = 10
 # 'main' binding mode must be always presented
 # Fallback value (if you omit the key): mode.main.binding = {}
 [mode.main.binding]
+
+shift-alt-w = '''exec-and-forget /bin/bash -c '
+    # Store current workspace
+    CURRENT_WORKSPACE=$(aerospace list-workspaces --focused)
+    # Close the focused window
+    aerospace close
+    # Switch back to stored workspace
+    aerospace workspace "$CURRENT_WORKSPACE"
+''''
+
 # Window / Monitor Focus (ctrl-alt + arrows)
 ctrl-alt-left = 'focus left --boundaries all-monitors-outer-frame'
 ctrl-alt-right = 'focus right --boundaries all-monitors-outer-frame'
