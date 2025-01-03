@@ -29,7 +29,17 @@ create_symlink() {
 
 # Check for required tools
 command -v git >/dev/null 2>&1 || { echo >&2 "Git is required but not installed. Aborting."; exit 1; }
-command -v pipx >/dev/null 2>&1 || { echo >&2 "pipx is required but not installed. Aborting."; exit 1; }
+
+# Install pipx if missing on macOS
+if ! command -v pipx >/dev/null 2>&1; then
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "pipx not found. Installing via Homebrew..."
+        brew install pipx
+    else
+        echo >&2 "pipx is required but not installed. Aborting."
+        exit 1
+    fi
+fi
 
 # Confirmation prompt
 read -p "This will install dotfiles and may overwrite existing files. Do you want to continue? (y/n) " -n 1 -r
