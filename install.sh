@@ -44,15 +44,20 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     
     # Use brew bundle with verbose output and capture it
     brew bundle --verbose | while read -r line; do
-        if [[ $line == *"Installing"* ]]; then
+        if [[ $line == *"Installing"* ]] || [[ $line == *"already installed"* ]] || [[ $line == *"skipped"* ]]; then
             ((current_package++))
-            echo -e "\033[1;34m==> \033[1;37m[$current_package/$total_packages] $line\033[0m"  # Bold blue arrow, bold white text
+            # Only show the line if it's actually installing something
+            if [[ $line == *"Installing"* ]]; then
+                echo -e "\033[1;34m==> \033[1;37m[$current_package/$total_packages] $line\033[0m"
+            else
+                echo -e "\033[1;36m==> \033[1;37m[$current_package/$total_packages] $line\033[0m"  # Cyan for skipped/already installed
+            fi
         elif [[ $line == *"Downloading"* ]]; then
-            echo -e "\033[1;32m  -> \033[0;37m$line\033[0m"  # Bold green arrow, normal white text
+            echo -e "\033[1;32m  -> \033[0;37m$line\033[0m"
         elif [[ $line == *"Pouring"* ]] || [[ $line == *"Building"* ]] || [[ $line == *"Checking"* ]]; then
-            echo -e "\033[1;33m  -> \033[0;37m$line\033[0m"  # Bold yellow arrow, normal white text
+            echo -e "\033[1;33m  -> \033[0;37m$line\033[0m"
         elif [[ $line == *"Error"* ]] || [[ $line == *"Warning"* ]]; then
-            echo -e "\033[1;31m==> \033[1;37m$line\033[0m"  # Bold red arrow, bold white text
+            echo -e "\033[1;31m==> \033[1;37m$line\033[0m"
         fi
     done
 fi
