@@ -38,7 +38,18 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     fi
     
     echo "Installing packages from Brewfile..."
-    brew bundle
+    # Use brew bundle with verbose output and capture it
+    brew bundle --verbose | while read -r line; do
+        if [[ $line == *"Installing"* ]]; then
+            echo -e "\033[1;34m==> \033[1;37m$line\033[0m"  # Bold blue arrow, bold white text
+        elif [[ $line == *"Downloading"* ]]; then
+            echo -e "\033[1;32m  -> \033[0;37m$line\033[0m"  # Bold green arrow, normal white text
+        elif [[ $line == *"Pouring"* ]] || [[ $line == *"Building"* ]] || [[ $line == *"Checking"* ]]; then
+            echo -e "\033[1;33m  -> \033[0;37m$line\033[0m"  # Bold yellow arrow, normal white text
+        elif [[ $line == *"Error"* ]] || [[ $line == *"Warning"* ]]; then
+            echo -e "\033[1;31m==> \033[1;37m$line\033[0m"  # Bold red arrow, bold white text
+        fi
+    done
 fi
 
 # Install pipx if missing on macOS
