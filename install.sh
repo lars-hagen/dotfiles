@@ -30,6 +30,17 @@ create_symlink() {
 # Check for required tools
 command -v git >/dev/null 2>&1 || { echo >&2 "Git is required but not installed. Aborting."; exit 1; }
 
+# Install Homebrew and packages if on macOS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    if ! command -v brew >/dev/null 2>&1; then
+        echo "Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+    
+    echo "Installing packages from Brewfile..."
+    brew bundle
+fi
+
 # Install pipx if missing on macOS
 if ! command -v pipx >/dev/null 2>&1; then
     if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -60,6 +71,10 @@ pipx inject shell-gpt readchar
 # Initialize and update submodules
 echo "Initializing and updating submodules..."
 git submodule update --init --recursive
+
+# Create .config directory if it doesn't exist
+echo "Ensuring .config directory exists..."
+mkdir -p "$HOME/.config"
 
 # Create all symlinks
 echo "Creating symlinks..."
