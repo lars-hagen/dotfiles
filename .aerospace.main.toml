@@ -164,6 +164,7 @@ alt-l = ['workspace L1']
 alt-e = ['workspace S2']
 alt-m = ['workspace spotify']  # New: Quick switch to music workspace
 alt-b = ['workspace browser']  # New: Quick switch to browser workspace
+alt-c = ['workspace code']  # Quick switch to code workspace
 
 # Move Windows to Workspaces
 alt-shift-s = ['move-node-to-workspace S1', 'workspace S1']
@@ -177,6 +178,7 @@ alt-shift-l = ['move-node-to-workspace L1', 'workspace L1']
 alt-shift-e = ['move-node-to-workspace S2', 'workspace S2']
 alt-shift-m = ['move-node-to-workspace spotify', 'workspace spotify']  # New: Move window to music workspace and switch
 alt-shift-b = ['move-node-to-workspace browser', 'workspace browser']  # New: Move window to browser workspace and switch
+alt-shift-c = ['move-node-to-workspace code', 'workspace code']  # Move window to code workspace and switch
 
 # Mode Switching
 ctrl-alt-space = 'mode service'  # Enter service mode
@@ -235,9 +237,11 @@ esc = ['mode main']
 s = ['workspace slack', 'mode main']
 m = ['workspace spotify', 'mode main']
 b = ['workspace browser', 'mode main']
+c = ['workspace code', 'mode main']  # Add code workspace to apps mode
 shift-s = ['move-node-to-workspace slack', 'workspace slack', 'layout tiling', 'mode main']
 shift-m = ['move-node-to-workspace spotify', 'workspace spotify', 'mode main']
 shift-b = ['move-node-to-workspace browser', 'workspace browser', 'mode main']
+shift-c = ['move-node-to-workspace code', 'workspace code', 'mode main']  # Add code workspace move to apps mode
 1 = ['workspace slack', 'mode main']
 2 = ['workspace spotify', 'mode main']
 3 = ['workspace browser', 'mode main']
@@ -319,3 +323,4 @@ L4 = ['built-in', 'dell']
 slack = ['dell', 'built-in'] # Slack workspace
 spotify = ['dell', 'built-in'] # Spotify workspace
 browser = ['dell', 'built-in'] # Browser workspace
+code = ['dell', 'built-in'] # Code workspace
