@@ -1,10 +1,67 @@
-# Prevent macOS from creating .DS_Store files on network volumes
+###############################################################################
+# Keyboard                                                                      #
+###############################################################################
+# Previous values:
+# InitialKeyRepeat: 2
+# KeyRepeat: 30
+defaults write NSGlobalDomain KeyRepeat -int 1
+defaults write NSGlobalDomain InitialKeyRepeat -int 10
+
+###############################################################################
+# Dock & Desktop                                                               #
+###############################################################################
+# Prevent .DS_Store file creation on network volumes
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE
 
-# Set the bottom-left hot corner to show Desktop
+# Set bottom-left hot corner to show desktop
 defaults write com.apple.dock wvous-bl-corner -int 4
 
-# todo: find out how to change the "click wallpaper to reveal desktop" behavior, so that its set to only in stage manager
+# Automatically hide and show the Dock
+defaults write com.apple.dock autohide -bool true
+
+# todo: find out how to change the "click wallpaper to reveal desktop" behavior, 
+# so that its set to only in stage manager
+
+
+###############################################################################
+# Spotlight                                                                     #
+###############################################################################
+# Disable Spotlight indexing for any volume that gets mounted
+sudo defaults write /.Spotlight-V100/VolumeConfiguration Exclusions -array "/Volumes"
+
+# Change indexing order and disable unnecessary search results
+defaults write com.apple.spotlight orderedItems -array \
+    '{"enabled" = 1;"name" = "APPLICATIONS";}' \
+    '{"enabled" = 1;"name" = "SYSTEM_PREFS";}' \
+    '{"enabled" = 1;"name" = "DIRECTORIES";}' \
+    '{"enabled" = 0;"name" = "PDF";}' \
+    '{"enabled" = 0;"name" = "FONTS";}' \
+    '{"enabled" = 0;"name" = "DOCUMENTS";}' \
+    '{"enabled" = 0;"name" = "MESSAGES";}' \
+    '{"enabled" = 0;"name" = "CONTACT";}' \
+    '{"enabled" = 0;"name" = "EVENT_TODO";}' \
+    '{"enabled" = 0;"name" = "IMAGES";}' \
+    '{"enabled" = 0;"name" = "BOOKMARKS";}' \
+    '{"enabled" = 0;"name" = "MUSIC";}' \
+    '{"enabled" = 0;"name" = "MOVIES";}' \
+    '{"enabled" = 0;"name" = "PRESENTATIONS";}' \
+    '{"enabled" = 0;"name" = "SPREADSHEETS";}' \
+    '{"enabled" = 0;"name" = "SOURCE";}' \
+    '{"enabled" = 0;"name" = "MENU_DEFINITION";}' \
+    '{"enabled" = 0;"name" = "MENU_OTHER";}' \
+    '{"enabled" = 0;"name" = "MENU_CONVERSION";}' \
+    '{"enabled" = 0;"name" = "MENU_EXPRESSION";}' \
+    '{"enabled" = 0;"name" = "MENU_WEBSEARCH";}' \
+    '{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
+
+# Load new settings before rebuilding the index
+killall mds > /dev/null 2>&1
+
+# Make sure indexing is enabled for the main volume
+sudo mdutil -i on / > /dev/null
+
+# Rebuild the index from scratch
+sudo mdutil -E / > /dev/null
 
 # Restart the Dock to apply changes
 killall Dock

@@ -9,6 +9,10 @@ DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 create_symlink() {
     local src=$1
     local dest=$2
+    
+    # Create parent directories if they don't exist
+    local dest_dir=$(dirname "$dest")
+    mkdir -p "$dest_dir"
 
     if [ -L "$dest" ]; then
         if [ "$(readlink -f "$dest")" = "$(readlink -f "$src")" ]; then
@@ -38,26 +42,18 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     fi
     
     echo "Installing packages from Brewfile..."
-    # Count total packages (taps, brews, casks, and vscode extensions)
-    total_packages=$(grep -E "^(tap|brew|cask|vscode) " Brewfile | wc -l | tr -d ' ')
-    current_package=0
-    
     # Use brew bundle with verbose output and capture it
     brew bundle --verbose | while read -r line; do
-        if [[ $line == *"Installing"* ]] || [[ $line == *"already installed"* ]] || [[ $line == *"skipped"* ]]; then
-            ((current_package++))
-            # Only show the line if it's actually installing something
-            if [[ $line == *"Installing"* ]]; then
-                echo -e "\033[1;34m==> \033[1;37m[$current_package/$total_packages] $line\033[0m"
-            else
-                echo -e "\033[1;36m==> \033[1;37m[$current_package/$total_packages] $line\033[0m"  # Cyan for skipped/already installed
-            fi
+        if [[ $line == *"Installing"* ]]; then
+            echo -e "\033[1;34m==> \033[1;37m$line\033[0m"  # Bold blue arrow, bold white text
         elif [[ $line == *"Downloading"* ]]; then
-            echo -e "\033[1;32m  -> \033[0;37m$line\033[0m"
+            echo -e "\033[1;32m  -> \033[0;37m$line\033[0m"  # Bold green arrow, normal white text
         elif [[ $line == *"Pouring"* ]] || [[ $line == *"Building"* ]] || [[ $line == *"Checking"* ]]; then
-            echo -e "\033[1;33m  -> \033[0;37m$line\033[0m"
+            echo -e "\033[1;33m  -> \033[0;37m$line\033[0m"  # Bold yellow arrow, normal white text
         elif [[ $line == *"Error"* ]] || [[ $line == *"Warning"* ]]; then
-            echo -e "\033[1;31m==> \033[1;37m$line\033[0m"
+            echo -e "\033[1;31m==> \033[1;37m$line\033[0m"  # Bold red arrow, bold white text
+        elif [[ $line == *"already installed"* ]] || [[ $line == *"skipped"* ]]; then
+            echo -e "\033[1;36m==> \033[1;37m$line\033[0m"  # Cyan for skipped/already installed
         fi
     done
 fi
@@ -126,12 +122,17 @@ fi
 if [[ "$OSTYPE" == "darwin"* ]]; then
     create_symlink "$DOTFILES_DIR/.config/karabiner" "$HOME/.config/karabiner"
     create_symlink "$DOTFILES_DIR/.config/borders" "$HOME/.config/borders"
+    create_symlink "$DOTFILES_DIR/.aerospace.main.toml" "$HOME/.aerospace.toml"
+    
+    # Create Tabby config directory and symlink
+    mkdir -p "$HOME/Library/Application Support/tabby"
+    create_symlink "$DOTFILES_DIR/Library/Application Support/tabby/config.yaml" "$HOME/Library/Application Support/tabby/config.yaml"
 
     # Run .macos file
     echo "Applying macOS-specific settings..."
     source "$DOTFILES_DIR/.macos"
 else
-    echo "Skipping karabiner amethyst YabaiIndicator installations and macOS-specific settings (not on macOS)"
+    echo "Skipping macOS-specific configurations (karabiner, borders, aerospace, tabby)"
 fi
 
 echo "Dotfiles installation complete!"
