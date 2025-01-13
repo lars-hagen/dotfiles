@@ -9,6 +9,7 @@ SAVEHIST=100000
 setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY   # Share command history between multiple zsh sessions
 setopt APPEND_HISTORY
+setopt EXTENDED_HISTORY  # Save timestamp and duration information
 
 # Define history files
 HISTFILE_WORK="$HOME/.zsh_history"
