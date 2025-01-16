@@ -153,7 +153,7 @@ alt-e = ['workspace S2']
 alt-m = ['workspace spotify']  # New: Quick switch to music workspace
 alt-b = ['workspace browser']  # New: Quick switch to browser workspace
 alt-c = ['workspace code']  # Quick switch to code workspace
-alt-s = ['workspace slack']
+alt-s = ['workspace slack', '''exec-and-forget osascript -e 'tell application "Slack" to activate' ''']
 
 # Move Windows to Workspaces
 alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
@@ -167,7 +167,7 @@ alt-shift-e = ['move-node-to-workspace S2', 'workspace S2']
 alt-shift-m = ['move-node-to-workspace spotify', 'workspace spotify']  # New: Move window to music workspace and switch
 alt-shift-b = ['move-node-to-workspace browser', 'workspace browser']  # New: Move window to browser workspace and switch≤
 alt-shift-c = ['move-node-to-workspace code', 'workspace code']  # Move window to code workspace and switch
-alt-shift-s = ['move-node-to-workspace slack', 'workspace slack']  # Move window to slack workspace and switch
+alt-shift-s = ['move-node-to-workspace slack', 'workspace slack', '''exec-and-forget osascript -e 'tell application "Slack" to activate' ''']  # Move window to slack workspace and switch
 
 # Mode Switching
 ctrl-alt-space = 'mode service'  # Enter service mode
@@ -223,11 +223,11 @@ shift-4 = ['move-node-to-workspace TEMP4','workspace TEMP4','mode main']
 esc = ['mode main']
 
 [mode.apps.binding]
-s = ['workspace slack', 'mode main']
+s = ['workspace slack', '''exec-and-forget osascript -e 'tell application "Slack" to activate' ''', 'mode main']
 m = ['workspace spotify', 'mode main']
 b = ['workspace browser', 'mode main']
 c = ['workspace code', 'mode main']  # Add code workspace to apps mode
-shift-s = ['move-node-to-workspace slack', 'workspace slack', 'layout tiling', 'mode main']
+shift-s = ['move-node-to-workspace slack', 'workspace slack', '''exec-and-forget osascript -e 'tell application "Slack" to activate' ''', 'mode main']
 shift-m = ['move-node-to-workspace spotify', 'workspace spotify', 'mode main']
 shift-b = ['move-node-to-workspace browser', 'workspace browser', 'mode main']
 shift-c = ['move-node-to-workspace code', 'workspace code', 'mode main']  # Add code workspace move to apps mode
