@@ -110,17 +110,6 @@ ctrl-alt-shift-cmd-down = [
     'focus-monitor down'
 ]
 
-ctrl-alt-shift-s = ['''exec-and-forget /bin/bash -c '
-    SLACK_ID=$(aerospace list-apps | grep "Slack" | awk "{print \$1}")
-    if [ -n "$SLACK_ID" ]; then
-        aerospace layout --window-id "$SLACK_ID" floating
-    fi' ''',
-    '''exec-and-forget osascript -e '
-    tell application "Slack" to activate
-    tell application "System Events" to click button 1 of window 1 of process "Slack"
-    tell application "Finder" to activate' ''']
-
-
 # Move window right within monitor or to right monitor if at boundary
 # alt-shift-right = [
 #     'move right',
@@ -153,7 +142,6 @@ ctrl-shift-cmd-up = ['join-with up']
 ctrl-shift-cmd-down = ['join-with down']
 
 # Quick Workspace Switching
-alt-s = ['workspace S1']
 alt-1 = ['workspace 1']
 alt-2 = ['workspace 2']
 alt-3 = ['workspace 3'] 
@@ -165,9 +153,9 @@ alt-e = ['workspace S2']
 alt-m = ['workspace spotify']  # New: Quick switch to music workspace
 alt-b = ['workspace browser']  # New: Quick switch to browser workspace
 alt-c = ['workspace code']  # Quick switch to code workspace
+alt-s = ['workspace slack']
 
 # Move Windows to Workspaces
-alt-shift-s = ['move-node-to-workspace S1', 'workspace S1']
 alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
 alt-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
 alt-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
@@ -177,8 +165,9 @@ alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
 alt-shift-l = ['move-node-to-workspace L1', 'workspace L1']
 alt-shift-e = ['move-node-to-workspace S2', 'workspace S2']
 alt-shift-m = ['move-node-to-workspace spotify', 'workspace spotify']  # New: Move window to music workspace and switch
-alt-shift-b = ['move-node-to-workspace browser', 'workspace browser']  # New: Move window to browser workspace and switch
+alt-shift-b = ['move-node-to-workspace browser', 'workspace browser']  # New: Move window to browser workspace and switch≤
 alt-shift-c = ['move-node-to-workspace code', 'workspace code']  # Move window to code workspace and switch
+alt-shift-s = ['move-node-to-workspace slack', 'workspace slack']  # Move window to slack workspace and switch
 
 # Mode Switching
 ctrl-alt-space = 'mode service'  # Enter service mode
@@ -299,10 +288,13 @@ run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
-run = ['layout floating']  # Default to floating when window is first detected
+run = [
+    'layout floating',
+    'move-node-to-workspace slack'
+]  # Make Slack windows floating and move them to slack workspace
 
 [workspace-to-monitor-force-assignment]
-1 = 'main'      # Assigns workspace 1 to your main monitor (with menu bar)
+1 = 'main'      # Assigns workspace 1 to your main monitor (with menu bar)  
 2 = 'main'      # Assigns workspace 2 to your main monitor (with menu bar)
 3 = 'main'
 4 = 'main'
@@ -320,7 +312,7 @@ L1 = ['built-in', 'dell'] #laptop
 L2 = ['built-in', 'dell']
 L3 = ['built-in', 'dell']
 L4 = ['built-in', 'dell']
-slack = ['dell', 'built-in'] # Slack workspace
+slack = ['main', 'dell'] # Slack workspace
 spotify = ['dell', 'built-in'] # Spotify workspace
 browser = ['main', 'dell'] # Browser workspace
 code = ['dell', 'built-in'] # Code workspace
