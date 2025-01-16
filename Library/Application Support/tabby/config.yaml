@@ -166,6 +166,7 @@ hotkeys:
     - ⌘-Shift-E
   command-selector:
     - ⌘-Shift-P
+  group-selectors: {}
 terminal:
   searchOptions: {}
   colorScheme:
@@ -222,6 +223,9 @@ appearance:
   dockSpace: 0.86
   dockFill: 0.72
   dockHideOnBlur: true
+  opacity: 0.94
+  spaciness: 1.1
+  vibrancy: true
 hacks: {}
 providerBlacklist: []
 commandBlacklist: []

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Check if we're in the reepay-cli directory
+if [[ $(pwd) == */reepay-cli ]]; then
+    echo "Running code formatters..."
+    poetry run black .
+    poetry run ruff check --fix .
+fi
+
+git --no-pager diff --cached | sgpt --shell "
+Based on the git diff provided, perform these steps:
+* Create a commit message following Conventional Commits (conventionalcommits.org)
+* Push the changes to origin HEAD
+
+<example>
+# Create a commit
+git commit -m 'feat(ui): add dark mode toggle'
+
+# Push the changes
+git push origin HEAD
+</example>
+
+Important:
+- Analyze the file path as they might contain something useful for the commit message.
+- Output each command to be executed, you are only allowed to run git commit -m, git push origin HEAD, one per line, important do not chain commands using &&, important include a comment above each command.
+"

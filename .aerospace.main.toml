@@ -1,7 +1,7 @@
 # Place a copy of this config to ~/.aerospace.toml
 # After that, you can edit ~/.aerospace.toml to your liking
 
-#automatically-unhide-macos-hidden-apps = true
+automatically-unhide-macos-hidden-apps = true
 
 # You can use it to add commands that run after AeroSpace startup.
 # 'after-startup-command' is run after 'after-login-command'
@@ -126,7 +126,7 @@ ctrl-alt-shift-s = ['''exec-and-forget /bin/bash -c '
 #     'move right',
 #     'move-node-to-monitor right',
 #     'focus-monitor right',
-#     'move-mouse monitor-lazy-center'
+#     'move-mouse monitor-lazy-center' 
 # ] 
 
 # Resize Windows (cmd-alt + hjkl)
