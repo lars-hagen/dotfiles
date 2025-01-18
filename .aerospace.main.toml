@@ -313,6 +313,6 @@ L2 = ['built-in', 'dell']
 L3 = ['built-in', 'dell']
 L4 = ['built-in', 'dell']
 slack = ['main', 'dell'] # Slack workspace
-spotify = ['dell', 'built-in'] # Spotify workspace
+spotify = ['main', 'built-in'] # Spotify workspace
 browser = ['main', 'dell'] # Browser workspace
 code = ['dell', 'built-in'] # Code workspace
