@@ -401,4 +401,6 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-eval "$(_REEPAY_COMPLETE=zsh_source reepay)"  # Added by reepay
+if command -v reepay >/dev/null 2>&1; then
+    eval "$(_REEPAY_COMPLETE=zsh_source reepay)"  # Added by reepay
+fi
