@@ -1,5 +1,6 @@
 tap "homebrew/bundle"
 tap "homebrew/core"
+tap "homebrew/cask-fonts"    # Required for fonts
 
 # Core ZSH plugins and tools
 brew "zsh-autosuggestions"
@@ -16,3 +17,6 @@ brew "direnv"     # Directory-specific environment variables
 # Terminal emulators
 cask "alacritty"  # GPU-accelerated primary terminal
 cask "tabby"      # Quake-style dropdown terminal
+
+# Fonts
+cask "font-fira-code-nerd-font"  # Nerd Font with icons support
