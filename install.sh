@@ -135,4 +135,9 @@ else
     echo "Skipping macOS-specific configurations (karabiner, borders, aerospace, tabby)"
 fi
 
+# Check if reepay CLI is available before adding completion
+if command -v reepay >/dev/null 2>&1; then
+    eval "$(_REEPAY_COMPLETE=zsh_source reepay)"
+fi
+
 echo "Dotfiles installation complete!"

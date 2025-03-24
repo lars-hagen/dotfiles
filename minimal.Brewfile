@@ -11,6 +11,7 @@ brew "starship"    # Prompt
 brew "fzf"        # Fuzzy finder
 brew "zoxide"     # Smart directory jumper
 brew "eza"        # Modern ls replacement
+brew "direnv"     # Directory-specific environment variables
 
 # Terminal emulators
 cask "alacritty"  # GPU-accelerated primary terminal
