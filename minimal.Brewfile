@@ -11,3 +11,7 @@ brew "starship"    # Prompt
 brew "fzf"        # Fuzzy finder
 brew "zoxide"     # Smart directory jumper
 brew "eza"        # Modern ls replacement
+
+# Terminal emulators
+cask "alacritty"  # GPU-accelerated primary terminal
+cask "tabby"      # Quake-style dropdown terminal
