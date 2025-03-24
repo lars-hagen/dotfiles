@@ -5,6 +5,7 @@
                 "rules": [
                     {
                         "description": "Toggle AeroSpace with Option + Control + E",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "from": {
@@ -120,7 +121,6 @@
                     },
                     {
                         "description": "Open a terminal window with Ctrl-RAlt-T",
-                        "enabled": false,
                         "manipulators": [
                             {
                                 "from": {
@@ -208,6 +208,14 @@
                 },
                 {
                     "identifiers": {
+                        "is_keyboard": true,
+                        "product_id": 2833,
+                        "vendor_id": 13364
+                    },
+                    "ignore": true
+                },
+                {
+                    "identifiers": {
                         "is_game_pad": true,
                         "is_keyboard": true,
                         "is_pointing_device": true,
@@ -216,14 +224,6 @@
                     },
                     "ignore": false,
                     "treat_as_built_in_keyboard": true
-                },
-                {
-                    "identifiers": {
-                        "is_keyboard": true,
-                        "product_id": 2833,
-                        "vendor_id": 13364
-                    },
-                    "ignore": true
                 }
             ],
             "name": "Default profile",

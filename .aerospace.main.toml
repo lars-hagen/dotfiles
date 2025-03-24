@@ -63,14 +63,14 @@ outer.right = 10
 # Fallback value (if you omit the key): mode.main.binding = {}
 [mode.main.binding]
 
-shift-alt-w = '''exec-and-forget /bin/bash -c '
-    # Store current workspace
-    CURRENT_WORKSPACE=$(aerospace list-workspaces --focused)
-    # Close the focused window
-    aerospace close
-    # Switch back to stored workspace
-    aerospace workspace "$CURRENT_WORKSPACE"
-''''
+# shift-alt-w = '''exec-and-forget /bin/bash -c '
+#     # Store current workspace
+#     CURRENT_WORKSPACE=$(aerospace list-workspaces --focused)
+#     # Close the focused window
+#     aerospace close
+#     # Switch back to stored workspace
+#     aerospace workspace "$CURRENT_WORKSPACE"
+# ''''
 
 # Window / Monitor Focus (ctrl-alt + arrows)
 ctrl-alt-left = 'focus left --boundaries all-monitors-outer-frame'
@@ -93,6 +93,9 @@ ctrl-alt-shift-left = ['move left']
 ctrl-alt-shift-right = ['move right']
 ctrl-alt-shift-up = ['move up']
 ctrl-alt-shift-down = ['move down']
+# Send window to next/previous workspace and follow
+ctrl-alt-shift-period = ['move-node-to-workspace next', 'workspace next']
+ctrl-alt-shift-comma = ['move-node-to-workspace prev', 'workspace prev']
 ctrl-alt-shift-cmd-left = [
     'move-node-to-monitor left',
     'focus-monitor left'
@@ -153,6 +156,7 @@ alt-e = ['workspace S2']
 alt-m = ['workspace spotify']  # New: Quick switch to music workspace
 alt-b = ['workspace browser']  # New: Quick switch to browser workspace
 alt-c = ['workspace code']  # Quick switch to code workspace
+alt-w = ['workspace whatsapp']  # Quick switch to whatsapp workspace
 alt-s = ['workspace slack', '''exec-and-forget osascript -e 'tell application "Slack" to activate' ''']
 alt-a = ['workspace A']  # Quick switch to workspace A
 
@@ -168,6 +172,7 @@ alt-shift-e = ['move-node-to-workspace S2', 'workspace S2']
 alt-shift-m = ['move-node-to-workspace spotify', 'workspace spotify']  # New: Move window to music workspace and switch
 alt-shift-b = ['move-node-to-workspace browser', 'workspace browser']  # New: Move window to browser workspace and switch≤
 alt-shift-c = ['move-node-to-workspace code', 'workspace code']  # Move window to code workspace and switch
+alt-shift-w = ['move-node-to-workspace whatsapp', 'workspace whatsapp']  # Move window to whatsapp workspace and switch
 alt-shift-s = ['move-node-to-workspace slack', 'workspace slack', '''exec-and-forget osascript -e 'tell application "Slack" to activate' ''']  # Move window to slack workspace and switch
 alt-shift-a = ['move-node-to-workspace A', 'workspace A']  # Move window to workspace A and switch
 
@@ -229,10 +234,12 @@ s = ['workspace slack', '''exec-and-forget osascript -e 'tell application "Slack
 m = ['workspace spotify', 'mode main']
 b = ['workspace browser', 'mode main']
 c = ['workspace code', 'mode main']  # Add code workspace to apps mode
+w = ['workspace whatsapp', 'mode main']  # Add whatsapp workspace to apps mode
 shift-s = ['move-node-to-workspace slack', 'workspace slack', '''exec-and-forget osascript -e 'tell application "Slack" to activate' ''', 'mode main']
 shift-m = ['move-node-to-workspace spotify', 'workspace spotify', 'mode main']
 shift-b = ['move-node-to-workspace browser', 'workspace browser', 'mode main']
 shift-c = ['move-node-to-workspace code', 'workspace code', 'mode main']  # Add code workspace move to apps mode
+shift-w = ['move-node-to-workspace whatsapp', 'workspace whatsapp', 'mode main']  # Add whatsapp workspace move to apps mode
 1 = ['workspace slack', 'mode main']
 2 = ['workspace spotify', 'mode main']
 3 = ['workspace browser', 'mode main']
@@ -319,3 +326,4 @@ slack = ['main', 'dell'] # Slack workspace
 spotify = ['main', 'built-in'] # Spotify workspace
 browser = ['main', 'dell'] # Browser workspace
 code = ['dell', 'built-in'] # Code workspace
+whatsapp = ['main', 'dell'] # WhatsApp workspace

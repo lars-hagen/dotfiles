@@ -377,12 +377,28 @@ nvm() {
 }
 
 # Use Homebrew's node and npm by default
-node() {
-    echo "Using Homebrew node (run 'load_nvm' if you want to use NVM instead)"
-    $HOMEBREW_PREFIX/bin/node "$@"
-}
+#node() {
+#    echo "Using Homebrew node (run 'load_nvm' if you want to use NVM instead)"
+#    $HOMEBREW_PREFIX/bin/node "$@"
+#}
+#
+#npm() {
+#    echo "Using Homebrew npm (run 'load_nvm' if you want to use NVM instead)"
+#    $HOMEBREW_PREFIX/bin/npm "$@"
+#}
 
-npm() {
-    echo "Using Homebrew npm (run 'load_nvm' if you want to use NVM instead)"
-    $HOMEBREW_PREFIX/bin/npm "$@"
-}
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+    else
+        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+eval "$(_REEPAY_COMPLETE=zsh_source reepay)"  # Added by reepay

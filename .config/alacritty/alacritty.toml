@@ -52,7 +52,7 @@ style = "Italic"
 
 [window]
 decorations = "buttonless"
-opacity = 0.99
+opacity = 0.94
 blur = true
 padding = { x = 5, y = 5 }
 
