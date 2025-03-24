@@ -130,7 +130,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 
     # Run .macos file
     echo "Applying macOS-specific settings..."
-    source "$DOTFILES_DIR/.macos"
+    #source "$DOTFILES_DIR/.macos"
 else
     echo "Skipping macOS-specific configurations (karabiner, borders, aerospace, tabby)"
 fi
