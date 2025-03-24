@@ -1,6 +1,7 @@
 tap "homebrew/bundle"
 tap "homebrew/core"
 tap "homebrew/cask-fonts"    # Required for fonts
+tap "felixkratz/formulae"    # Required for borders
 
 # Core ZSH plugins and tools
 brew "zsh-autosuggestions"
@@ -13,6 +14,9 @@ brew "fzf"        # Fuzzy finder
 brew "zoxide"     # Smart directory jumper
 brew "eza"        # Modern ls replacement
 brew "direnv"     # Directory-specific environment variables
+
+# Window management
+brew "felixkratz/formulae/borders"  # Window borders for macOS
 
 # Terminal emulators
 cask "alacritty"  # GPU-accelerated primary terminal
