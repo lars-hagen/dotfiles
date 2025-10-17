@@ -1,9 +1,11 @@
 #!/bin/bash
 
-set -e  # Exit immediately if a command exits with a non-zero status
+set -e  # Exit immediately if a command exits with a non-red status
 set -u  # Exit on undefined variable
 
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# just a comment
 
 # Function to create a symbolic link
 create_symlink() {

@@ -20,9 +20,8 @@ Thumbs.db
 # Karabiner backups
 .config/karabiner/automatic_backups/
 
-# ZSH plugins (cloned during installation)
-fzf-tab/
-fzf-tab-source/
+# ZSH plugins and tools (managed as git submodules)
+# fzf/, fzf-tab/, and fzf-tab-source/ are tracked as submodules
 
 # Local configuration backups
 .macos.mathiasbynens
