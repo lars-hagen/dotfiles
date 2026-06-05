@@ -1,31 +1,30 @@
-# IDE and Editor files
-.vscode/
-.idea/
+# fzf-tab plugin (cloned by install.sh)
+fzf-tab/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Playwright CLI runtime snapshots
+.playwright-cli/
+
+# Editor files
 *.swp
 *.swo
+*~
+.vscode/
+.idea/
+.claude
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# Chezmoi state (managed by chezmoi itself)
+.chezmoistate
 
-# Local environment files
+# Secrets
+# Real mcp-funnel config holds live API keys; track only the .example template
+home/.config/mcp-funnel/.mcp-funnel.json
+*.key
+*.pem
+*.cert
+credentials.json
 .env
-.env.local
-
-# Karabiner backups
-.config/karabiner/automatic_backups/
-
-# ZSH plugins and tools (managed as git submodules)
-# fzf/, fzf-tab/, and fzf-tab-source/ are tracked as submodules
-
-# Local configuration backups
-.macos.mathiasbynens
-
-# Local bin symlink
-.local/bin
-.aerospace.main.toml.bak

@@ -1,145 +1,130 @@
 #!/bin/bash
+set -e
 
-set -e  # Exit immediately if a command exits with a non-red status
-set -u  # Exit on undefined variable
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
 
-DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DRY_RUN=false
+[[ "$1" == "--dry-run" ]] && DRY_RUN=true && echo -e "${YELLOW}◆${NC}  Dry run mode\n"
 
-# just a comment
+echo -e "${BLUE}◆${NC}  Setting up dotfiles..."
 
-# Function to create a symbolic link
-create_symlink() {
-    local src=$1
-    local dest=$2
-    
-    # Create parent directories if they don't exist
-    local dest_dir=$(dirname "$dest")
-    mkdir -p "$dest_dir"
+OS=$(uname)
+echo -e "   OS: ${GREEN}$OS${NC}"
 
-    if [ -L "$dest" ]; then
-        if [ "$(readlink -f "$dest")" = "$(readlink -f "$src")" ]; then
-            echo "Symlink already exists and is correct: $dest -> $src"
-            return
+# Phase 1: Homebrew
+if [[ "$OS" == "Darwin" ]]; then
+    if ! command -v brew &>/dev/null; then
+        echo -e "${YELLOW}◆${NC}  Installing Homebrew..."
+        if [ "$DRY_RUN" = true ]; then
+            echo -e "   Would run: /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
         else
-            echo "Incorrect symlink exists. Removing and recreating: $dest"
-            rm "$dest"
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+            echo -e "${GREEN}◇${NC}  Homebrew installed"
         fi
-    elif [ -e "$dest" ]; then
-        echo "Removing existing file: $dest"
-        rm -rf "$dest"
+    else
+        echo -e "   Homebrew: ${GREEN}✓${NC}"
     fi
 
-    echo "Creating symlink: $dest -> $src"
-    ln -s "$src" "$dest"
+    # Phase 2: Brew bundle
+    echo -e "${BLUE}◆${NC}  Installing packages..."
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "   Would run: brew bundle --file=~/dotfiles/Brewfile"
+    else
+        brew bundle --file=~/dotfiles/Brewfile
+        echo -e "${GREEN}◇${NC}  Packages installed"
+    fi
+
+    # Phase 3: fzf-tab (not in Homebrew)
+    FZF_TAB_DIR="$HOME/dotfiles/fzf-tab"
+    if [ ! -d "$FZF_TAB_DIR" ]; then
+        echo -e "${BLUE}◆${NC}  Installing fzf-tab..."
+        if [ "$DRY_RUN" = true ]; then
+            echo -e "   Would clone: Aloxaf/fzf-tab → $FZF_TAB_DIR"
+        else
+            git clone https://github.com/Aloxaf/fzf-tab "$FZF_TAB_DIR"
+            echo -e "${GREEN}◇${NC}  fzf-tab installed"
+        fi
+    else
+        echo -e "   fzf-tab: ${GREEN}✓${NC}"
+    fi
+
+    # Phase 4: macOS defaults
+    echo -e "${BLUE}◆${NC}  Applying macOS defaults..."
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "   Would run: ~/dotfiles/scripts/macos.sh"
+    else
+        ~/dotfiles/scripts/macos.sh
+        echo -e "${GREEN}◇${NC}  macOS defaults applied"
+    fi
+fi
+
+# Linux: just install essential packages
+if [[ "$OS" == "Linux" ]]; then
+    echo -e "${BLUE}◆${NC}  Linux detected — install packages manually or adapt for your distro"
+fi
+
+# Phase 4.5: OpenCode plugins (referenced by opencode.json, not in Homebrew).
+# Cloned before stow so ~/.config/opencode exists as a real dir and stow does
+# per-file symlinks instead of folding the whole dir into the repo.
+OPENCODE_PLUGINS=(
+    "git@github.com:lars-hagen/opencode-dynamic-delegate.git"
+    "git@github.com:lars-hagen/opencode-copilot-hosted-auth.git"
+    "git@github.com:lars-hagen/opencode-anthropic-auth.git"
+)
+PLUGINS_DIR="$HOME/.config/opencode/plugins"
+echo -e "${BLUE}◆${NC}  Installing OpenCode plugins..."
+for repo in "${OPENCODE_PLUGINS[@]}"; do
+    name=$(basename "$repo" .git)
+    dest="$PLUGINS_DIR/$name"
+    if [ -d "$dest" ]; then
+        echo -e "   $name: ${GREEN}✓${NC}"
+    elif [ "$DRY_RUN" = true ]; then
+        echo -e "   ${YELLOW}→${NC} Would clone: $name → $dest"
+    else
+        git clone "$repo" "$dest"
+        if [ -f "$dest/package.json" ] && command -v bun &>/dev/null; then
+            (cd "$dest" && bun install)
+        fi
+        echo -e "${GREEN}◇${NC}  $name installed"
+    fi
+done
+
+# Phase 5: Stow dotfiles
+backup_conflicts() {
+    local is_dry_run=$1
+    local timestamp=$(date +%Y%m%d-%H%M%S)
+    local conflicts
+    conflicts=$(stow -n -t ~ home 2>&1 | grep "existing target" | sed -e 's/.*existing target \(.*\) since.*/\1/' -e 's/.*existing target is not owned by stow: \(.*\)/\1/' | sed 's/^[[:space:]]*//')
+
+    if [ -n "$conflicts" ]; then
+        while IFS= read -r file; do
+            if [ -e "$HOME/$file" ]; then
+                if [ "$is_dry_run" = true ]; then
+                    echo -e "   ${YELLOW}→${NC} Would backup: ~/$file"
+                else
+                    cp "$HOME/$file" "$HOME/$file.stow-backup-$timestamp"
+                    rm "$HOME/$file"
+                    echo -e "   ${GREEN}◇${NC} Backed up: ~/$file"
+                fi
+            fi
+        done <<< "$conflicts"
+    fi
 }
 
-# Check for required tools
-command -v git >/dev/null 2>&1 || { echo >&2 "Git is required but not installed. Aborting."; exit 1; }
-
-# Install Homebrew and packages if on macOS
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    if ! command -v brew >/dev/null 2>&1; then
-        echo "Installing Homebrew..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    fi
-    
-    echo "Installing packages from Brewfile..."
-    # Use brew bundle with verbose output and capture it
-    brew bundle --verbose | while read -r line; do
-        if [[ $line == *"Installing"* ]]; then
-            echo -e "\033[1;34m==> \033[1;37m$line\033[0m"  # Bold blue arrow, bold white text
-        elif [[ $line == *"Downloading"* ]]; then
-            echo -e "\033[1;32m  -> \033[0;37m$line\033[0m"  # Bold green arrow, normal white text
-        elif [[ $line == *"Pouring"* ]] || [[ $line == *"Building"* ]] || [[ $line == *"Checking"* ]]; then
-            echo -e "\033[1;33m  -> \033[0;37m$line\033[0m"  # Bold yellow arrow, normal white text
-        elif [[ $line == *"Error"* ]] || [[ $line == *"Warning"* ]]; then
-            echo -e "\033[1;31m==> \033[1;37m$line\033[0m"  # Bold red arrow, bold white text
-        elif [[ $line == *"already installed"* ]] || [[ $line == *"skipped"* ]]; then
-            echo -e "\033[1;36m==> \033[1;37m$line\033[0m"  # Cyan for skipped/already installed
-        fi
-    done
-fi
-
-# Install pipx if missing on macOS
-if ! command -v pipx >/dev/null 2>&1; then
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        echo "pipx not found. Installing via Homebrew..."
-        brew install pipx
-    else
-        echo >&2 "pipx is required but not installed. Aborting."
-        exit 1
-    fi
-fi
-
-# Confirmation prompt
-read -p "This will install dotfiles and may overwrite existing files. Do you want to continue? (y/n) " -n 1 -r
-echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo "Installation cancelled."
-    exit 1
-fi
-
-# Install shell-gpt via pipx
-echo "Installing shell-gpt via pipx..."
-pipx install shell-gpt
-
-# Inject readchar into shell-gpt
-echo "Injecting readchar into shell-gpt..."
-pipx inject shell-gpt readchar
-
-# Initialize and update submodules
-echo "Initializing and updating submodules..."
-git submodule update --init --recursive
-
-# Create .config directory if it doesn't exist
-echo "Ensuring .config directory exists..."
-mkdir -p "$HOME/.config"
-
-# Create all symlinks
-echo "Creating symlinks..."
-create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
-create_symlink "$DOTFILES_DIR/.config/shell_gpt/functions/execute_shell.py" "$HOME/.config/shell_gpt/functions/execute_shell.py"
-create_symlink "$DOTFILES_DIR/.config/shell_gpt/bin" "$HOME/.config/shell_gpt/bin"
-create_symlink "$DOTFILES_DIR/.config/alacritty" "$HOME/.config/alacritty"
-create_symlink "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
-
-# Add DOTFILES_DIR to .zshrc if not already present
-if ! grep -q "^export DOTFILES_DIR=" "$DOTFILES_DIR/.zshrc"; then
-    # Create a temporary file
-    temp_file=$(mktemp)
-    # Add DOTFILES_DIR export at the top
-    echo -e "# Set dotfiles directory\nexport DOTFILES_DIR=\"/Users/lars/dotfiles\"\n" > "$temp_file"
-    # Append the rest of .zshrc
-    cat "$DOTFILES_DIR/.zshrc" >> "$temp_file"
-    # Replace original .zshrc with the new content
-    mv "$temp_file" "$DOTFILES_DIR/.zshrc"
-fi
-
-# Add bin to PATH in .zshrc if not already present
-if ! grep -q "export PATH=\"\$DOTFILES_DIR/bin:\$PATH\"" "$DOTFILES_DIR/.zshrc"; then
-    echo -e "\n# Add dotfiles bin to PATH\nexport PATH=\"\$DOTFILES_DIR/bin:\$PATH\"" >> "$DOTFILES_DIR/.zshrc"
-fi
-
-# Check if the system is macOS
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    create_symlink "$DOTFILES_DIR/.config/karabiner" "$HOME/.config/karabiner"
-    create_symlink "$DOTFILES_DIR/.config/borders" "$HOME/.config/borders"
-    create_symlink "$DOTFILES_DIR/.aerospace.main.toml" "$HOME/.aerospace.toml"
-    
-    # Create Tabby config directory and symlink
-    mkdir -p "$HOME/Library/Application Support/tabby"
-    create_symlink "$DOTFILES_DIR/Library/Application Support/tabby/config.yaml" "$HOME/Library/Application Support/tabby/config.yaml"
-
-    # Run .macos file
-    echo "Applying macOS-specific settings..."
-    #source "$DOTFILES_DIR/.macos"
+if [ "$DRY_RUN" = true ]; then
+    echo -e "${BLUE}◆${NC}  Checking dotfile links..."
+    cd ~/dotfiles
+    backup_conflicts true
+    stow -n -t ~ home 2>/dev/null || true
+    echo -e "${YELLOW}◇${NC}  Dry run complete — run without --dry-run to apply"
 else
-    echo "Skipping macOS-specific configurations (karabiner, borders, aerospace, tabby)"
+    echo -e "${BLUE}◆${NC}  Linking dotfiles..."
+    cd ~/dotfiles
+    backup_conflicts false
+    stow -t ~ home
+    echo -e "${GREEN}◇${NC}  Setup complete! Run: exec zsh"
 fi
-
-# Check if reepay CLI is available before adding completion
-if command -v reepay >/dev/null 2>&1; then
-    eval "$(_REEPAY_COMPLETE=zsh_source reepay)"
-fi
-
-echo "Dotfiles installation complete!"

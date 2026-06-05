@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Opencode-DCP/opencode-dynamic-context-pruning/master/dcp.schema.json",
+  "compress": {
+    // Delay the "you've been iterating" reminder. Default 15 felt eager
+    // during long tool-driven sessions; 30 lets a normal find-then-edit
+    // loop finish before nags start.
+    "iterationNudgeThreshold": 30,
+    // Push the strong-nudge threshold higher so we don't get pressured
+    // to compress until the window is genuinely tight. Use a percentage
+    // so it scales with whatever model is active. 70% of a 200k window
+    // is 140k; 70% of a 1M window is 700k.
+    "maxContextLimit": "70%",
+    // Reminders below this are silenced entirely. Bump in step.
+    "minContextLimit": "40%",
+    // Fire the over-limit nudge less often when it does kick in.
+    "nudgeFrequency": 8
+  }
+}

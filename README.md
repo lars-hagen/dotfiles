@@ -1,63 +1,73 @@
-# My Development Environment Setup
+# dotfiles
 
-This repository contains my dotfiles and automated setup for development environment. Detailed documentation is available in the [Wiki](../../wiki).
+macOS configuration using Homebrew + GNU Stow for dotfiles.
 
 ## Quick Start
 
-1. Clone with submodules:
 ```bash
-git clone --recurse-submodules https://github.com/lars-hagen/dotfiles.git
-cd dotfiles
-./install.sh
+git clone https://github.com/lars-hagen/dotfiles.git ~/dotfiles
+
+# Preview
+~/dotfiles/install.sh --dry-run
+
+# Install
+~/dotfiles/install.sh
+
+exec zsh
 ```
 
-Or if you already cloned without submodules:
+## Structure
+
+```
+~/dotfiles/
+├── Brewfile         # All packages (brews + casks)
+├── install.sh       # Bootstrap script
+├── scripts/
+│   └── macos.sh     # macOS system defaults
+└── home/            # Stowed to ~
+    ├── .zshrc
+    └── Library/Application Support/...
+```
+
+## What's Installed
+
+**Packages**: git, neovim, fzf, fd, starship, eza, stow, node@22, pnpm, python, bun, uv, htop, btop, ncdu, gh, jq, rclone, rustup, ffmpeg, macmon, aria2
+
+**Casks**: 1password, claude, ghostty, google-chrome, google-cloud-sdk, localsend, monitorcontrol, obsidian, proxyman, raycast, shottr, spotify, tart, telegram-desktop, visual-studio-code
+
+**System Settings**: Fast key repeat, hidden files visible, dock auto-hide, list view, mouse linear tracking, Spotlight Cmd+Space disabled
+
+**Shell**: zsh with autosuggestions, syntax-highlighting, fzf-tab, fzf keybindings (Ctrl+R/T, Alt+C)
+
+## Usage
+
+### Update packages
 ```bash
-git submodule update --init --recursive
+brew bundle --file=~/dotfiles/Brewfile
 ```
 
-For detailed setup instructions, see the [Setup and Installation Guide](../../wiki/Setup-And-Installation).
-
-## Core Components
-
-- Modern ZSH environment with smart plugins and tools
-- GPU-accelerated terminals (Alacritty, Tabby)
-- VSCode with AI-powered assistance
-- Docker for containerization
-- Tiling window management with AeroSpace
-- AWS profile management with Browser integration
-- Automated package management through Homebrew
-
-## Repository Structure
-```
-./
-├── README.md              # Overview and quick start
-├── Brewfile              # Managed packages and applications
-├── install.sh            # Automated setup script
-├── .zshrc                # Shell configuration
-├── .macos                # macOS-specific settings
-├── .aerospace.toml       # AeroSpace window manager config
-├── .config/              # Application configurations
-│   ├── borders/         # Window border customization
-│   ├── karabiner/       # Keyboard customization
-│   ├── nvim/            # Neovim configuration
-│   └── shell_gpt/       # AI shell assistant
-├── bin/                  # Utility scripts
-│   ├── aws-profile-management    # AWS profile and Browser integration
-│   ├── dotfiles-dump-brew       # Update Brewfile from current packages
-│   ├── dotfiles-manage          # Dotfiles management utilities
-│   └── dotfiles-update-brew-wiki # Update Homebrew packages documentation
-└── Library/              # macOS Library configurations
+### Edit dotfiles
+Files are symlinked — edit directly:
+```bash
+vim ~/.zshrc
+cd ~/dotfiles && git add -A && git commit
 ```
 
-## Submodules
+### Add new dotfiles
+```bash
+cp ~/.gitconfig ~/dotfiles/home/.gitconfig
+stow -t ~ home
+```
 
-This repository uses Git submodules for managing dependencies. Submodule updates are automatically managed by Dependabot, which creates pull requests when updates are available.
+### Re-apply macOS defaults
+```bash
+~/dotfiles/scripts/macos.sh
+```
 
-## Contributing
+## Manual Stow Commands
 
-Feel free to fork this repository and customize it for your needs. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```bash
+stow -t ~ home     # Link dotfiles
+stow -D -t ~ home  # Unlink
+stow -R -t ~ home  # Restow (after structure changes)
+```

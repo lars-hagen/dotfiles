@@ -1,0 +1,64 @@
+{
+  "servers": {
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "tavily-mcp": {
+      "command": "npx",
+      "args": ["-y", "tavily-mcp"],
+      "env": {
+        "TAVILY_API_KEY": "${TAVILY_API_KEY}"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--isolated",
+        "--browser",
+        "chrome"
+      ]
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp",
+        "--api-key",
+        "${CONTEXT7_API_KEY}"
+      ]
+    },
+    "linkup": {
+      "command": "node",
+      "args": [
+        "/home/lars/repos/lars-hagen/linkup-mcp-server/dist/index.js",
+        "apiKey=${LINKUP_API_KEY}"
+      ]
+    }
+  },
+  "exposeTools": [
+  ],
+  "alwaysVisibleTools": [
+  ],
+  "hideTools": [
+    "playwright__browser_resize",
+    "playwright__browser_handle_dialog",
+    "playwright__browser_file_upload",
+    "playwright__browser_fill_form",
+    "playwright__browser_install",
+    "playwright__browser_press_key",
+    "playwright__browser_type",
+    "playwright__browser_navigate_back",
+    "playwright__browser_drag",
+    "playwright__browser_hover",
+    "playwright__browser_select_option",
+    "playwright__browser_tabs",
+    "playwright__browser_wait_for"
+  ],
+  "exposeCoreTools": [
+    "discover_tools_by_words",
+    "get_tool_schema",
+    "bridge_tool_request"
+  ]
+}
