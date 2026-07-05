@@ -30,10 +30,16 @@ Verify it is present before calling:
 | Bulk-extract a site section  | `POST /crawl`          | [references/crawl.md](references/crawl.md)     |
 | List a site's URLs (no text) | `POST /map`            | [references/map.md](references/map.md)         |
 
-Default search to `search_depth:"basic"` with `max_results:10`. When you need a page's full text, call
-`/extract` on the URL rather than `include_raw_content` (avoid it; the `.content` snippet
-usually suffices). Reach for `/crawl` only when you do not have the URLs and need many
-pages under one site (e.g. a whole docs section); always cap it with `limit`.
+Default search to `search_depth:"basic"` with `max_results:10`. Prefer breadth over depth:
+fan out 2-4 basic queries in parallel (one intent each, varied phrasing) rather than one
+`advanced` query. Benched on a multi-faceted question, a 3-way basic fan-out covered ~2x the
+unique domains at ~1/3 the wall-clock latency (parallel basic calls are individually faster,
+and concurrency means total time = the slowest call) for 1 extra credit (3 vs 2). Escalate to
+a single `advanced` query only when you need source authority on one precise fact, not
+coverage; there it reliably returns a higher-quality top source for its 2 credits. When you need a page's full text, call `/extract` on the
+URL rather than `include_raw_content` (avoid it; the `.content` snippet usually suffices).
+Reach for `/crawl` only when you do not have the URLs and need many pages under one site
+(e.g. a whole docs section); always cap it with `limit`.
 
 ## Quick start: search
 
@@ -57,6 +63,24 @@ curl -fsS -X POST https://api.tavily.com/search \
   -d '{"query":"AI policy news","topic":"news","time_range":"week","include_answer":"advanced"}' \
 | jq -r '.answer'
 ```
+
+## Fan out: parallel basic queries
+
+Default pattern for any non-trivial question. Split into sub-queries (one intent each) and
+fire them concurrently instead of reaching for `advanced`:
+
+```bash
+for q in "Tavily search pricing 2025" "Tavily rate limits per plan" "Tavily extract vs crawl credits"; do
+  curl -fsS -X POST https://api.tavily.com/search \
+    -H "Authorization: Bearer $TAVILY_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "$(jq -nc --arg q "$q" '{query:$q,search_depth:"basic",max_results:10}')" &
+done
+wait \
+| jq -r '.results[] | "\(.score)\t\(.url)\t\(.title)"'
+```
+
+As an agent, issue these as separate parallel tool calls in one block (no `&`/`wait` needed).
 
 ## Quick start: extract
 

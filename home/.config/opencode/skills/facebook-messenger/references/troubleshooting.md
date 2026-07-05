@@ -10,7 +10,7 @@ Fix: never pass `--bun`. Run under Node:
 ```bash
 bunx @playwright/cli attach --extension=chrome     # bunx WITHOUT --bun -> node shebang
 # or
-npx playwright-cli attach --extension=chrome
+npx @playwright/cli attach --extension=chrome
 ```
 
 Reference (the underlying bug and workarounds): gist "Playwright + Bun compatibility fixes".
@@ -50,7 +50,8 @@ bunx @playwright/cli -s=chrome eval "el => el.getAttribute('aria-label')" \
 URL is `/messages/e2ee/t/<id>/`. The composer and message DOM are the same role/aria pattern,
 but some history may not be present if this device has not synced the e2ee thread. Reading works
 for synced content; if the thread shows a "restore/secure storage" prompt, handle it manually in
-Chrome first.
+Chrome first. e2ee bodies cannot be fetched via curl/HTTP replay (they arrive encrypted over
+MQTT and are decrypted in-page); read the decrypted DOM, see reading.md "Load older history".
 
 ## Send did not go through
 

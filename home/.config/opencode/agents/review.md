@@ -1,7 +1,7 @@
 ---
 description: Read-only code reviewer. Audits significant changes for correctness, security, and maintainability. Returns findings as plain text. Use after non-trivial edits you want a second pass on.
 mode: subagent
-model: github-copilot/gpt-5.5
+model: openai/gpt-5.5
 reasoningEffort: low
 permission:
   read: allow

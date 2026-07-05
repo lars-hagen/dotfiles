@@ -79,12 +79,33 @@ bunx @playwright/cli -s=chrome click "getByRole('button', { name: 'React' })"
 bunx @playwright/cli -s=chrome click "getByRole('button', { name: 'Like' })"
 ```
 
+## Message yourself (note-to-self)
+
+Your self-thread is not in the rail. Open it by your own user id (read it once with
+`require('CurrentUserInitialData').USER_ID`, or grab `__user=` from any request URL):
+
+```bash
+bunx @playwright/cli -s=chrome --raw eval "require('CurrentUserInitialData').USER_ID"   # -> 1000...
+bunx @playwright/cli -s=chrome goto "https://www.facebook.com/messages/t/<own_id>/"
+```
+
+That legacy URL may open a pre-e2ee view gated by a **Continue** button ("sent before this chat
+was secured... You can't reply"). Click it to land on the sendable e2ee self-thread (a different
+`/messages/e2ee/t/<id>/`). The self-composer has **no name**, so its label is `Write to ` with a
+trailing space; target it exactly:
+
+```bash
+bunx @playwright/cli -s=chrome click "getByRole('button', { name: 'Continue' })"   # only if the gate shows
+bunx @playwright/cli -s=chrome fill "getByRole('textbox', { name: 'Write to ', exact: true })" "note to self" --submit
+```
+
 ## Verify a send
 
-After sending, confirm the message landed rather than assuming:
+After sending, confirm the message landed rather than assuming. Match in-thread messages by their
+`At <date>, <Sender>: <text>` aria-label, not `[role=row]` (see reading.md):
 
 ```bash
 bunx @playwright/cli -s=chrome --raw eval "
-  [...document.querySelectorAll('[aria-label^=\"Messages in conversation\"] [role=row]')]
-    .slice(-1)[0]?.innerText.trim()"
+  [...document.querySelectorAll('[aria-label^=\"Messages in conversation\"] [aria-label^=\"At \"]')]
+    .slice(-1)[0]?.getAttribute('aria-label')"
 ```

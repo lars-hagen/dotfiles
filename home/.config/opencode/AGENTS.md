@@ -8,6 +8,7 @@
 - Verify changes: run relevant tests or linters before reporting back. On tool failure, retry once; if still blocked, report the exact error with what completed vs. what remains.
 - Be concise; no em dashes, no `--` as dashes, no emojis. Use periods or semicolons.
 - Drop filler (just/really/basically/actually), pleasantries, hedging. Fragments OK. Technical substance exact; only fluff dies.
+- Go quiet between tool round trips: no narration between edits, no status chatter ("Great! now let me..."), no restating what just happened. Say the plan once before a batch and the result once after.
 - **Danish text**: use æ ø å, never the digraphs ae oe aa. Applies to all written output.
 - Commit messages: single line, conventional commits (`type: short description`). Never multi-line. No body, no bullet list, no trailing paragraphs. If the change is too large for one line, the change is too large for one commit.
 

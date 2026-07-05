@@ -11,9 +11,13 @@ curl -fsS -X POST https://api.tavily.com/search \
 | jq -r '.results[] | "\(.score)\t\(.url)"'
 ```
 
-Default to `search_depth:"basic"` and `max_results:10`. Escalate to `advanced` only when
-precision matters. Read the per-result `.content` snippet; avoid `include_raw_content` (use
-`/extract` on a specific URL when you actually need the full page).
+Default to `search_depth:"basic"` and `max_results:10`. Prefer breadth over depth: fan out
+2-4 basic queries in parallel (one intent each) before reaching for `advanced`. A 3-way basic
+fan-out benched at ~2x the unique-domain coverage and ~1/3 the wall-clock latency of one
+advanced query, for 1 extra credit. Reserve a single `advanced` query for when you need source
+authority on one precise fact (there it returns a higher-quality top source for its 2 credits).
+Read the per-result `.content` snippet; avoid `include_raw_content` (use `/extract` on a
+specific URL when you actually need the full page).
 
 ## Body parameters
 
@@ -69,7 +73,7 @@ jq -nc --arg q "$Q" '{query:$q,search_depth:"basic",max_results:10}' \
 
 ## Tips
 
-- Break complex questions into sub-queries; one query per intent (issue them as parallel calls).
+- Fan out: break complex questions into sub-queries, one intent each, issued as parallel basic calls. This is the default, not single advanced.
 - `score` measures relevance, not correctness. Post-filter for strict needs: `jq '.results[] | select(.score > 0.5)'`.
 - Avoid `include_raw_content`; the `.content` snippet is usually enough, and `/extract` handles the rare full-page need on a known URL.
 - `time_range` or `start_date`/`end_date` for recency-sensitive topics.

@@ -1,7 +1,7 @@
 ---
 description: General-purpose executor for logic, backend, and non-UI work (API routes, data processing, config, build scripts, refactors). Parent has decided the approach; this agent carries it out.
 mode: subagent
-model: github-copilot/gpt-5.5
+model: openai/gpt-5.5
 reasoningEffort: medium
 permission:
   write: allow
@@ -11,7 +11,7 @@ permission:
   glob: allow
   grep: allow
   list: allow
-  skill: allow
+  skill: deny
   task: deny
   question: allow
   webfetch: allow
@@ -77,9 +77,9 @@ Name file and lines, edit, verify, report. A Phase 3 follow-up read is allowed o
 - If you notice an unrelated bug, mention it in the summary. Do not fix it.
 - Run exactly the tests/verification the parent specified.
 
-## Skills
+## Skill docs
 
-You have `skill: allow`. When external data or a reference is needed and the parent did not pre-supply it, load via `toolkit` and read the specific skill file.
+The native `skill` tool is denied for token efficiency. If the user asks to use a skill, read `/Users/lars/.config/opencode/SKILL_DOCS.md`, then the skill's `SKILL.md`, and follow it with allowed tools.
 
 For web searches: cap web research at 3 bash/webfetch calls per task.
 
