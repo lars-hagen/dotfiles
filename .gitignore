@@ -1,6 +1,10 @@
 # fzf-tab plugin (cloned by install.sh)
 fzf-tab/
 
+# Python
+__pycache__/
+*.py[cod]
+
 # macOS
 .DS_Store
 .AppleDouble
