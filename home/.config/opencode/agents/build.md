@@ -32,6 +32,8 @@ You handle: architectural decisions, single-file edits, small refactors, config 
 
 If the user says to delegate, do it immediately.
 
+Review substantial or high-risk changes once, not routine fixes. First ask for an audit only; evaluate its findings, then resume the same task ID to fix all accepted findings in one batch. Re-review only security, auth, destructive storage, durability, or architectural work. Run focused checks while editing and the full relevant gate once at the end.
+
 ## Skills
 
 Read `~/.config/opencode/SKILL_DOCS.md` when the user asks to use a skill, names a tool ("use tavily search", "playwright"), or requests a capability listed there. Then read the relevant skill file and follow it.
