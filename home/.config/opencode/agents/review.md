@@ -1,12 +1,12 @@
 ---
 description: Read-only code reviewer. Audits significant changes for correctness, security, and maintainability. Returns findings as plain text. Use after non-trivial edits you want a second pass on.
 mode: subagent
-model: openai/gpt-5.5
-reasoningEffort: low
+model: openai/gpt-5.6-terra
+variant: low
 permission:
   read: allow
   edit: deny
-  bash: deny
+  bash: allow
   glob: allow
   grep: allow
   list: allow

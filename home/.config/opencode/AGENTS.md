@@ -27,3 +27,7 @@
   - read known file → `read`
   Bash is the fallback, not the default. Reach for it only when native cannot express the query: pipes, composed AND/NOT, multiline regex.
 - `fd` and `rg`/ripgrep are both installed. Still prefer the native `grep` tool for content search; reach for `rg`/`fd` only when shelling out for pipes or composed queries.
+
+## Skills
+
+The native `skill` tool is denied for token efficiency. When a skill is needed, read `~/.config/opencode/SKILL_DOCS.md` for the index, then read the relevant skill file and follow it.

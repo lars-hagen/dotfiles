@@ -5,8 +5,8 @@ description: >-
   needed to make it work. Builds either into the existing app or as a standalone
   artifact, based on intent. Also handles design-only proposals (no file writes).
 mode: all
-model: anthropic/claude-opus-4-8
-reasoningEffort: medium
+model: anthropic/claude-opus-5
+variant: medium
 permission:
   read: allow
   edit: allow

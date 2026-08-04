@@ -23,6 +23,24 @@ playwright-cli screenshot
 playwright-cli close
 ```
 
+## Machine defaults
+
+The global `~/.playwright/cli.config.json` applies to every session (no flag
+needed): real headless Chrome with a fixed viewport/UA and
+`--disable-blink-features=AutomationControlled`. In testing this passed the
+rebrowser bot-detection checks and let Cloudflare Turnstile auto-solve in headless.
+It also loads `~/.config/playwright-auth/all-sites.json`, so captured sites start
+logged in with no `state-load`. For a logged-out session, set
+`PLAYWRIGHT_MCP_STORAGE_STATE` to `~/.config/playwright-auth/empty.json` (or another
+profile) on `open`; an empty string is ignored, it must be a real state file.
+
+To preserve stealth:
+- Avoid `eval`/`run-code` on fingerprinting pages; their main-world execution is
+  detectable. `goto`, `click`, `fill`, `snapshot`, and `find` are isolated-world safe.
+- Keep launch args minimal; flags like `--disable-gpu` can break Turnstile autosolve.
+- `--headed` overrides the headless default.
+- Inspect the merged config with `playwright-cli config-print`.
+
 ## Commands
 
 ### Core
@@ -47,6 +65,11 @@ playwright-cli upload ./document.pdf
 playwright-cli check e12
 playwright-cli uncheck e12
 playwright-cli snapshot
+# search the snapshot for text or a regexp, returns matching nodes with surrounding context
+playwright-cli find "Sign in"
+playwright-cli find --regex "Sign (in|up)"
+# wrap the regexp in slashes to add flags, e.g. /i for case-insensitive
+playwright-cli find --regex "/sign (in|up)/i"
 playwright-cli eval "document.title"
 playwright-cli eval "el => el.textContent" e5
 # get element id, class, or any attribute not visible in the snapshot
@@ -93,6 +116,7 @@ playwright-cli mousewheel 0 100
 playwright-cli screenshot
 playwright-cli screenshot e5
 playwright-cli screenshot --filename=page.png
+playwright-cli screenshot --hires
 playwright-cli pdf --filename=page.pdf
 ```
 
@@ -138,6 +162,27 @@ playwright-cli sessionstorage-delete step
 playwright-cli sessionstorage-clear
 ```
 
+### Auth profiles
+
+Additional storage profiles live in `~/.config/playwright-auth/<name>.json`.
+
+Load another profile:
+```bash
+playwright-cli -s=work open about:blank
+playwright-cli -s=work state-load ~/.config/playwright-auth/work.json  # before navigating
+playwright-cli -s=work goto https://site.com
+```
+
+Capture a profile from your real, logged-in Chrome (JSON only, no profile copy):
+attach and visit each required origin per "Connecting to your existing browser", then:
+```bash
+playwright-cli --s=chrome state-save ~/.config/playwright-auth/myprofile.json
+playwright-cli --s=chrome detach
+```
+`state-save` includes all context cookies (unrelated sites too) and localStorage for
+visited origins; it excludes sessionStorage, IndexedDB, and cache. Treat the JSON as
+live credentials: keep it out of git and `chmod 600`.
+
 ### Network
 
 ```bash
@@ -162,6 +207,10 @@ playwright-cli tracing-stop
 playwright-cli video-start video.webm
 playwright-cli video-chapter "Chapter Title" --description="Details" --duration=2000
 playwright-cli video-stop
+
+# annotate each subsequent action with a callout naming the action and highlighting the target
+playwright-cli video-show-actions --duration=600 --position=top-right
+playwright-cli video-hide-actions
 
 # launch the dashboard for UI review / design feedback — user annotates the page, you receive the annotated screenshot, snapshot, and notes
 playwright-cli show --annotate
@@ -205,6 +254,12 @@ playwright-cli open --browser=firefox
 playwright-cli open --browser=webkit
 playwright-cli open --browser=msedge
 
+# Emulate a generic mobile device (Pixel 10 for Chromium, iPhone 17 for WebKit).
+# Prefer this when a mobile layout is acceptable: mobile pages are usually
+# lighter, so snapshots are smaller and cheaper.
+playwright-cli open --mobile
+playwright-cli open --device="iPhone 15"
+
 # Use persistent profile (by default profile is in-memory)
 playwright-cli open --persistent
 # Use persistent profile with custom directory
@@ -238,11 +293,24 @@ it. The Playwright extension is the reliable path: plain `--cdp=chrome` needs th
 started with remote debugging, and a normally-launched Chrome has no `DevToolsActivePort`,
 so that attach fails.
 
+> **MANDATORY after extension attach:** never issue the first HTTP(S) `goto` as a standalone
+> command. Chain it with the `emulateMedia` command below using `&&`, and append the requested
+> capture (`screenshot`/`pdf`) to the same chain, so capture cannot run if theme setup fails.
+> `emulateMedia` removes Playwright's forced-light override so the page follows the attached
+> browser's color scheme, affecting CSS, `matchMedia`, computed styles, screenshots, and PDFs.
+> It runs once per session (guarded) unless the task explicitly requires a forced scheme.
+
 ```bash
 # attach to your running Chrome via the Playwright extension
 playwright-cli attach --extension=chrome
 # -> creates a session named `chrome`; drive it with --s=chrome
-playwright-cli --s=chrome goto https://example.com
+# First goto + theme (+ capture) as ONE chain. Navigate before run-code (it hangs on the
+# initial chrome-extension:// relay page); theme is set at the earliest safe point, not at
+# capture time, so earlier matchMedia/computed-style work is already correct.
+playwright-cli --s=chrome goto https://example.com \
+  && playwright-cli --s=chrome run-code "async page => { await page.emulateMedia({ colorScheme: null }); const c = page.context(); if (!c.__pwTheme) { c.__pwTheme = true; c.on('page', p => p.emulateMedia({ colorScheme: null }).catch(() => {})); } }" \
+  && playwright-cli --s=chrome screenshot --filename=page.png
+# later commands in the session need no repeat of the theme step (listener covers new tabs)
 playwright-cli --s=chrome snapshot
 # disconnect automation but leave your browser running
 playwright-cli --s=chrome detach
@@ -250,9 +318,45 @@ playwright-cli --s=chrome detach
 
 - The extension scopes automation to the tab it connected through; `tab-list` shows that
   relay tab. Use `goto` or `tab-new` to reach the page you want.
-- `--cdp=chrome`, `--cdp=msedge`, and `--cdp=http://localhost:9222` work only when the
-  browser is already running with remote debugging enabled.
-- `detach` disconnects and leaves the external browser open.
+
+### Following the browser color scheme
+
+Playwright otherwise emulates `prefers-color-scheme: light` on every controlled page, so an
+attached dark-mode Chrome renders light. `colorScheme: null` removes that override so the page
+uses the real browser/OS theme; the `context.on('page', ...)` listener applies it to future
+tabs. To force a scheme instead, pass `'dark'` or `'light'`. Playwright config cannot express
+this (`no-override`) for an extension-attached context, so it must be set at runtime, and
+`run-code` hangs on the `chrome-extension://` relay page, so the active page must be HTTP(S)
+first. Verify with:
+`playwright-cli --s=chrome --raw eval "window.matchMedia('(prefers-color-scheme: dark)').matches"`
+
+### File uploads in extension-attached Chrome
+
+Chrome extension sessions can reject the normal file chooser flow with
+`DOM.setFileInputFiles: Not allowed`. This is a Chrome protocol restriction, not a workspace
+path restriction. When the page has a drop zone, prefer `drop --path` before clicking its
+upload button:
+
+```bash
+# Use the outer drop-zone ref from the snapshot, not its text child.
+playwright-cli --s=chrome drop e53 --path=/absolute/path/document.pdf
+playwright-cli --s=chrome snapshot e51  # verify the filename is attached
+```
+
+If a failed `upload` leaves Playwright stuck in file-chooser modal state, detach and reattach
+before retrying. Verify that the page displays the expected filename after `drop` completes.
+
+## URLs with `&` on Windows
+
+On Windows, `cmd.exe` and PowerShell treat `&` as a command separator, so URLs with multiple query parameters get truncated before `playwright-cli` runs. Escape `&` with `^&` in `cmd.exe`, or use `--%` in PowerShell:
+
+```batch
+playwright-cli goto "https://example.com/?a=1^&b=2"
+```
+
+```powershell
+playwright-cli --% goto "https://example.com/?a=1&b=2"
+```
 
 ## Snapshots
 
@@ -302,6 +406,15 @@ location for a single session, set it inline:
 PLAYWRIGHT_MCP_OUTPUT_DIR=/path/to/dir playwright-cli attach --extension=chrome
 ```
 
+### Searching large snapshots
+
+Use `find` to return matching nodes with three lines of surrounding context instead of capturing the full snapshot:
+
+```bash
+playwright-cli find "Add to cart"
+playwright-cli find --regex "\\$[0-9]+\\.[0-9]{2}"
+```
+
 ## Targeting elements
 
 By default, use refs from the snapshot to interact with page elements.
@@ -347,13 +460,13 @@ playwright-cli kill-all
 
 ## Installation
 
-If global `playwright-cli` command is not available, try a local version via `npx playwright-cli`:
+If global `playwright-cli` command is not available, try a local version via `npx playwright cli`:
 
 ```bash
-npx --no-install playwright-cli --version
+npx --no-install playwright --version
 ```
 
-When local version is available, use `npx playwright-cli` in all commands. Otherwise, install `playwright-cli` as a global command:
+When local version is available, use `npx playwright cli` in all commands. Otherwise, install `playwright-cli` as a global command:
 
 ```bash
 npm install -g @playwright/cli@latest

@@ -32,6 +32,6 @@ You handle: architectural decisions, single-file edits, small refactors, config 
 
 If the user says to delegate, do it immediately.
 
-## Skill docs
+## Skills
 
-The native `skill` tool is denied for token efficiency. When the user asks to use a skill, names its tool ("use tavily search", "playwright"), or requests a capability listed in `/Users/lars/.config/opencode/SKILL_DOCS.md`, read that file, then the skill's `SKILL.md`, and follow it with allowed tools.
+Read `~/.config/opencode/SKILL_DOCS.md` when the user asks to use a skill, names a tool ("use tavily search", "playwright"), or requests a capability listed there. Then read the relevant skill file and follow it.

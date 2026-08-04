@@ -1,8 +1,8 @@
 ---
 description: General-purpose executor for logic, backend, and non-UI work (API routes, data processing, config, build scripts, refactors). Parent has decided the approach; this agent carries it out.
 mode: subagent
-model: openai/gpt-5.5
-reasoningEffort: medium
+model: openai/gpt-5.6-terra
+variant: medium
 permission:
   write: allow
   read: allow
@@ -76,10 +76,6 @@ Name file and lines, edit, verify, report. A Phase 3 follow-up read is allowed o
 - Do exactly what was asked. Do not add features, refactor adjacent code, or fix unrelated issues.
 - If you notice an unrelated bug, mention it in the summary. Do not fix it.
 - Run exactly the tests/verification the parent specified.
-
-## Skill docs
-
-The native `skill` tool is denied for token efficiency. If the user asks to use a skill, read `/Users/lars/.config/opencode/SKILL_DOCS.md`, then the skill's `SKILL.md`, and follow it with allowed tools.
 
 For web searches: cap web research at 3 bash/webfetch calls per task.
 

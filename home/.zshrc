@@ -374,3 +374,13 @@ export PYTORCH_ENABLE_MPS_FALLBACK=1
 
 # Added by Antigravity
 export PATH="/Users/lars/.antigravity/antigravity/bin:$PATH"
+
+# >>> grok installer >>>
+export PATH="$HOME/.grok/bin:$PATH"
+fpath=(~/.grok/completions/zsh $fpath)
+autoload -Uz compinit && compinit -C
+# <<< grok installer <<<
+
+
+# Added by Cap
+export PATH="/Users/lars/.cap/bin:$PATH"
